@@ -131,6 +131,68 @@
 
         }
 
+
+        /* ================= MOBILE COLLAPSIBLE SECTIONS ================= */
+        .mobile-section-toggle {
+            display: none;
+        }
+
+        .mobile-section-body {
+            display: block;
+        }
+
+        @media (max-width: 767px) {
+            .mobile-collapsible {
+                padding: 0 !important;
+                overflow: hidden;
+            }
+
+            .mobile-section-toggle {
+                display: flex;
+                width: 100%;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+                padding: 1rem;
+                background: white;
+                border: 0;
+                text-align: left;
+                font-size: 1rem;
+            }
+
+            .mobile-section-toggle:hover {
+                background: #fafafa;
+            }
+
+            .mobile-section-arrow {
+                font-size: 1rem;
+                transition: transform 0.2s ease;
+            }
+
+            .mobile-collapsible.is-open .mobile-section-arrow {
+                transform: rotate(180deg);
+            }
+
+            .mobile-section-body {
+                display: none;
+                padding: 0 1rem 1rem;
+                border-top: 1px solid #e5e7eb;
+            }
+
+            .mobile-collapsible.is-open .mobile-section-body {
+                display: block;
+            }
+
+            /* Keep the financial cards comfortable on narrow screens. */
+            .mobile-collapsible[data-mobile-title="Financial Summary"] .mobile-section-body {
+                padding-top: 1rem;
+            }
+
+            .mobile-collapsible[data-mobile-title="Financial Summary"] .mobile-section-body > div {
+                margin-bottom: 0.75rem;
+            }
+        }
+
     </style>
 
 </head>
@@ -175,10 +237,12 @@
         stock
     </a>
 
-    <a href="receipts.html" class="text-green-900">
+    <a href="receipts.html" class="text-green-900 mr-4">
         Receipts
     </a>
-
+        <a href="admin.html" class="text-green-900">
+        admin
+    </a>
 </div>
 
 
@@ -580,7 +644,7 @@
 
 
 
-    <section class="grid md:grid-cols-4 gap-5 mb-8">
+    <section class="grid md:grid-cols-4 gap-5 mb-8 mobile-collapsible" data-mobile-title="Financial Summary">
 
 
 
@@ -704,7 +768,7 @@
 
 
 
-    <section class="bg-white border border-gray-200 p-6 mb-8">
+    <section class="bg-white border border-gray-200 p-6 mb-8 mobile-collapsible" data-mobile-title="Daily Cash Balance">
 
 
 
@@ -908,7 +972,7 @@
 
 
 
-    <section class="bg-white border border-gray-200 p-6 mb-8">
+    <section class="bg-white border border-gray-200 p-6 mb-8 mobile-collapsible" data-mobile-title="Orders Awaiting Payment">
 
 
 
@@ -978,7 +1042,7 @@
 
 
 
-    <section class="bg-white border border-gray-200 p-6 mb-8">
+    <section class="bg-white border border-gray-200 p-6 mb-8 mobile-collapsible" data-mobile-title="Expenses">
 
 
 
@@ -1100,7 +1164,7 @@
 
 
 
-    <section class="bg-white border border-gray-200 p-6 mb-8">
+    <section class="bg-white border border-gray-200 p-6 mb-8 mobile-collapsible" data-mobile-title="Workers">
 
 
 
@@ -1222,7 +1286,7 @@
 
 
 
-    <section class="bg-white border border-gray-200 p-6">
+    <section class="bg-white border border-gray-200 p-6 mobile-collapsible" data-mobile-title="Debts & Credit">
 
 
 
@@ -1397,8 +1461,14 @@ let popupTimer;
 
 let ordersCache = [];
 let productionCache = [];
+let expensesCache = [];
+let workersCache = [];
+let debtsCache = [];
 let ordersMigrationStarted = false;
 let productionMigrationStarted = false;
+let expensesMigrationStarted = false;
+let workersMigrationStarted = false;
+let debtsMigrationStarted = false;
 
 function getLocalData(key) {
     try {
@@ -1415,6 +1485,9 @@ function saveLocalData(key, data) {
 function getData(key) {
     if (key === ORDER_KEY) return ordersCache;
     if (key === PRODUCTION_KEY) return productionCache;
+    if (key === EXPENSE_KEY) return expensesCache;
+    if (key === WORKER_KEY) return workersCache;
+    if (key === DEBT_KEY) return debtsCache;
     return getLocalData(key);
 }
 
@@ -1430,6 +1503,27 @@ function saveData(key, data) {
         productionCache = Array.isArray(data) ? data : [];
         saveLocalData(key, productionCache);
         saveProductionToFirebase();
+        return;
+    }
+
+    if (key === EXPENSE_KEY) {
+        expensesCache = Array.isArray(data) ? data : [];
+        saveLocalData(key, expensesCache);
+        saveRecordsToFirebase("expenses", expensesCache);
+        return;
+    }
+
+    if (key === WORKER_KEY) {
+        workersCache = Array.isArray(data) ? data : [];
+        saveLocalData(key, workersCache);
+        saveRecordsToFirebase("workers", workersCache);
+        return;
+    }
+
+    if (key === DEBT_KEY) {
+        debtsCache = Array.isArray(data) ? data : [];
+        saveLocalData(key, debtsCache);
+        saveRecordsToFirebase("debts", debtsCache);
         return;
     }
 
@@ -1479,6 +1573,39 @@ async function writeCollection(collectionName, records) {
 
     if (operations) batches.push(batch);
     for (const currentBatch of batches) await currentBatch.commit();
+}
+
+
+async function saveRecordsToFirebase(collectionName, records) {
+    try {
+        const validRecords = (Array.isArray(records) ? records : []).filter(function(record) {
+            return record && record.id;
+        });
+
+        // Only upsert records. We intentionally do not replace/delete the whole
+        // collection, so another device can never lose a newer record because
+        // of an older local cache.
+        const batches = [];
+        let batch = db.batch();
+        let operations = 0;
+
+        validRecords.forEach(function(record) {
+            const id = String(record.id);
+            batch.set(db.collection(collectionName).doc(id), record, { merge: true });
+            operations++;
+            if (operations >= 450) {
+                batches.push(batch);
+                batch = db.batch();
+                operations = 0;
+            }
+        });
+
+        if (operations) batches.push(batch);
+        for (const currentBatch of batches) await currentBatch.commit();
+    } catch (error) {
+        console.error(collectionName + " Firebase save error:", error);
+        showPopup("Firebase error", "The " + collectionName + " record could not be saved to Firebase.", true);
+    }
 }
 
 async function saveOrdersToFirebase() {
@@ -1539,6 +1666,45 @@ function startFirebaseListeners() {
         }
     );
 
+    db.collection("expenses").onSnapshot(
+        function(snapshot) {
+            expensesCache = normalizeSnapshot(snapshot);
+            saveLocalData(EXPENSE_KEY, expensesCache);
+            renderAll();
+        },
+        function(error) {
+            console.error("Expenses Firebase listener error:", error);
+            expensesCache = getLocalData(EXPENSE_KEY);
+            renderAll();
+        }
+    );
+
+    db.collection("workers").onSnapshot(
+        function(snapshot) {
+            workersCache = normalizeSnapshot(snapshot);
+            saveLocalData(WORKER_KEY, workersCache);
+            renderAll();
+        },
+        function(error) {
+            console.error("Workers Firebase listener error:", error);
+            workersCache = getLocalData(WORKER_KEY);
+            renderAll();
+        }
+    );
+
+    db.collection("debts").onSnapshot(
+        function(snapshot) {
+            debtsCache = normalizeSnapshot(snapshot);
+            saveLocalData(DEBT_KEY, debtsCache);
+            renderAll();
+        },
+        function(error) {
+            console.error("Debts Firebase listener error:", error);
+            debtsCache = getLocalData(DEBT_KEY);
+            renderAll();
+        }
+    );
+
     if (!ordersMigrationStarted) {
         ordersMigrationStarted = true;
         migrateLocalCollectionIfEmpty("orders", ORDER_KEY, "Orders");
@@ -1547,6 +1713,21 @@ function startFirebaseListeners() {
     if (!productionMigrationStarted) {
         productionMigrationStarted = true;
         migrateLocalCollectionIfEmpty("production", PRODUCTION_KEY, "Production");
+    }
+
+    if (!expensesMigrationStarted) {
+        expensesMigrationStarted = true;
+        migrateLocalCollectionIfEmpty("expenses", EXPENSE_KEY, "Expenses");
+    }
+
+    if (!workersMigrationStarted) {
+        workersMigrationStarted = true;
+        migrateLocalCollectionIfEmpty("workers", WORKER_KEY, "Workers");
+    }
+
+    if (!debtsMigrationStarted) {
+        debtsMigrationStarted = true;
+        migrateLocalCollectionIfEmpty("debts", DEBT_KEY, "Debts");
     }
 }
 
@@ -2830,7 +3011,7 @@ function selectPayment(method) {
 
 
 
-function confirmPayment() {
+async function confirmPayment() {
 
 
 
@@ -2972,17 +3153,19 @@ function confirmPayment() {
 
 
 
-    saveData(
+    // Update only this order in Firestore.
+    // Rewriting the entire orders collection can delete a newer waiter order
+    // that this cashier tab has not received in its local cache yet.
+    try {
+        await db.collection("orders").doc(String(orders[index].id)).set(orders[index]);
+    } catch (error) {
+        console.error("Order payment update error:", error);
+        showPopup("Firebase error", "Payment could not be saved. Please try again.", true);
+        return;
+    }
 
-        ORDER_KEY,
-
-        orders
-
-    );
-
-
-
-
+    ordersCache = orders;
+    saveLocalData(ORDER_KEY, ordersCache);
 
     const amount =
 
@@ -3154,7 +3337,7 @@ function closeRemoveModal() {
 
 
 
-function confirmRemoveOrder() {
+async function confirmRemoveOrder() {
 
 
 
@@ -3588,17 +3771,19 @@ function confirmRemoveOrder() {
 
 
 
-    saveData(
+    // Delete only this rejected order from Firestore.
+    // This prevents this cashier tab from deleting other waiter orders
+    // that arrived after its local cache was last refreshed.
+    try {
+        await db.collection("orders").doc(String(order.id)).delete();
+    } catch (error) {
+        console.error("Order delete error:", error);
+        showPopup("Firebase error", "The order could not be removed. Please try again.", true);
+        return;
+    }
 
-        ORDER_KEY,
-
-        orders
-
-    );
-
-
-
-
+    ordersCache = orders;
+    saveLocalData(ORDER_KEY, ordersCache);
 
     closeRemoveModal();
 
@@ -5747,6 +5932,45 @@ renderAll();
 startFirebaseListeners();
 
 
+
+
+/* ========================================================
+   MOBILE COLLAPSIBLE DASHBOARD SECTIONS
+   Desktop keeps the existing open layout.
+   Phones get tap-to-open sections to reduce scrolling.
+======================================================== */
+function setupMobileCollapsibles() {
+    document.querySelectorAll(".mobile-collapsible").forEach(function(section) {
+        if (section.querySelector(":scope > .mobile-section-toggle")) return;
+
+        const title = section.dataset.mobileTitle || "Section";
+        const body = document.createElement("div");
+        body.className = "mobile-section-body";
+
+        while (section.firstChild) {
+            body.appendChild(section.firstChild);
+        }
+
+        const toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "mobile-section-toggle";
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.innerHTML = `
+            <span>${escapeHTML(title)}</span>
+            <span class="mobile-section-arrow" aria-hidden="true">▼</span>
+        `;
+
+        toggle.addEventListener("click", function() {
+            const open = section.classList.toggle("is-open");
+            toggle.setAttribute("aria-expanded", String(open));
+        });
+
+        section.appendChild(toggle);
+        section.appendChild(body);
+    });
+}
+
+setupMobileCollapsibles();
 </script>
 
 

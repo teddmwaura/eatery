@@ -1016,7 +1016,7 @@ function closeOrderModal() {
 /* ========================================================
    PLACE ORDER
 ======================================================== */
-function placeOrder() {
+async function placeOrder() {
     if (!validateOrder()) { closeOrderModal(); return; }
 
     const total = cart.reduce((sum, item) => sum + item.total, 0);
@@ -1047,9 +1047,19 @@ function placeOrder() {
         createdAt: new Date().toISOString()
     };
 
+    // Save this order as its own Firestore document.
+    // Do NOT rewrite the whole orders collection here because the cashier
+    // may have a newer/different copy of another order.
+    try {
+        await db.collection("orders").doc(String(order.id)).set(order);
+    } catch (error) {
+        console.error("Order Firebase save error:", error);
+        showPopup("Firebase error", "The order could not be saved. Please try again.", true);
+        return;
+    }
+
     ordersCache.push(order);
     saveLocalData(ORDER_KEY, ordersCache);
-    saveOrdersToFirebase();
 
     cart = [];
     renderCart();
