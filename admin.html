@@ -1,2091 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Admin Dashboard | Serene Eatery</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-
-        * {
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: 400 !important;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        button,
-        a,
-        input {
-            cursor: pointer;
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | Serene Eatery</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore-compat.js"></script>
+<style>
+*{font-family:Arial,Helvetica,sans-serif;font-weight:400!important}
+html{scroll-behavior:smooth}
+button,a,input{cursor:pointer}
+@media(max-width:767px){
+.mobile-section-header{cursor:pointer;user-select:none}
+.mobile-section-header:after{content:"＋";float:right;font-size:18px}
+.mobile-section-header.open:after{content:"−"}
+.mobile-section-content{display:none}
+.mobile-section-content.open{display:block}
+}
+</style>
 </head>
-
-
 <body class="bg-gray-100 text-gray-800">
 
-
-<!-- ================= HEADER ================= -->
-
 <header class="fixed top-0 left-0 w-full bg-white border-b border-gray-200 z-50">
-
-    <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-        <a href="index.html"
-           class="text-xl text-green-900">
-            Serene Eatery
-        </a>
-
-
-        <div class="hidden md:flex gap-6 text-sm">
-
-            <a href="waiter.html"
-               class="hover:text-green-900 transition">
-                Waiter
-            </a>
-
-            <a href="cashier.html"
-               class="hover:text-green-900 transition">
-                Cashier
-            </a>
-
-            <a href="stock.html"
-               class="hover:text-green-900 transition">
-                Stock
-            </a>
-
-            <a href="receipts.html"
-               class="hover:text-green-900 transition">
-                Receipts
-            </a>
-
-            <a href="admin.html"
-               class="text-green-900">
-                Admin
-            </a>
-
-        </div>
-
-    </nav>
-
-</header>
-
-
-
-<!-- ================= MAIN ================= -->
+<nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+<a href="index.html" class="text-xl text-green-900">Serene Eatery</a>
+<div class="hidden md:flex gap-6 text-sm">
+<a href="waiter.html">Waiter</a><a href="cashier.html">Cashier</a>
+<a href="stock.html">Stock</a><a href="receipts.html">Receipts</a>
+<a href="admin.html" class="text-green-900">Admin</a>
+</div></nav></header>
 
 <main class="max-w-7xl mx-auto px-6 pt-28 pb-16">
-
-
-    <!-- TITLE -->
-
-    <div class="mb-8">
-
-        <p class="text-xs tracking-widest text-green-900">
-            SERENE EATERY
-        </p>
-
-        <h1 class="text-3xl text-black mt-2">
-            Admin Dashboard
-        </h1>
-
-        <p class="text-gray-500 mt-2">
-            Daily business performance and operations.
-        </p>
-
-        <p class="text-xs text-gray-400 mt-2">
-            <span id="currentDate"></span>
-        </p>
-
-    </div>
-
-
-
-    <!-- ================= FINANCIAL SUMMARY ================= -->
-
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
-
-
-        <div class="bg-white border border-gray-200 p-5">
-
-            <p class="text-xs text-gray-400">
-                TOTAL SALES
-            </p>
-
-            <p id="totalSales"
-               class="text-xl text-black mt-3">
-                Ksh 0
-            </p>
-
-        </div>
-
-
-
-        <div class="bg-white border border-gray-200 p-5">
-
-            <p class="text-xs text-gray-400">
-                CASH SALES
-            </p>
-
-            <p id="cashSales"
-               class="text-xl mt-3">
-                Ksh 0
-            </p>
-
-        </div>
-
-
-
-        <div class="bg-white border border-gray-200 p-5">
-
-            <p class="text-xs text-gray-400">
-                POCHI
-            </p>
-
-            <p id="pochiSales"
-               class="text-xl mt-3">
-                Ksh 0
-            </p>
-
-        </div>
-
-
-
-        <div class="bg-white border border-gray-200 p-5">
-
-            <p class="text-xs text-gray-400">
-                EXPENSES
-            </p>
-
-            <p id="totalExpenses"
-               class="text-xl mt-3">
-                Ksh 0
-            </p>
-
-        </div>
-
-
-
-        <div class="bg-white border border-gray-200 p-5">
-
-            <p class="text-xs text-gray-400">
-                EST. PROFIT
-            </p>
-
-            <p id="estimatedProfit"
-               class="text-xl text-green-900 mt-3">
-                Ksh 0
-            </p>
-
-        </div>
-
-
-
-        <div class="bg-white border border-gray-200 p-5">
-
-            <p class="text-xs text-gray-400">
-                PROFIT MARGIN
-            </p>
-
-            <p id="profitMargin"
-               class="text-xl mt-3">
-                0%
-            </p>
-
-        </div>
-
-
-
-        <div class="bg-white border border-gray-200 p-5">
-
-            <p class="text-xs text-gray-400">
-                PAID ORDERS
-            </p>
-
-            <p id="paidOrders"
-               class="text-xl mt-3">
-                0
-            </p>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- ================= CASH POSITION ================= -->
-
-    <section class="bg-white border border-gray-200 p-6 mb-6">
-
-        <div class="flex justify-between items-center mb-6">
-
-            <div>
-
-                <h2 class="text-xl">
-                    Daily Cash Position
-                </h2>
-
-                <p class="text-sm text-gray-400 mt-1">
-                    Cash received and recorded expenses.
-                </p>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="grid md:grid-cols-4 gap-4">
-
-
-            <div class="border p-5">
-
-                <p class="text-xs text-gray-400">
-                    OPENING BALANCE
-                </p>
-
-                <div class="flex gap-2 mt-3">
-
-                    <input
-                        id="openingBalance"
-                        type="number"
-                        min="0"
-                        placeholder="0"
-                        class="w-full border p-2"
-                    >
-
-                    <button
-                        onclick="saveOpeningBalance()"
-                        class="bg-black text-white px-4">
-
-                        Save
-
-                    </button>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="border p-5">
-
-                <p class="text-xs text-gray-400">
-                    CASH SALES
-                </p>
-
-                <p id="cashPosition"
-                   class="text-2xl mt-3">
-                    Ksh 0
-                </p>
-
-            </div>
-
-
-
-            <div class="border p-5">
-
-                <p class="text-xs text-gray-400">
-                    CASH EXPENSES
-                </p>
-
-                <p id="cashExpenses"
-                   class="text-2xl mt-3">
-                    Ksh 0
-                </p>
-
-            </div>
-
-
-
-            <div class="border p-5">
-
-                <p class="text-xs text-gray-400">
-                    EXPECTED CASH
-                </p>
-
-                <p id="expectedCash"
-                   class="text-2xl text-green-900 mt-3">
-                    Ksh 0
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- ================= OPERATIONS ================= -->
-
-    <div class="grid lg:grid-cols-2 gap-6">
-
-
-        <!-- ================= WORKERS ================= -->
-
-        <section class="bg-white border border-gray-200 p-6">
-
-            <div class="flex justify-between mb-5">
-
-                <div>
-
-                    <h2 class="text-xl">
-                        Workers Today
-                    </h2>
-
-                    <p class="text-sm text-gray-400 mt-1">
-                        Wages and payment status.
-                    </p>
-
-                </div>
-
-                <div>
-
-                    <span id="workerCount"
-                          class="text-sm text-gray-500">
-                        0 workers
-                    </span>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="grid grid-cols-2 gap-3 mb-5">
-
-                <div class="border p-4">
-
-                    <p class="text-xs text-gray-400">
-                        WAGES PAID
-                    </p>
-
-                    <p id="wagesPaid"
-                       class="text-lg mt-2">
-                        Ksh 0
-                    </p>
-
-                </div>
-
-
-
-                <div class="border p-4">
-
-                    <p class="text-xs text-gray-400">
-                        WAGES PENDING
-                    </p>
-
-                    <p id="wagesPending"
-                       class="text-lg mt-2">
-                        Ksh 0
-                    </p>
-
-                </div>
-
-            </div>
-
-
-
-            <div id="workersList"
-                 class="space-y-2">
-            </div>
-
-        </section>
-
-
-
-        <!-- ================= EXPENSES ================= -->
-
-        <section class="bg-white border border-gray-200 p-6">
-
-            <h2 class="text-xl mb-5">
-                Today's Expenses
-            </h2>
-
-            <div id="expensesList">
-            </div>
-
-        </section>
-
-
-
-        <!-- ================= DEBTS ================= -->
-
-        <section class="bg-white border border-gray-200 p-6">
-
-            <div class="flex justify-between mb-5">
-
-                <div>
-
-                    <h2 class="text-xl">
-                        Customer Debts
-                    </h2>
-
-                    <p class="text-sm text-gray-400 mt-1">
-                        Outstanding and paid debts.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="grid grid-cols-2 gap-3 mb-5">
-
-                <div class="border p-4">
-
-                    <p class="text-xs text-gray-400">
-                        PENDING
-                    </p>
-
-                    <p id="pendingDebt"
-                       class="text-lg mt-2">
-                        Ksh 0
-                    </p>
-
-                </div>
-
-
-
-                <div class="border p-4">
-
-                    <p class="text-xs text-gray-400">
-                        PAID
-                    </p>
-
-                    <p id="paidDebt"
-                       class="text-lg mt-2">
-                        Ksh 0
-                    </p>
-
-                </div>
-
-            </div>
-
-
-
-            <div id="debtsList">
-            </div>
-
-        </section>
-
-
-
-        <!-- ================= PRODUCTION ================= -->
-
-        <section class="bg-white border border-gray-200 p-6">
-
-            <div class="flex justify-between mb-5">
-
-                <div>
-
-                    <h2 class="text-xl">
-                        Today's Production
-                    </h2>
-
-                    <p class="text-sm text-gray-400 mt-1">
-                        Food produced by the kitchen.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-
-            <div id="productionList">
-            </div>
-
-        </section>
-
-
-
-        <!-- ================= WASTAGE ================= -->
-
-        <section class="bg-white border border-gray-200 p-6">
-
-            <h2 class="text-xl mb-5">
-                Today's Wastage
-            </h2>
-
-            <div id="wastageList">
-            </div>
-
-        </section>
-
-
-
-        <!-- ================= STOCK ALERTS ================= -->
-
-        <section class="bg-white border border-gray-200 p-6">
-
-            <h2 class="text-xl mb-2">
-                Stock Alerts
-            </h2>
-
-            <p class="text-sm text-gray-400 mb-5">
-                Products that are running low or finished.
-            </p>
-
-            <div id="stockAlerts">
-            </div>
-
-        </section>
-
-    </div>
-
-
-
-    <!-- ================= DAILY PERFORMANCE ================= -->
-
-    <section class="bg-white border border-gray-200 p-6 mt-6">
-
-        <h2 class="text-xl">
-            Daily Performance
-        </h2>
-
-        <p class="text-sm text-gray-400 mt-1 mb-6">
-            Quick overview of how Serene Eatery performed today.
-        </p>
-
-
-
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-
-
-            <div class="border p-5">
-
-                <p class="text-xs text-gray-400">
-                    SALES
-                </p>
-
-                <p id="performanceSales"
-                   class="text-xl mt-3">
-                    Ksh 0
-                </p>
-
-            </div>
-
-
-
-            <div class="border p-5">
-
-                <p class="text-xs text-gray-400">
-                    EXPENSES
-                </p>
-
-                <p id="performanceExpenses"
-                   class="text-xl mt-3">
-                    Ksh 0
-                </p>
-
-            </div>
-
-
-
-            <div class="border p-5">
-
-                <p class="text-xs text-gray-400">
-                    PROFIT
-                </p>
-
-                <p id="performanceProfit"
-                   class="text-xl text-green-900 mt-3">
-                    Ksh 0
-                </p>
-
-            </div>
-
-
-
-            <div class="border p-5">
-
-                <p class="text-xs text-gray-400">
-                    MARGIN
-                </p>
-
-                <p id="performanceMargin"
-                   class="text-xl mt-3">
-                    0%
-                </p>
-
-            </div>
-
-
-
-            <div class="border p-5">
-
-                <p class="text-xs text-gray-400">
-                    PRODUCTION
-                </p>
-
-                <p id="performanceProduction"
-                   class="text-xl mt-3">
-                    0
-                </p>
-
-            </div>
-
-
-
-            <div class="border p-5">
-
-                <p class="text-xs text-gray-400">
-                    WASTAGE
-                </p>
-
-                <p id="performanceWastage"
-                   class="text-xl mt-3">
-                    0
-                </p>
-
-            </div>
-
-        </div>
-
-
-
-        <div id="performanceMessage"
-             class="border mt-6 p-5 text-sm">
-        </div>
-
-    </section>
-
-
+<div class="mb-8">
+<p class="text-xs tracking-widest text-green-900">SERENE EATERY</p>
+<h1 class="text-3xl text-black mt-2">Admin Dashboard</h1>
+<p class="text-gray-500 mt-2">Daily business performance and operations.</p>
+<p class="text-xs text-gray-400 mt-2"><span id="currentDate"></span></p>
+<p id="firebaseStatus" class="text-xs text-green-800 mt-2">Connecting to Firebase...</p>
+</div>
+
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
+<div class="bg-white border p-5"><p class="text-xs text-gray-400">TOTAL SALES</p><p id="totalSales" class="text-xl mt-3">Ksh 0</p></div>
+<div class="bg-white border p-5"><p class="text-xs text-gray-400">CASH SALES</p><p id="cashSales" class="text-xl mt-3">Ksh 0</p></div>
+<div class="bg-white border p-5"><p class="text-xs text-gray-400">POCHI</p><p id="pochiSales" class="text-xl mt-3">Ksh 0</p></div>
+<div class="bg-white border p-5"><p class="text-xs text-gray-400">EXPENSES</p><p id="totalExpenses" class="text-xl mt-3">Ksh 0</p></div>
+<div class="bg-white border p-5"><p class="text-xs text-gray-400">EST. PROFIT</p><p id="estimatedProfit" class="text-xl text-green-900 mt-3">Ksh 0</p></div>
+<div class="bg-white border p-5"><p class="text-xs text-gray-400">PROFIT MARGIN</p><p id="profitMargin" class="text-xl mt-3">0%</p></div>
+<div class="bg-white border p-5"><p class="text-xs text-gray-400">PAID ORDERS</p><p id="paidOrders" class="text-xl mt-3">0</p></div>
+</div>
+
+<section class="bg-white border p-6 mb-6">
+<div class="mobile-section-header" data-section="cashContent">
+<h2 class="text-xl">Daily Cash Position</h2><p class="text-sm text-gray-400 mt-1">Cash received and recorded expenses.</p></div>
+<div id="cashContent" class="mobile-section-content">
+<div class="grid md:grid-cols-4 gap-4 mt-6">
+<div class="border p-5"><p class="text-xs text-gray-400">OPENING BALANCE</p>
+<div class="flex gap-2 mt-3"><input id="openingBalance" type="number" min="0" class="w-full border p-2"><button onclick="saveOpeningBalance()" class="bg-black text-white px-4">Save</button></div></div>
+<div class="border p-5"><p class="text-xs text-gray-400">CASH SALES</p><p id="cashPosition" class="text-2xl mt-3">Ksh 0</p></div>
+<div class="border p-5"><p class="text-xs text-gray-400">CASH EXPENSES</p><p id="cashExpenses" class="text-2xl mt-3">Ksh 0</p></div>
+<div class="border p-5"><p class="text-xs text-gray-400">EXPECTED CASH</p><p id="expectedCash" class="text-2xl text-green-900 mt-3">Ksh 0</p></div>
+</div></div></section>
+
+<div class="grid lg:grid-cols-2 gap-6">
+
+<section class="bg-white border p-6"><div class="mobile-section-header" data-section="workersContent">
+<div class="flex justify-between mb-5"><div><h2 class="text-xl">Workers Today</h2><p class="text-sm text-gray-400 mt-1">Wages and payment status.</p></div><span id="workerCount" class="text-sm text-gray-500">0 workers</span></div></div>
+<div id="workersContent" class="mobile-section-content"><div class="grid grid-cols-2 gap-3 mb-5">
+<div class="border p-4"><p class="text-xs text-gray-400">WAGES PAID</p><p id="wagesPaid" class="text-lg mt-2">Ksh 0</p></div>
+<div class="border p-4"><p class="text-xs text-gray-400">WAGES PENDING</p><p id="wagesPending" class="text-lg mt-2">Ksh 0</p></div></div><div id="workersList"></div></div></section>
+
+<section class="bg-white border p-6"><div class="mobile-section-header" data-section="expensesContent"><h2 class="text-xl mb-5">Today's Expenses</h2></div><div id="expensesContent" class="mobile-section-content"><div id="expensesList"></div></div></section>
+
+<section class="bg-white border p-6"><div class="mobile-section-header" data-section="debtsContent"><h2 class="text-xl">Customer Debts</h2><p class="text-sm text-gray-400 mt-1">Outstanding and paid debts.</p></div>
+<div id="debtsContent" class="mobile-section-content"><div class="grid grid-cols-2 gap-3 my-5">
+<div class="border p-4"><p class="text-xs text-gray-400">PENDING</p><p id="pendingDebt" class="text-lg mt-2">Ksh 0</p></div>
+<div class="border p-4"><p class="text-xs text-gray-400">PAID</p><p id="paidDebt" class="text-lg mt-2">Ksh 0</p></div></div><div id="debtsList"></div></div></section>
+
+<section class="bg-white border p-6"><div class="mobile-section-header" data-section="productionContent"><h2 class="text-xl">Today's Production</h2><p class="text-sm text-gray-400 mt-1">Food produced by the kitchen.</p></div><div id="productionContent" class="mobile-section-content"><div id="productionList"></div></div></section>
+
+<section class="bg-white border p-6"><div class="mobile-section-header" data-section="wastageContent"><h2 class="text-xl">Today's Wastage</h2></div><div id="wastageContent" class="mobile-section-content"><div id="wastageList"></div></div></section>
+
+<section class="bg-white border p-6"><div class="mobile-section-header" data-section="stockAlertsContent"><h2 class="text-xl">Stock Alerts</h2><p class="text-sm text-gray-400 mt-1">Products that are running low or finished.</p></div><div id="stockAlertsContent" class="mobile-section-content"><div id="stockAlerts"></div></div></section>
+</div>
+
+<section class="bg-white border p-6 mt-6"><div class="mobile-section-header" data-section="performanceContent"><h2 class="text-xl">Daily Performance</h2><p class="text-sm text-gray-400 mt-1 mb-6">Quick overview of how Serene Eatery performed today.</p></div>
+<div id="performanceContent" class="mobile-section-content"><div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+<div class="border p-5"><p class="text-xs text-gray-400">SALES</p><p id="performanceSales" class="text-xl mt-3">Ksh 0</p></div>
+<div class="border p-5"><p class="text-xs text-gray-400">EXPENSES</p><p id="performanceExpenses" class="text-xl mt-3">Ksh 0</p></div>
+<div class="border p-5"><p class="text-xs text-gray-400">PROFIT</p><p id="performanceProfit" class="text-xl text-green-900 mt-3">Ksh 0</p></div>
+<div class="border p-5"><p class="text-xs text-gray-400">MARGIN</p><p id="performanceMargin" class="text-xl mt-3">0%</p></div>
+<div class="border p-5"><p class="text-xs text-gray-400">PRODUCTION</p><p id="performanceProduction" class="text-xl mt-3">0</p></div>
+<div class="border p-5"><p class="text-xs text-gray-400">WASTAGE</p><p id="performanceWastage" class="text-xl mt-3">0</p></div>
+</div><div id="performanceMessage" class="border mt-6 p-5 text-sm"></div></div></section>
 </main>
 
-
-
 <script>
-
-
-/* =====================================================
-   SERENE EATERY ADMIN DASHBOARD
-===================================================== */
-
-
-/* ================= STORAGE KEYS ================= */
-
-const ORDERS = "serene_orders";
-const EXPENSES = "serene_expenses";
-const WORKERS = "serene_workers";
-const DEBTS = "serene_debts";
-const PRODUCTION = "serene_production";
-const STOCK = "serene_stock";
-const WASTAGE = "serene_wastage";
-const OPENING = "serene_opening_balance";
-
-
-/* ================= HELPERS ================= */
-
-function getData(key) {
-
-    try {
-
-        const data =
-            JSON.parse(
-                localStorage.getItem(key) || "[]"
-            );
-
-        return Array.isArray(data)
-            ? data
-            : [];
-
-    } catch {
-
-        return [];
-
-    }
-
-}
-
-
-function saveData(key, data) {
-
-    localStorage.setItem(
-        key,
-        JSON.stringify(data)
-    );
-
-}
-
-
-function money(amount) {
-
-    return "Ksh " +
-        Number(amount || 0)
-        .toLocaleString();
-
-}
-
-
-function today() {
-
-    return new Date()
-        .toLocaleDateString();
-
-}
-
-
-function escapeHTML(value) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent =
-        value ?? "";
-
-    return div.innerHTML;
-
-}
-
-
-
-/* ================= DATE ================= */
-
-document.getElementById(
-    "currentDate"
-).textContent =
-new Date().toLocaleDateString(
-    undefined,
-    {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-    }
-);
-
-
-
-/* ================= OPENING BALANCE ================= */
-
-function getOpeningBalance() {
-
-    return Number(
-        localStorage.getItem(
-            OPENING
-        ) || 0
-    );
-
-}
-
-
-function saveOpeningBalance() {
-
-    const input =
-        document.getElementById(
-            "openingBalance"
-        );
-
-    const amount =
-        Number(input.value);
-
-    if (amount < 0) {
-
-        alert(
-            "Opening balance cannot be negative."
-        );
-
-        return;
-
-    }
-
-    localStorage.setItem(
-        OPENING,
-        amount
-    );
-
-    render();
-
-    alert(
-        "Opening balance saved."
-    );
-
-}
-
-
-
-/* ================= MAIN RENDER ================= */
-
-function render() {
-
-
-    /* =================================================
-       ORDERS
-    ================================================= */
-
-    const allOrders =
-        getData(ORDERS);
-
-
-    const paidOrders =
-        allOrders.filter(
-            order =>
-                order.status === "paid"
-        );
-
-
-    const totalSales =
-        paidOrders.reduce(
-            (sum, order) =>
-                sum + Number(order.total || 0),
-            0
-        );
-
-
-    const cashSales =
-        paidOrders
-            .filter(
-                order =>
-                    order.paymentMethod === "Cash"
-            )
-            .reduce(
-                (sum, order) =>
-                    sum + Number(order.total || 0),
-                0
-            );
-
-
-    const pochiSales =
-        paidOrders
-            .filter(
-                order =>
-                    order.paymentMethod === "Pochi"
-            )
-            .reduce(
-                (sum, order) =>
-                    sum + Number(order.total || 0),
-                0
-            );
-
-
-
-    /* =================================================
-       EXPENSES
-    ================================================= */
-
-    const allExpenses =
-        getData(EXPENSES);
-
-
-    const todaysExpenses =
-        allExpenses.filter(
-            expense =>
-                expense.date === today()
-        );
-
-
-    const totalExpenses =
-        todaysExpenses.reduce(
-            (sum, expense) =>
-                sum + Number(expense.amount || 0),
-            0
-        );
-
-
-
-    /* =================================================
-       PROFIT
-    ================================================= */
-
-    const estimatedProfit =
-        totalSales -
-        totalExpenses;
-
-
-    const profitMargin =
-        totalSales > 0
-            ? (estimatedProfit / totalSales) * 100
-            : 0;
-
-
-
-    /* =================================================
-       FINANCIAL CARDS
-    ================================================= */
-
-    document.getElementById(
-        "totalSales"
-    ).textContent =
-        money(totalSales);
-
-
-    document.getElementById(
-        "cashSales"
-    ).textContent =
-        money(cashSales);
-
-
-    document.getElementById(
-        "pochiSales"
-    ).textContent =
-        money(pochiSales);
-
-
-    document.getElementById(
-        "totalExpenses"
-    ).textContent =
-        money(totalExpenses);
-
-
-    document.getElementById(
-        "estimatedProfit"
-    ).textContent =
-        money(estimatedProfit);
-
-
-    document.getElementById(
-        "profitMargin"
-    ).textContent =
-        profitMargin.toFixed(1) +
-        "%";
-
-
-    document.getElementById(
-        "paidOrders"
-    ).textContent =
-        paidOrders.length;
-
-
-
-    /* =================================================
-       CASH POSITION
-    ================================================= */
-
-    const openingBalance =
-        getOpeningBalance();
-
-
-    const expectedCash =
-        openingBalance +
-        cashSales -
-        totalExpenses;
-
-
-    document.getElementById(
-        "openingBalance"
-    ).value =
-        openingBalance;
-
-
-    document.getElementById(
-        "cashPosition"
-    ).textContent =
-        money(cashSales);
-
-
-    document.getElementById(
-        "cashExpenses"
-    ).textContent =
-        money(totalExpenses);
-
-
-    document.getElementById(
-        "expectedCash"
-    ).textContent =
-        money(expectedCash);
-
-
-
-    /* =================================================
-       WORKERS
-    ================================================= */
-
-    const workers =
-        getData(WORKERS)
-            .filter(
-                worker =>
-                    worker.date === today()
-            );
-
-
-    const wagesPaid =
-        workers
-            .filter(
-                worker =>
-                    worker.status === "Paid"
-            )
-            .reduce(
-                (sum, worker) =>
-                    sum +
-                    Number(
-                        worker.wage || 0
-                    ),
-                0
-            );
-
-
-    const wagesPending =
-        workers
-            .filter(
-                worker =>
-                    worker.status === "Pending"
-            )
-            .reduce(
-                (sum, worker) =>
-                    sum +
-                    Number(
-                        worker.wage || 0
-                    ),
-                0
-            );
-
-
-    document.getElementById(
-        "workerCount"
-    ).textContent =
-        workers.length +
-        (
-            workers.length === 1
-                ? " worker"
-                : " workers"
-        );
-
-
-    document.getElementById(
-        "wagesPaid"
-    ).textContent =
-        money(wagesPaid);
-
-
-    document.getElementById(
-        "wagesPending"
-    ).textContent =
-        money(wagesPending);
-
-
-    const workersList =
-        document.getElementById(
-            "workersList"
-        );
-
-
-    workersList.innerHTML = "";
-
-
-    if (!workers.length) {
-
-        workersList.innerHTML = `
-            <p class="text-gray-400 text-sm">
-                No workers recorded today.
-            </p>
-        `;
-
-    } else {
-
-        workers
-            .slice()
-            .reverse()
-            .forEach(worker => {
-
-                const statusClass =
-                    worker.status === "Paid"
-                        ? "text-green-900"
-                        : "text-gray-500";
-
-
-                workersList.innerHTML += `
-
-                    <div class="border-b py-3 flex justify-between">
-
-                        <div>
-
-                            <p>
-                                ${escapeHTML(worker.name)}
-                            </p>
-
-                            <p class="text-xs text-gray-400 mt-1">
-                                ${escapeHTML(worker.status || "")}
-                            </p>
-
-                        </div>
-
-                        <div>
-
-                            ${money(worker.wage)}
-
-                            <span class="text-xs ml-2 ${statusClass}">
-                                ${escapeHTML(worker.status || "")}
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                `;
-
-            });
-
-    }
-
-
-
-    /* =================================================
-       EXPENSE LIST
-    ================================================= */
-
-    const expensesList =
-        document.getElementById(
-            "expensesList"
-        );
-
-
-    expensesList.innerHTML = "";
-
-
-    if (!todaysExpenses.length) {
-
-        expensesList.innerHTML = `
-            <p class="text-gray-400 text-sm">
-                No expenses recorded today.
-            </p>
-        `;
-
-    } else {
-
-        todaysExpenses
-            .slice()
-            .reverse()
-            .forEach(expense => {
-
-                expensesList.innerHTML += `
-
-                    <div class="border-b py-3 flex justify-between">
-
-                        <div>
-
-                            <p>
-                                ${escapeHTML(expense.name)}
-                            </p>
-
-                            <p class="text-xs text-gray-400 mt-1">
-                                ${escapeHTML(expense.time || "")}
-                            </p>
-
-                        </div>
-
-                        <p>
-                            ${money(expense.amount)}
-                        </p>
-
-                    </div>
-
-                `;
-
-            });
-
-    }
-
-
-
-    /* =================================================
-       DEBTS
-    ================================================= */
-
-    const debts =
-        getData(DEBTS);
-
-
-    const pendingDebt =
-        debts
-            .filter(
-                debt =>
-                    debt.status === "Pending"
-            )
-            .reduce(
-                (sum, debt) =>
-                    sum +
-                    Number(
-                        debt.amount || 0
-                    ),
-                0
-            );
-
-
-    const paidDebt =
-        debts
-            .filter(
-                debt =>
-                    debt.status === "Paid"
-            )
-            .reduce(
-                (sum, debt) =>
-                    sum +
-                    Number(
-                        debt.amount || 0
-                    ),
-                0
-            );
-
-
-    document.getElementById(
-        "pendingDebt"
-    ).textContent =
-        money(pendingDebt);
-
-
-    document.getElementById(
-        "paidDebt"
-    ).textContent =
-        money(paidDebt);
-
-
-    const debtsList =
-        document.getElementById(
-            "debtsList"
-        );
-
-
-    debtsList.innerHTML = "";
-
-
-    if (!debts.length) {
-
-        debtsList.innerHTML = `
-            <p class="text-gray-400 text-sm">
-                No debts recorded.
-            </p>
-        `;
-
-    } else {
-
-        debts
-            .slice()
-            .reverse()
-            .forEach(debt => {
-
-                debtsList.innerHTML += `
-
-                    <div class="border-b py-3 flex justify-between">
-
-                        <div>
-
-                            <p>
-                                ${escapeHTML(debt.name)}
-                            </p>
-
-                            <p class="text-xs text-gray-400 mt-1">
-                                ${escapeHTML(debt.reason || "")}
-                            </p>
-
-                        </div>
-
-                        <div class="text-right">
-
-                            <p>
-                                ${money(debt.amount)}
-                            </p>
-
-                            <p class="text-xs mt-1">
-                                ${escapeHTML(debt.status || "")}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                `;
-
-            });
-
-    }
-
-
-
-    /* =================================================
-       PRODUCTION
-       
-       FIXED VERSION
-       
-       This section accepts both:
-       
-       product: "Chapati"
-       
-       and:
-       
-       product: {
-           name: "Chapati"
-       }
-       
-       It prevents [object Object] from
-       appearing in the Admin Dashboard.
-    ================================================= */
-
-
-    const productionData =
-        getData(PRODUCTION);
-
-
-
-    /*
-       Get the real product name.
-    */
-
-    function getProductName(item) {
-
-        if (!item) {
-
-            return "Unknown Product";
-
-        }
-
-
-        /*
-           Standard format:
-           
-           product: "Chapati"
-        */
-
-        if (
-            typeof item.product ===
-            "string"
-        ) {
-
-            return item.product;
-
-        }
-
-
-        /*
-           Product saved as an object.
-        */
-
-        if (
-            item.product &&
-            typeof item.product ===
-            "object"
-        ) {
-
-            return (
-                item.product.name ||
-                item.product.product ||
-                item.product.item ||
-                item.product.title ||
-                item.product.label ||
-                "Unknown Product"
-            );
-
-        }
-
-
-        /*
-           Alternative format:
-           
-           item: "Chapati"
-        */
-
-        if (
-            typeof item.item ===
-            "string"
-        ) {
-
-            return item.item;
-
-        }
-
-
-        /*
-           Item saved as an object.
-        */
-
-        if (
-            item.item &&
-            typeof item.item ===
-            "object"
-        ) {
-
-            return (
-                item.item.name ||
-                item.item.product ||
-                item.item.title ||
-                "Unknown Product"
-            );
-
-        }
-
-
-        return "Unknown Product";
-
-    }
-
-
-
-    /*
-       Today's production.
-    */
-
-    const production =
-        productionData.filter(
-            item =>
-                item.date === today()
-        );
-
-
-
-    /*
-       Total production.
-    */
-
-    const totalProduction =
-        production.reduce(
-            (sum, item) => {
-
-                return sum +
-                    Number(
-                        item.quantity ||
-                        item.qty ||
-                        0
-                    );
-
-            },
-            0
-        );
-
-
-
-    /*
-       Production display.
-    */
-
-    const productionList =
-        document.getElementById(
-            "productionList"
-        );
-
-
-    productionList.innerHTML = "";
-
-
-
-    /*
-       No production.
-    */
-
-    if (!production.length) {
-
-        productionList.innerHTML = `
-            <p class="text-gray-400 text-sm">
-                No production recorded today.
-            </p>
-        `;
-
-    }
-
-
-
-    /*
-       Display production.
-    */
-
-    else {
-
-        production
-            .slice()
-            .reverse()
-            .forEach(item => {
-
-
-                const productName =
-                    getProductName(item);
-
-
-                const quantity =
-                    Number(
-                        item.quantity ||
-                        item.qty ||
-                        0
-                    );
-
-
-                const unit =
-                    item.unit ||
-                    item.units ||
-                    "";
-
-
-                const time =
-                    item.time ||
-                    item.createdAt ||
-                    "";
-
-
-
-                /*
-                   Ingredients may be a string,
-                   array or object.
-                */
-
-                let ingredients =
-                    item.ingredients ||
-                    item.ingredient ||
-                    "";
-
-
-
-                /*
-                   Ingredients stored as array.
-                */
-
-                if (
-                    Array.isArray(
-                        ingredients
-                    )
-                ) {
-
-                    ingredients =
-                        ingredients
-                            .map(
-                                ingredient => {
-
-                                    if (
-                                        typeof ingredient ===
-                                        "string"
-                                    ) {
-
-                                        return ingredient;
-
-                                    }
-
-
-                                    if (
-                                        ingredient &&
-                                        typeof ingredient ===
-                                        "object"
-                                    ) {
-
-                                        return (
-                                            ingredient.name ||
-                                            ingredient.item ||
-                                            ingredient.product ||
-                                            ""
-                                        );
-
-                                    }
-
-
-                                    return "";
-
-                                }
-                            )
-                            .filter(Boolean)
-                            .join(", ");
-
-                }
-
-
-
-                /*
-                   Ingredients stored as object.
-                */
-
-                else if (
-                    ingredients &&
-                    typeof ingredients ===
-                    "object"
-                ) {
-
-                    ingredients =
-                        ingredients.name ||
-                        ingredients.item ||
-                        ingredients.product ||
-                        "";
-
-                }
-
-
-
-                /*
-                   Production row.
-                */
-
-                productionList.innerHTML += `
-
-                    <div class="border-b py-3">
-
-                        <div class="flex justify-between items-start gap-4">
-
-                            <div>
-
-                                <p class="text-gray-800">
-
-                                    ${escapeHTML(
-                                        productName
-                                    )}
-
-                                </p>
-
-                                <p class="text-xs text-gray-400 mt-1">
-
-                                    ${escapeHTML(
-                                        String(time)
-                                    )}
-
-                                </p>
-
-                            </div>
-
-
-                            <p class="text-right whitespace-nowrap">
-
-                                ${quantity}
-
-                                ${escapeHTML(
-                                    String(unit)
-                                )}
-
-                            </p>
-
-                        </div>
-
-
-                        ${
-                            ingredients
-                                ? `
-
-                                    <p class="text-xs text-gray-500 mt-2">
-
-                                        Ingredients:
-                                        ${escapeHTML(
-                                            String(
-                                                ingredients
-                                            )
-                                        )}
-
-                                    </p>
-
-                                  `
-                                : ""
-                        }
-
-                    </div>
-
-                `;
-
-            });
-
-    }
-
-
-
-    /* =================================================
-       WASTAGE
-    ================================================= */
-
-    const wastage =
-        getData(WASTAGE)
-            .filter(
-                item =>
-                    item.date === today()
-            );
-
-
-    const totalWastage =
-        wastage.reduce(
-            (sum, item) =>
-                sum +
-                Number(
-                    item.quantity || 0
-                ),
-            0
-        );
-
-
-    const wastageList =
-        document.getElementById(
-            "wastageList"
-        );
-
-
-    wastageList.innerHTML = "";
-
-
-    if (!wastage.length) {
-
-        wastageList.innerHTML = `
-            <p class="text-gray-400 text-sm">
-                No wastage recorded today.
-            </p>
-        `;
-
-    } else {
-
-        wastage
-            .slice()
-            .reverse()
-            .forEach(item => {
-
-                wastageList.innerHTML += `
-
-                    <div class="border-b py-3 flex justify-between">
-
-                        <div>
-
-                            <p>
-                                ${escapeHTML(item.item)}
-                            </p>
-
-                            <p class="text-xs text-gray-400 mt-1">
-                                ${escapeHTML(
-                                    item.reason ||
-                                    "No reason"
-                                )}
-                            </p>
-
-                        </div>
-
-                        <div>
-
-                            ${Number(
-                                item.quantity || 0
-                            )}
-
-                        </div>
-
-                    </div>
-
-                `;
-
-            });
-
-    }
-
-
-
-    /* =================================================
-       STOCK ALERTS
-    ================================================= */
-
-    const stock =
-        getData(STOCK);
-
-
-    const stockBalances = {};
-
-
-
-    stock.forEach(item => {
-
-        const itemName =
-            typeof item.item === "string"
-                ? item.item
-                : (
-                    item.item?.name ||
-                    item.product?.name ||
-                    item.product ||
-                    "Unknown Item"
-                );
-
-
-        if (!stockBalances[itemName]) {
-
-            stockBalances[itemName] = {
-
-                quantity: 0,
-
-                unit:
-                    item.unit || ""
-
-            };
-
-        }
-
-
-        stockBalances[itemName].quantity +=
-            Number(
-                item.quantity || 0
-            );
-
-    });
-
-
-
-    wastage.forEach(item => {
-
-        const itemName =
-            typeof item.item === "string"
-                ? item.item
-                : (
-                    item.item?.name ||
-                    item.product?.name ||
-                    item.product ||
-                    "Unknown Item"
-                );
-
-
-        if (!stockBalances[itemName]) {
-
-            stockBalances[itemName] = {
-
-                quantity: 0,
-
-                unit:
-                    item.unit || ""
-
-            };
-
-        }
-
-
-        stockBalances[itemName].quantity -=
-            Number(
-                item.quantity || 0
-            );
-
-    });
-
-
-
-    const alerts =
-        Object.entries(
-            stockBalances
-        )
-        .filter(
-            ([item, data]) =>
-                data.quantity < 3
-        );
-
-
-
-    const stockAlerts =
-        document.getElementById(
-            "stockAlerts"
-        );
-
-
-    stockAlerts.innerHTML = "";
-
-
-
-    if (!alerts.length) {
-
-        stockAlerts.innerHTML = `
-            <p class="text-gray-400 text-sm">
-                No low-stock items.
-            </p>
-        `;
-
-    } else {
-
-        alerts.forEach(
-            ([item, data]) => {
-
-                const quantity =
-                    Math.max(
-                        0,
-                        data.quantity
-                    );
-
-
-                const status =
-                    quantity <= 0
-                        ? "OUT OF STOCK"
-                        : "LOW STOCK";
-
-
-                stockAlerts.innerHTML += `
-
-                    <div class="border-b py-3 flex justify-between">
-
-                        <div>
-
-                            <p>
-                                ${escapeHTML(item)}
-                            </p>
-
-                            <p class="text-xs text-gray-400 mt-1">
-                                ${status}
-                            </p>
-
-                        </div>
-
-                        <p>
-
-                            ${quantity}
-
-                            ${escapeHTML(
-                                data.unit
-                            )}
-
-                        </p>
-
-                    </div>
-
-                `;
-
-            }
-        );
-
-    }
-
-
-
-    /* =================================================
-       PERFORMANCE
-    ================================================= */
-
-    document.getElementById(
-        "performanceSales"
-    ).textContent =
-        money(totalSales);
-
-
-    document.getElementById(
-        "performanceExpenses"
-    ).textContent =
-        money(totalExpenses);
-
-
-    document.getElementById(
-        "performanceProfit"
-    ).textContent =
-        money(estimatedProfit);
-
-
-    document.getElementById(
-        "performanceMargin"
-    ).textContent =
-        profitMargin.toFixed(1) +
-        "%";
-
-
-    document.getElementById(
-        "performanceProduction"
-    ).textContent =
-        totalProduction;
-
-
-    document.getElementById(
-        "performanceWastage"
-    ).textContent =
-        totalWastage;
-
-
-
-    /* =================================================
-       PERFORMANCE MESSAGE
-    ================================================= */
-
-    const message =
-        document.getElementById(
-            "performanceMessage"
-        );
-
-
-    if (totalSales === 0) {
-
-        message.innerHTML = `
-
-            <span class="text-gray-500">
-
-                No sales have been recorded yet today.
-
-            </span>
-
-        `;
-
-    }
-
-
-    else if (
-        estimatedProfit < 0
-    ) {
-
-        message.innerHTML = `
-
-            <span>
-
-                Today's recorded expenses are higher
-                than today's sales. The business is
-                currently showing a loss based on the
-                simple sales-minus-expenses calculation.
-
-            </span>
-
-        `;
-
-    }
-
-
-    else if (
-        profitMargin < 10
-    ) {
-
-        message.innerHTML = `
-
-            <span>
-
-                Sales are currently above expenses,
-                but the estimated profit margin is low.
-                Review expenses and food production costs.
-
-            </span>
-
-        `;
-
-    }
-
-
-    else {
-
-        message.innerHTML = `
-
-            <span>
-
-                Today's recorded sales are currently
-                above recorded expenses.
-                Estimated profit is
-
-                ${money(
-                    estimatedProfit
-                )}
-
-                with a
-
-                ${profitMargin.toFixed(1)}%
-
-                margin.
-
-            </span>
-
-        `;
-
-    }
-
-}
-
-
-
-/* ================= START ================= */
-
+const firebaseConfig={
+apiKey:"AIzaSyAZn1AMnp1jr2VdztRpqRg-nrle2lflt8s",
+authDomain:"serene-eatery.firebaseapp.com",
+projectId:"serene-eatery",
+storageBucket:"serene-eatery.firebasestorage.app",
+messagingSenderId:"743500466630",
+appId:"1:743500466630:web:85e2fdebd776e47d9ccac7",
+measurementId:"G-T94HN3RMZX"
+};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+
+const C={orders:"orders",production:"production",expenses:"expenses",workers:"workers",debts:"debts",balances:"dailyBalances",stock:"stock",wastage:"wastage"};
+const K={orders:"serene_orders",production:"serene_production",expenses:"serene_expenses",workers:"serene_workers",debts:"serene_debts",balances:"serene_daily_balances",stock:"serene_stock",wastage:"serene_wastage"};
+let data={orders:[],production:[],expenses:[],workers:[],debts:[],balances:[],stock:[],wastage:[]};
+
+function localRead(k){try{const x=JSON.parse(localStorage.getItem(k)||"[]");return Array.isArray(x)?x:[]}catch{return[]}}
+function localWrite(k,x){try{localStorage.setItem(k,JSON.stringify(x))}catch{}}
+function money(x){return"Ksh "+Number(x||0).toLocaleString()}
+function esc(x){const d=document.createElement("div");d.textContent=x??"";return d.innerHTML}
+function id(){return Date.now()+"-"+Math.random().toString(36).slice(2,9)}
+function date(){return new Date().toLocaleDateString()}
+function time(){return new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}
+function key(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function today(x){return String(x?.date||"")===date()||String(x?.dateKey||"")===key()}
+function n(x){return Number(x||0)}
+function lower(x){return String(x||"").toLowerCase()}
+
+async function setDoc(col,record){await db.collection(col).doc(String(record.id)).set(record,{merge:true})}
+async function deleteDoc(col,recordId){await db.collection(col).doc(String(recordId)).delete()}
+
+function listen(keyName,col){
+db.collection(col).onSnapshot(s=>{
+data[keyName]=s.docs.map(d=>({...d.data(),id:d.id}));
+localWrite(K[keyName],data[keyName]);
 render();
+},e=>{console.error(col,e);data[keyName]=localRead(K[keyName]);render()})
+}
 
+async function migrate(keyName){
+try{
+const s=await db.collection(C[keyName]).limit(1).get();
+if(!s.empty)return;
+const old=localRead(K[keyName]).filter(x=>x&&x.id);
+if(!old.length)return;
+const b=db.batch();
+old.forEach(x=>b.set(db.collection(C[keyName]).doc(String(x.id)),x,{merge:true}));
+await b.commit();
+}catch(e){console.error("Migration",keyName,e)}
+}
 
+function startFirebase(){
+Object.keys(C).forEach(k=>listen(k,C[k]));
+Object.keys(C).filter(k=>k!=="orders"&&k!=="production").forEach(migrate);
+document.getElementById("firebaseStatus").textContent="Firebase connected • Live data";
+}
 
-/*
-   Refresh automatically so the Admin Dashboard
-   sees changes from waiter, cashier and stock.
-*/
+function balance(){
+return data.balances.find(x=>x.dateKey===key()||x.date===date())
+}
 
-setInterval(
-    render,
-    1500
-);
+async function saveOpeningBalance(){
+const amount=Number(document.getElementById("openingBalance").value);
+if(!Number.isFinite(amount)||amount<0){alert("Opening balance cannot be negative.");return}
+const old=balance();
+await setDoc(C.balances,{id:old?.id||"balance-"+key(),date:date(),dateKey:key(),openingBalance:amount,updatedAt:new Date().toISOString()});
+}
 
+function paidOrders(){return data.orders.filter(x=>lower(x.status)==="paid"||lower(x.paymentStatus)==="paid")}
+function expensesToday(){return data.expenses.filter(today)}
 
+function renderFinancial(){
+const paid=paidOrders();
+const sales=paid.reduce((s,x)=>s+n(x.total),0);
+const cash=paid.filter(x=>lower(x.paymentMethod)==="cash").reduce((s,x)=>s+n(x.total),0);
+const pochi=paid.filter(x=>lower(x.paymentMethod)==="pochi").reduce((s,x)=>s+n(x.total),0);
+const expenses=expensesToday().reduce((s,x)=>s+n(x.amount),0);
+const profit=sales-expenses;
+const margin=sales?(profit/sales)*100:0;
+document.getElementById("totalSales").textContent=money(sales);
+document.getElementById("cashSales").textContent=money(cash);
+document.getElementById("pochiSales").textContent=money(pochi);
+document.getElementById("totalExpenses").textContent=money(expenses);
+document.getElementById("estimatedProfit").textContent=money(profit);
+document.getElementById("profitMargin").textContent=margin.toFixed(1)+"%";
+document.getElementById("paidOrders").textContent=paid.length;
+const b=balance(),opening=n(b?.openingBalance),expected=opening+cash-expenses;
+document.getElementById("openingBalance").value=b?opening:"";
+document.getElementById("cashPosition").textContent=money(cash);
+document.getElementById("cashExpenses").textContent=money(expenses);
+document.getElementById("expectedCash").textContent=money(expected);
+return{sales,cash,pochi,expenses,profit,margin}
+}
+
+function renderWorkers(){
+const list=data.workers.filter(today),box=document.getElementById("workersList");
+let paid=0,pending=0;
+list.forEach(x=>lower(x.status)==="paid"?paid+=n(x.wage):pending+=n(x.wage));
+document.getElementById("workerCount").textContent=list.length+" "+(list.length===1?"worker":"workers");
+document.getElementById("wagesPaid").textContent=money(paid);
+document.getElementById("wagesPending").textContent=money(pending);
+box.innerHTML=list.length?list.slice().reverse().map(x=>`
+<div class="border-b py-3 flex justify-between"><div><p>${esc(x.name)}</p><p class="text-xs text-gray-400 mt-1">${esc(x.status||"Pending")}</p></div>
+<div class="text-right"><p>${money(x.wage)}</p><p class="text-xs mt-1">${lower(x.status)==="paid"?"Paid":"Pending"}</p></div></div>`).join(""):`<p class="text-gray-400 text-sm">No workers recorded today.</p>`;
+}
+
+function renderExpenses(){
+const list=expensesToday(),box=document.getElementById("expensesList");
+box.innerHTML=list.length?list.slice().reverse().map(x=>`
+<div class="border-b py-3 flex justify-between"><div><p>${esc(x.description||x.name||"")}</p>
+<p class="text-xs text-gray-400 mt-1">${esc(x.date||"")} ${x.time?" · "+esc(x.time):""}</p></div><p>${money(x.amount)}</p></div>`).join(""):`<p class="text-gray-400 text-sm">No expenses recorded today.</p>`;
+}
+
+function renderDebts(){
+const p=data.debts.filter(x=>lower(x.status)==="pending").reduce((s,x)=>s+n(x.amount),0);
+const paid=data.debts.filter(x=>lower(x.status)==="paid").reduce((s,x)=>s+n(x.amount),0);
+document.getElementById("pendingDebt").textContent=money(p);
+document.getElementById("paidDebt").textContent=money(paid);
+const box=document.getElementById("debtsList");
+box.innerHTML=data.debts.length?data.debts.slice().sort((a,b)=>String(b.createdAt||"").localeCompare(String(a.createdAt||""))).map(x=>`
+<div class="border-b py-3 flex justify-between"><div><p>${esc(x.name||x.description||"")}</p>
+<p class="text-xs text-gray-400 mt-1">${esc(x.date||"")} ${x.time?" · "+esc(x.time):""}</p></div>
+<div class="text-right"><p>${money(x.amount)}</p><p class="text-xs mt-1">${esc(x.status||"")}</p></div></div>`).join(""):`<p class="text-gray-400 text-sm">No debts recorded.</p>`;
+}
+
+function pname(x){
+if(typeof x?.product==="string")return x.product;
+if(x?.product&&typeof x.product==="object")return x.product.name||x.product.product||x.product.item||"Unknown Product";
+if(typeof x?.item==="string")return x.item;
+if(x?.item&&typeof x.item==="object")return x.item.name||x.item.product||"Unknown Product";
+return x?.name||"Unknown Product";
+}
+
+function renderProduction(){
+const list=data.production.filter(today),box=document.getElementById("productionList");
+let total=0;
+list.forEach(x=>total+=n(x.quantity??x.qty??x.produced??x.amount));
+box.innerHTML=list.length?list.slice().reverse().map(x=>`
+<div class="border-b py-3 flex justify-between gap-4"><div><p>${esc(pname(x))}</p><p class="text-xs text-gray-400 mt-1">${esc(x.time||"")}</p></div>
+<p>${n(x.quantity??x.qty??x.produced??x.amount)} ${esc(x.unit||x.units||"")}</p></div>`).join(""):`<p class="text-gray-400 text-sm">No production recorded today.</p>`;
+return total;
+}
+
+function renderWastage(){
+const list=data.wastage.filter(today),box=document.getElementById("wastageList");
+const total=list.reduce((s,x)=>s+n(x.quantity),0);
+box.innerHTML=list.length?list.slice().reverse().map(x=>`
+<div class="border-b py-3 flex justify-between"><div><p>${esc(x.item||x.product||"")}</p><p class="text-xs text-gray-400 mt-1">${esc(x.reason||"No reason")}</p></div><p>${n(x.quantity)}</p></div>`).join(""):`<p class="text-gray-400 text-sm">No wastage recorded today.</p>`;
+return total;
+}
+
+function renderAlerts(){
+const b={};
+data.stock.forEach(x=>{
+const name=typeof x.item==="string"?x.item:x.item?.name||x.product?.name||x.product||"Unknown Item";
+if(!b[name])b[name]={quantity:0,unit:x.unit||""};
+b[name].quantity+=n(x.quantity);
+});
+data.wastage.forEach(x=>{
+const name=typeof x.item==="string"?x.item:x.item?.name||x.product?.name||x.product||"Unknown Item";
+if(!b[name])b[name]={quantity:0,unit:x.unit||""};
+b[name].quantity-=n(x.quantity);
+});
+const a=Object.entries(b).filter(([,x])=>x.quantity<3),box=document.getElementById("stockAlerts");
+box.innerHTML=a.length?a.map(([name,x])=>{const q=Math.max(0,x.quantity);return`
+<div class="border-b py-3 flex justify-between"><div><p>${esc(name)}</p><p class="text-xs text-gray-400 mt-1">${q<=0?"OUT OF STOCK":"LOW STOCK"}</p></div><p>${q} ${esc(x.unit)}</p></div>`}).join(""):`<p class="text-gray-400 text-sm">No low-stock items.</p>`;
+}
+
+function render(){
+const s=renderFinancial(),p=renderProduction(),w=renderWastage();
+renderWorkers();renderExpenses();renderDebts();renderAlerts();
+document.getElementById("performanceSales").textContent=money(s.sales);
+document.getElementById("performanceExpenses").textContent=money(s.expenses);
+document.getElementById("performanceProfit").textContent=money(s.profit);
+document.getElementById("performanceMargin").textContent=s.margin.toFixed(1)+"%";
+document.getElementById("performanceProduction").textContent=p;
+document.getElementById("performanceWastage").textContent=w;
+document.getElementById("performanceMessage").textContent=s.sales===0?"No sales have been recorded yet today.":`Today's recorded sales are above expenses. Estimated profit is ${money(s.profit)} with a ${s.margin.toFixed(1)}% margin.`;
+}
+
+document.getElementById("currentDate").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+
+document.querySelectorAll(".mobile-section-header").forEach(h=>h.addEventListener("click",()=>{
+if(innerWidth>767)return;
+h.classList.toggle("open");
+document.getElementById(h.dataset.section).classList.toggle("open");
+}));
+
+Object.keys(data).forEach(k=>data[k]=localRead(K[k]));
+render();startFirebase();
 </script>
-
 </body>
 </html>
