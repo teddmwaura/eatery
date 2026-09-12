@@ -1,291 +1,2577 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Admin Dashboard | Serene Eatery</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
+
 <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore-compat.js"></script>
+
 <style>
-*{font-family:Arial,Helvetica,sans-serif;font-weight:400!important}
-html{scroll-behavior:smooth}
-button,a,input{cursor:pointer}
-@media(max-width:767px){
-.mobile-section-header{cursor:pointer;user-select:none}
-.mobile-section-header:after{content:"＋";float:right;font-size:18px}
-.mobile-section-header.open:after{content:"−"}
-.mobile-section-content{display:none}
-.mobile-section-content.open{display:block}
+
+*{
+    font-family:Arial,Helvetica,sans-serif;
+    font-weight:400!important
 }
+
+html{
+    scroll-behavior:smooth
+}
+
+button,a,input{
+    cursor:pointer
+}
+
+@media(max-width:767px){
+
+    .mobile-section-header{
+        cursor:pointer;
+        user-select:none
+    }
+
+    .mobile-section-header:after{
+        content:"＋";
+        float:right;
+        font-size:18px
+    }
+
+    .mobile-section-header.open:after{
+        content:"−"
+    }
+
+    .mobile-section-content{
+        display:none
+    }
+
+    .mobile-section-content.open{
+        display:block
+    }
+
+}
+
 </style>
+
 </head>
+
 <body class="bg-gray-100 text-gray-800">
 
 <header class="fixed top-0 left-0 w-full bg-white border-b border-gray-200 z-50">
+
 <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-<a href="index.html" class="text-xl text-green-900">Serene Eatery</a>
+
+<a href="index.html" class="text-xl text-green-900">
+Serene Eatery
+</a>
+
 <div class="hidden md:flex gap-6 text-sm">
-<a href="waiter.html">Waiter</a><a href="cashier.html">Cashier</a>
-<a href="stock.html">Stock</a><a href="receipts.html">Receipts</a>
+
+<a href="waiter.html">Waiter</a>
+
+<a href="cashier.html">Cashier</a>
+
+<a href="stock.html">Stock</a>
+
+<a href="receipts.html">Receipts</a>
+
 <a href="admin.html" class="text-green-900">Admin</a>
-</div></nav></header>
+
+</div>
+
+</nav>
+
+</header>
+
 
 <main class="max-w-7xl mx-auto px-6 pt-28 pb-16">
+
+<!-- HEADER -->
+
 <div class="mb-8">
-<p class="text-xs tracking-widest text-green-900">SERENE EATERY</p>
-<h1 class="text-3xl text-black mt-2">Admin Dashboard</h1>
-<p class="text-gray-500 mt-2">Daily business performance and operations.</p>
-<p class="text-xs text-gray-400 mt-2"><span id="currentDate"></span></p>
-<p id="firebaseStatus" class="text-xs text-green-800 mt-2">Connecting to Firebase...</p>
+
+<p class="text-xs tracking-widest text-green-900">
+SERENE EATERY
+</p>
+
+<h1 class="text-3xl text-black mt-2">
+Admin Dashboard
+</h1>
+
+<p class="text-gray-500 mt-2">
+Daily business performance and operations.
+</p>
+
+<p class="text-xs text-gray-400 mt-2">
+<span id="currentDate"></span>
+</p>
+
+<p id="firebaseStatus" class="text-xs text-green-800 mt-2">
+Connecting to Firebase...
+</p>
+
 </div>
 
-<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
-<div class="bg-white border p-5"><p class="text-xs text-gray-400">TOTAL SALES</p><p id="totalSales" class="text-xl mt-3">Ksh 0</p></div>
-<div class="bg-white border p-5"><p class="text-xs text-gray-400">CASH SALES</p><p id="cashSales" class="text-xl mt-3">Ksh 0</p></div>
-<div class="bg-white border p-5"><p class="text-xs text-gray-400">POCHI</p><p id="pochiSales" class="text-xl mt-3">Ksh 0</p></div>
-<div class="bg-white border p-5"><p class="text-xs text-gray-400">EXPENSES</p><p id="totalExpenses" class="text-xl mt-3">Ksh 0</p></div>
-<div class="bg-white border p-5"><p class="text-xs text-gray-400">EST. PROFIT</p><p id="estimatedProfit" class="text-xl text-green-900 mt-3">Ksh 0</p></div>
-<div class="bg-white border p-5"><p class="text-xs text-gray-400">PROFIT MARGIN</p><p id="profitMargin" class="text-xl mt-3">0%</p></div>
-<div class="bg-white border p-5"><p class="text-xs text-gray-400">PAID ORDERS</p><p id="paidOrders" class="text-xl mt-3">0</p></div>
-</div>
+
+<!-- DATE FILTER -->
 
 <section class="bg-white border p-6 mb-6">
-<div class="mobile-section-header" data-section="cashContent">
-<h2 class="text-xl">Daily Cash Position</h2><p class="text-sm text-gray-400 mt-1">Cash received and recorded expenses.</p></div>
+
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+
+<div>
+
+<p class="text-xs tracking-widest text-green-900">
+BUSINESS DATE
+</p>
+
+<h2 class="text-xl mt-2">
+Viewing Records For
+</h2>
+
+<p id="selectedDateLabel" class="text-sm text-gray-500 mt-1">
+Today
+</p>
+
+</div>
+
+
+<div>
+
+<label for="businessDate" class="block text-xs text-gray-400 mb-2">
+SELECT DATE
+</label>
+
+<input
+    id="businessDate"
+    type="date"
+    class="border border-gray-300 px-4 py-3 bg-white w-full md:w-auto"
+/>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- SUMMARY -->
+
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
+
+<div class="bg-white border p-5">
+
+<p class="text-xs text-gray-400">
+TOTAL SALES
+</p>
+
+<p id="totalSales" class="text-xl mt-3">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="bg-white border p-5">
+
+<p class="text-xs text-gray-400">
+CASH SALES
+</p>
+
+<p id="cashSales" class="text-xl mt-3">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="bg-white border p-5">
+
+<p class="text-xs text-gray-400">
+POCHI
+</p>
+
+<p id="pochiSales" class="text-xl mt-3">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="bg-white border p-5">
+
+<p class="text-xs text-gray-400">
+EXPENSES
+</p>
+
+<p id="totalExpenses" class="text-xl mt-3">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="bg-white border p-5">
+
+<p class="text-xs text-gray-400">
+EST. PROFIT
+</p>
+
+<p id="estimatedProfit" class="text-xl text-green-900 mt-3">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="bg-white border p-5">
+
+<p class="text-xs text-gray-400">
+PROFIT MARGIN
+</p>
+
+<p id="profitMargin" class="text-xl mt-3">
+0%
+</p>
+
+</div>
+
+
+<div class="bg-white border p-5">
+
+<p class="text-xs text-gray-400">
+PAID ORDERS
+</p>
+
+<p id="paidOrders" class="text-xl mt-3">
+0
+</p>
+
+</div>
+
+</div>
+
+
+<!-- DAILY CASH -->
+
+<section class="bg-white border p-6 mb-6">
+
+<div
+    class="mobile-section-header"
+    data-section="cashContent"
+>
+
+<h2 class="text-xl">
+Daily Cash Position
+</h2>
+
+<p class="text-sm text-gray-400 mt-1">
+Cash received and recorded expenses for the selected date.
+</p>
+
+</div>
+
+
 <div id="cashContent" class="mobile-section-content">
+
 <div class="grid md:grid-cols-4 gap-4 mt-6">
-<div class="border p-5"><p class="text-xs text-gray-400">OPENING BALANCE</p>
-<div class="flex gap-2 mt-3"><input id="openingBalance" type="number" min="0" class="w-full border p-2"><button onclick="saveOpeningBalance()" class="bg-black text-white px-4">Save</button></div></div>
-<div class="border p-5"><p class="text-xs text-gray-400">CASH SALES</p><p id="cashPosition" class="text-2xl mt-3">Ksh 0</p></div>
-<div class="border p-5"><p class="text-xs text-gray-400">CASH EXPENSES</p><p id="cashExpenses" class="text-2xl mt-3">Ksh 0</p></div>
-<div class="border p-5"><p class="text-xs text-gray-400">EXPECTED CASH</p><p id="expectedCash" class="text-2xl text-green-900 mt-3">Ksh 0</p></div>
-</div></div></section>
+
+
+<div class="border p-5">
+
+<p class="text-xs text-gray-400">
+OPENING BALANCE
+</p>
+
+<div class="flex gap-2 mt-3">
+
+<input
+    id="openingBalance"
+    type="number"
+    min="0"
+    class="w-full border p-2"
+>
+
+<button
+    onclick="saveOpeningBalance()"
+    class="bg-black text-white px-4"
+>
+Save
+</button>
+
+</div>
+
+</div>
+
+
+<div class="border p-5">
+
+<p class="text-xs text-gray-400">
+CASH SALES
+</p>
+
+<p id="cashPosition" class="text-2xl mt-3">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="border p-5">
+
+<p class="text-xs text-gray-400">
+CASH EXPENSES
+</p>
+
+<p id="cashExpenses" class="text-2xl mt-3">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="border p-5">
+
+<p class="text-xs text-gray-400">
+EXPECTED CASH
+</p>
+
+<p id="expectedCash" class="text-2xl text-green-900 mt-3">
+Ksh 0
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
 
 <div class="grid lg:grid-cols-2 gap-6">
 
-<section class="bg-white border p-6"><div class="mobile-section-header" data-section="workersContent">
-<div class="flex justify-between mb-5"><div><h2 class="text-xl">Workers Today</h2><p class="text-sm text-gray-400 mt-1">Wages and payment status.</p></div><span id="workerCount" class="text-sm text-gray-500">0 workers</span></div></div>
-<div id="workersContent" class="mobile-section-content"><div class="grid grid-cols-2 gap-3 mb-5">
-<div class="border p-4"><p class="text-xs text-gray-400">WAGES PAID</p><p id="wagesPaid" class="text-lg mt-2">Ksh 0</p></div>
-<div class="border p-4"><p class="text-xs text-gray-400">WAGES PENDING</p><p id="wagesPending" class="text-lg mt-2">Ksh 0</p></div></div><div id="workersList"></div></div></section>
 
-<section class="bg-white border p-6"><div class="mobile-section-header" data-section="expensesContent"><h2 class="text-xl mb-5">Today's Expenses</h2></div><div id="expensesContent" class="mobile-section-content"><div id="expensesList"></div></div></section>
+<!-- WORKERS -->
 
-<section class="bg-white border p-6"><div class="mobile-section-header" data-section="debtsContent"><h2 class="text-xl">Customer Debts</h2><p class="text-sm text-gray-400 mt-1">Outstanding and paid debts.</p></div>
-<div id="debtsContent" class="mobile-section-content"><div class="grid grid-cols-2 gap-3 my-5">
-<div class="border p-4"><p class="text-xs text-gray-400">PENDING</p><p id="pendingDebt" class="text-lg mt-2">Ksh 0</p></div>
-<div class="border p-4"><p class="text-xs text-gray-400">PAID</p><p id="paidDebt" class="text-lg mt-2">Ksh 0</p></div></div><div id="debtsList"></div></div></section>
+<section class="bg-white border p-6">
 
-<section class="bg-white border p-6"><div class="mobile-section-header" data-section="productionContent"><h2 class="text-xl">Today's Production</h2><p class="text-sm text-gray-400 mt-1">Food produced by the kitchen.</p></div><div id="productionContent" class="mobile-section-content"><div id="productionList"></div></div></section>
+<div
+    class="mobile-section-header"
+    data-section="workersContent"
+>
 
-<section class="bg-white border p-6"><div class="mobile-section-header" data-section="wastageContent"><h2 class="text-xl">Today's Wastage</h2></div><div id="wastageContent" class="mobile-section-content"><div id="wastageList"></div></div></section>
+<div class="flex justify-between mb-5">
 
-<section class="bg-white border p-6"><div class="mobile-section-header" data-section="stockAlertsContent"><h2 class="text-xl">Stock Alerts</h2><p class="text-sm text-gray-400 mt-1">Products that are running low or finished.</p></div><div id="stockAlertsContent" class="mobile-section-content"><div id="stockAlerts"></div></div></section>
+<div>
+
+<h2 class="text-xl">
+Workers
+</h2>
+
+<p class="text-sm text-gray-400 mt-1">
+Wages and payment status for the selected date.
+</p>
+
 </div>
 
-<section class="bg-white border p-6 mt-6"><div class="mobile-section-header" data-section="performanceContent"><h2 class="text-xl">Daily Performance</h2><p class="text-sm text-gray-400 mt-1 mb-6">Quick overview of how Serene Eatery performed today.</p></div>
-<div id="performanceContent" class="mobile-section-content"><div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-<div class="border p-5"><p class="text-xs text-gray-400">SALES</p><p id="performanceSales" class="text-xl mt-3">Ksh 0</p></div>
-<div class="border p-5"><p class="text-xs text-gray-400">EXPENSES</p><p id="performanceExpenses" class="text-xl mt-3">Ksh 0</p></div>
-<div class="border p-5"><p class="text-xs text-gray-400">PROFIT</p><p id="performanceProfit" class="text-xl text-green-900 mt-3">Ksh 0</p></div>
-<div class="border p-5"><p class="text-xs text-gray-400">MARGIN</p><p id="performanceMargin" class="text-xl mt-3">0%</p></div>
-<div class="border p-5"><p class="text-xs text-gray-400">PRODUCTION</p><p id="performanceProduction" class="text-xl mt-3">0</p></div>
-<div class="border p-5"><p class="text-xs text-gray-400">WASTAGE</p><p id="performanceWastage" class="text-xl mt-3">0</p></div>
-</div><div id="performanceMessage" class="border mt-6 p-5 text-sm"></div></div></section>
+<span
+    id="workerCount"
+    class="text-sm text-gray-500"
+>
+0 workers
+</span>
+
+</div>
+
+</div>
+
+
+<div id="workersContent" class="mobile-section-content">
+
+<div class="grid grid-cols-2 gap-3 mb-5">
+
+
+<div class="border p-4">
+
+<p class="text-xs text-gray-400">
+WAGES PAID
+</p>
+
+<p id="wagesPaid" class="text-lg mt-2">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="border p-4">
+
+<p class="text-xs text-gray-400">
+WAGES PENDING
+</p>
+
+<p id="wagesPending" class="text-lg mt-2">
+Ksh 0
+</p>
+
+</div>
+
+</div>
+
+
+<div id="workersList"></div>
+
+</div>
+
+</section>
+
+
+<!-- EXPENSES -->
+
+<section class="bg-white border p-6">
+
+<div
+    class="mobile-section-header"
+    data-section="expensesContent"
+>
+
+<h2 class="text-xl mb-2">
+Expenses
+</h2>
+
+<p class="text-sm text-gray-400">
+Expenses recorded for the selected date.
+</p>
+
+</div>
+
+
+<div id="expensesContent" class="mobile-section-content">
+
+<div id="expensesList"></div>
+
+</div>
+
+</section>
+
+
+<!-- CUSTOMER DEBTS -->
+
+<section class="bg-white border p-6">
+
+<div
+    class="mobile-section-header"
+    data-section="debtsContent"
+>
+
+<h2 class="text-xl">
+Customer Debts
+</h2>
+
+<p class="text-sm text-gray-400 mt-1">
+Outstanding and paid debts for the selected date.
+</p>
+
+</div>
+
+
+<div id="debtsContent" class="mobile-section-content">
+
+
+<div class="grid grid-cols-2 gap-3 my-5">
+
+
+<div class="border p-4">
+
+<p class="text-xs text-gray-400">
+PENDING
+</p>
+
+<p id="pendingDebt" class="text-lg mt-2">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="border p-4">
+
+<p class="text-xs text-gray-400">
+PAID
+</p>
+
+<p id="paidDebt" class="text-lg mt-2">
+Ksh 0
+</p>
+
+</div>
+
+</div>
+
+
+<div id="debtsList"></div>
+
+</div>
+
+</section>
+
+
+<!-- PRODUCTION -->
+
+<section class="bg-white border p-6">
+
+<div
+    class="mobile-section-header"
+    data-section="productionContent"
+>
+
+<h2 class="text-xl">
+Production
+</h2>
+
+<p class="text-sm text-gray-400 mt-1">
+Food produced on the selected date.
+</p>
+
+</div>
+
+
+<div id="productionContent" class="mobile-section-content">
+
+<div id="productionList"></div>
+
+</div>
+
+</section>
+
+
+<!-- WASTAGE -->
+
+<section class="bg-white border p-6">
+
+<div
+    class="mobile-section-header"
+    data-section="wastageContent"
+>
+
+<h2 class="text-xl">
+Wastage
+</h2>
+
+<p class="text-sm text-gray-400 mt-1">
+Wastage recorded for the selected date.
+</p>
+
+</div>
+
+
+<div id="wastageContent" class="mobile-section-content">
+
+<div id="wastageList"></div>
+
+</div>
+
+</section>
+
+
+<!-- STOCK ALERTS -->
+
+<section class="bg-white border p-6">
+
+<div
+    class="mobile-section-header"
+    data-section="stockAlertsContent"
+>
+
+<h2 class="text-xl">
+Stock Alerts
+</h2>
+
+<p class="text-sm text-gray-400 mt-1">
+Products that are running low or finished.
+</p>
+
+</div>
+
+
+<div id="stockAlertsContent" class="mobile-section-content">
+
+<div id="stockAlerts"></div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- DAILY PERFORMANCE -->
+
+<section class="bg-white border p-6 mt-6">
+
+<div
+    class="mobile-section-header"
+    data-section="performanceContent"
+>
+
+<h2 class="text-xl">
+Daily Performance
+</h2>
+
+<p class="text-sm text-gray-400 mt-1 mb-6">
+Performance for the selected date.
+</p>
+
+</div>
+
+
+<div id="performanceContent" class="mobile-section-content">
+
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+
+
+<div class="border p-5">
+
+<p class="text-xs text-gray-400">
+SALES
+</p>
+
+<p id="performanceSales" class="text-xl mt-3">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="border p-5">
+
+<p class="text-xs text-gray-400">
+EXPENSES
+</p>
+
+<p id="performanceExpenses" class="text-xl mt-3">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="border p-5">
+
+<p class="text-xs text-gray-400">
+PROFIT
+</p>
+
+<p id="performanceProfit" class="text-xl text-green-900 mt-3">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="border p-5">
+
+<p class="text-xs text-gray-400">
+MARGIN
+</p>
+
+<p id="performanceMargin" class="text-xl mt-3">
+0%
+</p>
+
+</div>
+
+
+<div class="border p-5">
+
+<p class="text-xs text-gray-400">
+PRODUCTION
+</p>
+
+<p id="performanceProduction" class="text-xl mt-3">
+0
+</p>
+
+</div>
+
+
+<div class="border p-5">
+
+<p class="text-xs text-gray-400">
+WASTAGE
+</p>
+
+<p id="performanceWastage" class="text-xl mt-3">
+0
+</p>
+
+</div>
+
+</div>
+
+
+<div
+    id="performanceMessage"
+    class="border mt-6 p-5 text-sm"
+></div>
+
+</div>
+
+</section>
+
 </main>
 
+
 <script>
-const firebaseConfig={
-apiKey:"AIzaSyAZn1AMnp1jr2VdztRpqRg-nrle2lflt8s",
-authDomain:"serene-eatery.firebaseapp.com",
-projectId:"serene-eatery",
-storageBucket:"serene-eatery.firebasestorage.app",
-messagingSenderId:"743500466630",
-appId:"1:743500466630:web:85e2fdebd776e47d9ccac7",
-measurementId:"G-T94HN3RMZX"
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+const firebaseConfig = {
+
+    apiKey:"AIzaSyAZn1AMnp1jr2VdztRpqRg-nrle2lflt8s",
+
+    authDomain:"serene-eatery.firebaseapp.com",
+
+    projectId:"serene-eatery",
+
+    storageBucket:"serene-eatery.firebasestorage.app",
+
+    messagingSenderId:"743500466630",
+
+    appId:"1:743500466630:web:85e2fdebd776e47d9ccac7",
+
+    measurementId:"G-T94HN3RMZX"
+
 };
-if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-const db=firebase.firestore();
 
-const C={orders:"orders",production:"production",expenses:"expenses",workers:"workers",debts:"debts",balances:"dailyBalances",stock:"stock",wastage:"wastage"};
-const K={orders:"serene_orders",production:"serene_production",expenses:"serene_expenses",workers:"serene_workers",debts:"serene_debts",balances:"serene_daily_balances",stock:"serene_stock",wastage:"serene_wastage"};
-let data={orders:[],production:[],expenses:[],workers:[],debts:[],balances:[],stock:[],wastage:[]};
 
-function localRead(k){try{const x=JSON.parse(localStorage.getItem(k)||"[]");return Array.isArray(x)?x:[]}catch{return[]}}
-function localWrite(k,x){try{localStorage.setItem(k,JSON.stringify(x))}catch{}}
-function money(x){return"Ksh "+Number(x||0).toLocaleString()}
-function esc(x){const d=document.createElement("div");d.textContent=x??"";return d.innerHTML}
-function id(){return Date.now()+"-"+Math.random().toString(36).slice(2,9)}
-function date(){return new Date().toLocaleDateString()}
-function time(){return new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}
-function key(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
-function today(x){return String(x?.date||"")===date()||String(x?.dateKey||"")===key()}
-function n(x){return Number(x||0)}
-function lower(x){return String(x||"").toLowerCase()}
+if(!firebase.apps.length){
 
-async function setDoc(col,record){await db.collection(col).doc(String(record.id)).set(record,{merge:true})}
-async function deleteDoc(col,recordId){await db.collection(col).doc(String(recordId)).delete()}
+    firebase.initializeApp(firebaseConfig);
+
+}
+
+
+const db = firebase.firestore();
+
+
+/* =========================================================
+   FIREBASE COLLECTIONS
+========================================================= */
+
+const C = {
+
+    orders:"orders",
+
+    production:"production",
+
+    expenses:"expenses",
+
+    workers:"workers",
+
+    debts:"debts",
+
+    balances:"dailyBalances",
+
+    stock:"stock",
+
+    wastage:"wastage"
+
+};
+
+
+/* =========================================================
+   LOCAL STORAGE CACHE
+========================================================= */
+
+const K = {
+
+    orders:"serene_orders",
+
+    production:"serene_production",
+
+    expenses:"serene_expenses",
+
+    workers:"serene_workers",
+
+    debts:"serene_debts",
+
+    balances:"serene_daily_balances",
+
+    stock:"serene_stock",
+
+    wastage:"serene_wastage"
+
+};
+
+
+/* =========================================================
+   DATA
+========================================================= */
+
+let data = {
+
+    orders:[],
+
+    production:[],
+
+    expenses:[],
+
+    workers:[],
+
+    debts:[],
+
+    balances:[],
+
+    stock:[],
+
+    wastage:[]
+
+};
+
+
+/* =========================================================
+   SELECTED BUSINESS DATE
+========================================================= */
+
+let selectedDateKey = "";
+
+
+/* =========================================================
+   BASIC HELPERS
+========================================================= */
+
+function localRead(k){
+
+    try{
+
+        const x = JSON.parse(
+            localStorage.getItem(k) || "[]"
+        );
+
+        return Array.isArray(x) ? x : [];
+
+    }catch{
+
+        return [];
+
+    }
+
+}
+
+
+function localWrite(k,x){
+
+    try{
+
+        localStorage.setItem(
+            k,
+            JSON.stringify(x)
+        );
+
+    }catch{}
+
+}
+
+
+function money(x){
+
+    return "Ksh " + Number(x || 0).toLocaleString();
+
+}
+
+
+function esc(x){
+
+    const d = document.createElement("div");
+
+    d.textContent = x ?? "";
+
+    return d.innerHTML;
+
+}
+
+
+function id(){
+
+    return Date.now() +
+        "-" +
+        Math.random().toString(36).slice(2,9);
+
+}
+
+
+function todayDateKey(){
+
+    const d = new Date();
+
+    return d.getFullYear() +
+        "-" +
+        String(d.getMonth()+1).padStart(2,"0") +
+        "-" +
+        String(d.getDate()).padStart(2,"0");
+
+}
+
+
+function formatDateKey(key){
+
+    if(!key) return "";
+
+    const parts = String(key).split("-");
+
+    if(parts.length !== 3) return key;
+
+    const d = new Date(
+        Number(parts[0]),
+        Number(parts[1])-1,
+        Number(parts[2])
+    );
+
+    return d.toLocaleDateString(
+        undefined,
+        {
+            weekday:"long",
+            year:"numeric",
+            month:"long",
+            day:"numeric"
+        }
+    );
+
+}
+
+
+function date(){
+
+    return new Date().toLocaleDateString();
+
+}
+
+
+function time(){
+
+    return new Date().toLocaleTimeString(
+        [],
+        {
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
+}
+
+
+function key(){
+
+    return todayDateKey();
+
+}
+
+
+function n(x){
+
+    return Number(x || 0);
+
+}
+
+
+function lower(x){
+
+    return String(x || "").toLowerCase();
+
+}
+
+
+/* =========================================================
+   DATE CONVERSION
+   =========================================================
+
+   This supports records that already have:
+   dateKey
+   date
+   createdAt
+
+========================================================= */
+
+function recordDateKey(record){
+
+    if(!record) return "";
+
+
+    /* Best option:
+       dateKey already saved by the other dashboards
+    */
+
+    if(record.dateKey){
+
+        return String(record.dateKey);
+
+    }
+
+
+    /* Try ISO timestamps */
+
+    if(record.createdAt){
+
+        const raw = String(record.createdAt);
+
+        if(/^\d{4}-\d{2}-\d{2}/.test(raw)){
+
+            return raw.substring(0,10);
+
+        }
+
+    }
+
+
+    /* Try date */
+
+    if(record.date){
+
+        const raw = String(record.date).trim();
+
+
+        /* YYYY-MM-DD */
+
+        if(/^\d{4}-\d{2}-\d{2}$/.test(raw)){
+
+            return raw;
+
+        }
+
+
+        /* DD/MM/YYYY */
+
+        let match = raw.match(
+            /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
+        );
+
+        if(match){
+
+            const a = Number(match[1]);
+            const b = Number(match[2]);
+            const y = Number(match[3]);
+
+
+            /* If first number > 12,
+               it must be DD/MM/YYYY
+            */
+
+            if(a > 12){
+
+                return y +
+                    "-" +
+                    String(b).padStart(2,"0") +
+                    "-" +
+                    String(a).padStart(2,"0");
+
+            }
+
+
+            /*
+               Existing Serene Eatery records may have
+               browser locale dates such as 9/11/2026.
+               We use the browser Date parser here.
+            */
+
+            const parsed = new Date(raw);
+
+            if(!isNaN(parsed.getTime())){
+
+                return parsed.getFullYear() +
+                    "-" +
+                    String(parsed.getMonth()+1).padStart(2,"0") +
+                    "-" +
+                    String(parsed.getDate()).padStart(2,"0");
+
+            }
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =========================================================
+   DATE FILTER
+========================================================= */
+
+function selectedDate(record){
+
+    return recordDateKey(record) === selectedDateKey;
+
+}
+
+
+function selectedRecords(collection){
+
+    return data[collection].filter(selectedDate);
+
+}
+
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+async function setDoc(col,record){
+
+    await db
+        .collection(col)
+        .doc(String(record.id))
+        .set(record,{merge:true});
+
+}
+
+
+async function deleteDoc(col,recordId){
+
+    await db
+        .collection(col)
+        .doc(String(recordId))
+        .delete();
+
+}
+
 
 function listen(keyName,col){
-db.collection(col).onSnapshot(s=>{
-data[keyName]=s.docs.map(d=>({...d.data(),id:d.id}));
-localWrite(K[keyName],data[keyName]);
-render();
-},e=>{console.error(col,e);data[keyName]=localRead(K[keyName]);render()})
+
+    db.collection(col).onSnapshot(
+
+        snapshot => {
+
+            data[keyName] = snapshot.docs.map(
+                d => ({
+                    ...d.data(),
+                    id:d.id
+                })
+            );
+
+
+            /* Cache latest Firebase data */
+
+            localWrite(
+                K[keyName],
+                data[keyName]
+            );
+
+
+            render();
+
+        },
+
+        error => {
+
+            console.error(
+                "Firebase error:",
+                col,
+                error
+            );
+
+
+            /*
+               If Firebase temporarily fails,
+               use the local cache instead.
+            */
+
+            data[keyName] = localRead(
+                K[keyName]
+            );
+
+            render();
+
+        }
+
+    );
+
 }
+
+
+/* =========================================================
+   OLD LOCAL DATA MIGRATION
+========================================================= */
 
 async function migrate(keyName){
-try{
-const s=await db.collection(C[keyName]).limit(1).get();
-if(!s.empty)return;
-const old=localRead(K[keyName]).filter(x=>x&&x.id);
-if(!old.length)return;
-const b=db.batch();
-old.forEach(x=>b.set(db.collection(C[keyName]).doc(String(x.id)),x,{merge:true}));
-await b.commit();
-}catch(e){console.error("Migration",keyName,e)}
+
+    try{
+
+        const snapshot = await db
+            .collection(C[keyName])
+            .limit(1)
+            .get();
+
+
+        /*
+           If Firebase already has data,
+           do not overwrite it with localStorage.
+        */
+
+        if(!snapshot.empty){
+
+            return;
+
+        }
+
+
+        const old = localRead(
+            K[keyName]
+        ).filter(x => x && x.id);
+
+
+        if(!old.length){
+
+            return;
+
+        }
+
+
+        const batch = db.batch();
+
+
+        old.forEach(x => {
+
+            batch.set(
+                db.collection(C[keyName])
+                    .doc(String(x.id)),
+                x,
+                {merge:true}
+            );
+
+        });
+
+
+        await batch.commit();
+
+
+    }catch(e){
+
+        console.error(
+            "Migration error:",
+            keyName,
+            e
+        );
+
+    }
+
 }
+
+
+/* =========================================================
+   START FIREBASE
+========================================================= */
 
 function startFirebase(){
-Object.keys(C).forEach(k=>listen(k,C[k]));
-Object.keys(C).filter(k=>k!=="orders"&&k!=="production").forEach(migrate);
-document.getElementById("firebaseStatus").textContent="Firebase connected • Live data";
+
+    Object.keys(C).forEach(k => {
+
+        listen(
+            k,
+            C[k]
+        );
+
+    });
+
+
+    Object.keys(C)
+        .filter(
+            k =>
+                k !== "orders" &&
+                k !== "production"
+        )
+        .forEach(migrate);
+
+
+    document.getElementById(
+        "firebaseStatus"
+    ).textContent =
+        "Firebase connected • Live data";
+
 }
+
+
+/* =========================================================
+   BUSINESS DATE
+========================================================= */
+
+function setBusinessDate(){
+
+    const input =
+        document.getElementById(
+            "businessDate"
+        );
+
+
+    if(!selectedDateKey){
+
+        selectedDateKey =
+            todayDateKey();
+
+    }
+
+
+    input.value =
+        selectedDateKey;
+
+
+    updateSelectedDateText();
+
+}
+
+
+function updateSelectedDateText(){
+
+    const label =
+        document.getElementById(
+            "selectedDateLabel"
+        );
+
+
+    label.textContent =
+        formatDateKey(selectedDateKey);
+
+}
+
+
+/* =========================================================
+   DATE CHANGE
+========================================================= */
+
+document
+    .getElementById("businessDate")
+    .addEventListener(
+        "change",
+        function(){
+
+            if(!this.value){
+
+                selectedDateKey =
+                    todayDateKey();
+
+            }else{
+
+                selectedDateKey =
+                    this.value;
+
+            }
+
+
+            updateSelectedDateText();
+
+            render();
+
+        }
+    );
+
+
+/* =========================================================
+   DAILY BALANCE
+========================================================= */
 
 function balance(){
-return data.balances.find(x=>x.dateKey===key()||x.date===date())
+
+    return data.balances.find(
+        x =>
+            recordDateKey(x) === selectedDateKey
+    );
+
 }
+
 
 async function saveOpeningBalance(){
-const amount=Number(document.getElementById("openingBalance").value);
-if(!Number.isFinite(amount)||amount<0){alert("Opening balance cannot be negative.");return}
-const old=balance();
-await setDoc(C.balances,{id:old?.id||"balance-"+key(),date:date(),dateKey:key(),openingBalance:amount,updatedAt:new Date().toISOString()});
+
+    const amount =
+        Number(
+            document.getElementById(
+                "openingBalance"
+            ).value
+        );
+
+
+    if(
+        !Number.isFinite(amount) ||
+        amount < 0
+    ){
+
+        alert(
+            "Opening balance cannot be negative."
+        );
+
+        return;
+
+    }
+
+
+    const old = balance();
+
+
+    await setDoc(
+        C.balances,
+        {
+
+            id:
+                old?.id ||
+                "balance-" +
+                selectedDateKey,
+
+            date:
+                formatDateKey(
+                    selectedDateKey
+                ),
+
+            dateKey:
+                selectedDateKey,
+
+            openingBalance:
+                amount,
+
+            updatedAt:
+                new Date().toISOString()
+
+        }
+    );
+
 }
 
-function paidOrders(){return data.orders.filter(x=>lower(x.status)==="paid"||lower(x.paymentStatus)==="paid")}
-function expensesToday(){return data.expenses.filter(today)}
+
+/* =========================================================
+   PAID ORDERS FOR SELECTED DATE
+========================================================= */
+
+function paidOrders(){
+
+    return data.orders.filter(
+        x =>
+            selectedDate(x) &&
+            (
+                lower(x.status) === "paid" ||
+                lower(x.paymentStatus) === "paid"
+            )
+    );
+
+}
+
+
+/* =========================================================
+   EXPENSES FOR SELECTED DATE
+========================================================= */
+
+function expensesSelected(){
+
+    return data.expenses.filter(
+        selectedDate
+    );
+
+}
+
+
+/* =========================================================
+   FINANCIAL RENDER
+========================================================= */
 
 function renderFinancial(){
-const paid=paidOrders();
-const sales=paid.reduce((s,x)=>s+n(x.total),0);
-const cash=paid.filter(x=>lower(x.paymentMethod)==="cash").reduce((s,x)=>s+n(x.total),0);
-const pochi=paid.filter(x=>lower(x.paymentMethod)==="pochi").reduce((s,x)=>s+n(x.total),0);
-const expenses=expensesToday().reduce((s,x)=>s+n(x.amount),0);
-const profit=sales-expenses;
-const margin=sales?(profit/sales)*100:0;
-document.getElementById("totalSales").textContent=money(sales);
-document.getElementById("cashSales").textContent=money(cash);
-document.getElementById("pochiSales").textContent=money(pochi);
-document.getElementById("totalExpenses").textContent=money(expenses);
-document.getElementById("estimatedProfit").textContent=money(profit);
-document.getElementById("profitMargin").textContent=margin.toFixed(1)+"%";
-document.getElementById("paidOrders").textContent=paid.length;
-const b=balance(),opening=n(b?.openingBalance),expected=opening+cash-expenses;
-document.getElementById("openingBalance").value=b?opening:"";
-document.getElementById("cashPosition").textContent=money(cash);
-document.getElementById("cashExpenses").textContent=money(expenses);
-document.getElementById("expectedCash").textContent=money(expected);
-return{sales,cash,pochi,expenses,profit,margin}
+
+    const paid =
+        paidOrders();
+
+
+    const sales =
+        paid.reduce(
+            (s,x) =>
+                s + n(x.total),
+            0
+        );
+
+
+    const cash =
+        paid
+            .filter(
+                x =>
+                    lower(x.paymentMethod)
+                    === "cash"
+            )
+            .reduce(
+                (s,x) =>
+                    s + n(x.total),
+                0
+            );
+
+
+    const pochi =
+        paid
+            .filter(
+                x =>
+                    lower(x.paymentMethod)
+                    === "pochi"
+            )
+            .reduce(
+                (s,x) =>
+                    s + n(x.total),
+                0
+            );
+
+
+    const expenses =
+        expensesSelected()
+            .reduce(
+                (s,x) =>
+                    s + n(x.amount),
+                0
+            );
+
+
+    const profit =
+        sales - expenses;
+
+
+    const margin =
+        sales
+            ? (profit / sales) * 100
+            : 0;
+
+
+    document.getElementById(
+        "totalSales"
+    ).textContent =
+        money(sales);
+
+
+    document.getElementById(
+        "cashSales"
+    ).textContent =
+        money(cash);
+
+
+    document.getElementById(
+        "pochiSales"
+    ).textContent =
+        money(pochi);
+
+
+    document.getElementById(
+        "totalExpenses"
+    ).textContent =
+        money(expenses);
+
+
+    document.getElementById(
+        "estimatedProfit"
+    ).textContent =
+        money(profit);
+
+
+    document.getElementById(
+        "profitMargin"
+    ).textContent =
+        margin.toFixed(1) + "%";
+
+
+    document.getElementById(
+        "paidOrders"
+    ).textContent =
+        paid.length;
+
+
+    /* Daily cash */
+
+    const b =
+        balance();
+
+
+    const opening =
+        n(b?.openingBalance);
+
+
+    const expected =
+        opening +
+        cash -
+        expenses;
+
+
+    document.getElementById(
+        "openingBalance"
+    ).value =
+        b
+            ? opening
+            : "";
+
+
+    document.getElementById(
+        "cashPosition"
+    ).textContent =
+        money(cash);
+
+
+    document.getElementById(
+        "cashExpenses"
+    ).textContent =
+        money(expenses);
+
+
+    document.getElementById(
+        "expectedCash"
+    ).textContent =
+        money(expected);
+
+
+    return {
+
+        sales,
+
+        cash,
+
+        pochi,
+
+        expenses,
+
+        profit,
+
+        margin
+
+    };
+
 }
+
+
+/* =========================================================
+   WORKERS
+========================================================= */
 
 function renderWorkers(){
-const list=data.workers.filter(today),box=document.getElementById("workersList");
-let paid=0,pending=0;
-list.forEach(x=>lower(x.status)==="paid"?paid+=n(x.wage):pending+=n(x.wage));
-document.getElementById("workerCount").textContent=list.length+" "+(list.length===1?"worker":"workers");
-document.getElementById("wagesPaid").textContent=money(paid);
-document.getElementById("wagesPending").textContent=money(pending);
-box.innerHTML=list.length?list.slice().reverse().map(x=>`
-<div class="border-b py-3 flex justify-between"><div><p>${esc(x.name)}</p><p class="text-xs text-gray-400 mt-1">${esc(x.status||"Pending")}</p></div>
-<div class="text-right"><p>${money(x.wage)}</p><p class="text-xs mt-1">${lower(x.status)==="paid"?"Paid":"Pending"}</p></div></div>`).join(""):`<p class="text-gray-400 text-sm">No workers recorded today.</p>`;
+
+    const list =
+        selectedRecords("workers");
+
+
+    const box =
+        document.getElementById(
+            "workersList"
+        );
+
+
+    let paid = 0;
+
+    let pending = 0;
+
+
+    list.forEach(x => {
+
+        if(
+            lower(x.status) === "paid"
+        ){
+
+            paid += n(x.wage);
+
+        }else{
+
+            pending += n(x.wage);
+
+        }
+
+    });
+
+
+    document.getElementById(
+        "workerCount"
+    ).textContent =
+        list.length +
+        " " +
+        (
+            list.length === 1
+                ? "worker"
+                : "workers"
+        );
+
+
+    document.getElementById(
+        "wagesPaid"
+    ).textContent =
+        money(paid);
+
+
+    document.getElementById(
+        "wagesPending"
+    ).textContent =
+        money(pending);
+
+
+    box.innerHTML =
+        list.length
+
+            ? list
+                .slice()
+                .reverse()
+                .map(
+                    x => `
+
+<div class="border-b py-3 flex justify-between">
+
+<div>
+
+<p>
+${esc(x.name)}
+</p>
+
+<p class="text-xs text-gray-400 mt-1">
+${esc(x.status || "Pending")}
+</p>
+
+</div>
+
+<div class="text-right">
+
+<p>
+${money(x.wage)}
+</p>
+
+<p class="text-xs mt-1">
+
+${
+    lower(x.status) === "paid"
+        ? "Paid"
+        : "Pending"
 }
+
+</p>
+
+</div>
+
+</div>
+
+`
+                )
+                .join("")
+
+            :
+
+            `
+
+<p class="text-gray-400 text-sm">
+No workers recorded for ${esc(
+    formatDateKey(selectedDateKey)
+)}.
+</p>
+
+`;
+
+}
+
+
+/* =========================================================
+   EXPENSES
+========================================================= */
 
 function renderExpenses(){
-const list=expensesToday(),box=document.getElementById("expensesList");
-box.innerHTML=list.length?list.slice().reverse().map(x=>`
-<div class="border-b py-3 flex justify-between"><div><p>${esc(x.description||x.name||"")}</p>
-<p class="text-xs text-gray-400 mt-1">${esc(x.date||"")} ${x.time?" · "+esc(x.time):""}</p></div><p>${money(x.amount)}</p></div>`).join(""):`<p class="text-gray-400 text-sm">No expenses recorded today.</p>`;
+
+    const list =
+        expensesSelected();
+
+
+    const box =
+        document.getElementById(
+            "expensesList"
+        );
+
+
+    box.innerHTML =
+        list.length
+
+            ? list
+                .slice()
+                .reverse()
+                .map(
+                    x => `
+
+<div class="border-b py-3 flex justify-between">
+
+<div>
+
+<p>
+${esc(
+    x.description ||
+    x.name ||
+    ""
+)}
+</p>
+
+<p class="text-xs text-gray-400 mt-1">
+
+${esc(x.date || formatDateKey(selectedDateKey))}
+
+${
+    x.time
+        ? " · " + esc(x.time)
+        : ""
 }
+
+</p>
+
+</div>
+
+<p>
+${money(x.amount)}
+</p>
+
+</div>
+
+`
+                )
+                .join("")
+
+            :
+
+            `
+
+<p class="text-gray-400 text-sm">
+No expenses recorded for ${esc(
+    formatDateKey(selectedDateKey)
+)}.
+</p>
+
+`;
+
+}
+
+
+/* =========================================================
+   CUSTOMER DEBTS
+========================================================= */
 
 function renderDebts(){
-const p=data.debts.filter(x=>lower(x.status)==="pending").reduce((s,x)=>s+n(x.amount),0);
-const paid=data.debts.filter(x=>lower(x.status)==="paid").reduce((s,x)=>s+n(x.amount),0);
-document.getElementById("pendingDebt").textContent=money(p);
-document.getElementById("paidDebt").textContent=money(paid);
-const box=document.getElementById("debtsList");
-box.innerHTML=data.debts.length?data.debts.slice().sort((a,b)=>String(b.createdAt||"").localeCompare(String(a.createdAt||""))).map(x=>`
-<div class="border-b py-3 flex justify-between"><div><p>${esc(x.name||x.description||"")}</p>
-<p class="text-xs text-gray-400 mt-1">${esc(x.date||"")} ${x.time?" · "+esc(x.time):""}</p></div>
-<div class="text-right"><p>${money(x.amount)}</p><p class="text-xs mt-1">${esc(x.status||"")}</p></div></div>`).join(""):`<p class="text-gray-400 text-sm">No debts recorded.</p>`;
+
+    const list =
+        selectedRecords("debts");
+
+
+    const pending =
+        list
+            .filter(
+                x =>
+                    lower(x.status)
+                    === "pending"
+            )
+            .reduce(
+                (s,x) =>
+                    s + n(x.amount),
+                0
+            );
+
+
+    const paid =
+        list
+            .filter(
+                x =>
+                    lower(x.status)
+                    === "paid"
+            )
+            .reduce(
+                (s,x) =>
+                    s + n(x.amount),
+                0
+            );
+
+
+    document.getElementById(
+        "pendingDebt"
+    ).textContent =
+        money(pending);
+
+
+    document.getElementById(
+        "paidDebt"
+    ).textContent =
+        money(paid);
+
+
+    const box =
+        document.getElementById(
+            "debtsList"
+        );
+
+
+    box.innerHTML =
+        list.length
+
+            ? list
+                .slice()
+                .sort(
+                    (a,b) =>
+                        String(
+                            b.createdAt || ""
+                        ).localeCompare(
+                            String(
+                                a.createdAt || ""
+                            )
+                        )
+                )
+                .map(
+                    x => `
+
+<div class="border-b py-3 flex justify-between">
+
+<div>
+
+<p>
+${esc(
+    x.name ||
+    x.description ||
+    ""
+)}
+</p>
+
+<p class="text-xs text-gray-400 mt-1">
+
+${esc(
+    x.date ||
+    formatDateKey(
+        selectedDateKey
+    )
+)}
+
+${
+    x.time
+        ? " · " + esc(x.time)
+        : ""
 }
+
+</p>
+
+</div>
+
+
+<div class="text-right">
+
+<p>
+${money(x.amount)}
+</p>
+
+<p class="text-xs mt-1">
+${esc(x.status || "")}
+</p>
+
+</div>
+
+</div>
+
+`
+                )
+                .join("")
+
+            :
+
+            `
+
+<p class="text-gray-400 text-sm">
+No debts recorded for ${esc(
+    formatDateKey(selectedDateKey)
+)}.
+</p>
+
+`;
+
+}
+
+
+/* =========================================================
+   PRODUCT NAME
+========================================================= */
 
 function pname(x){
-if(typeof x?.product==="string")return x.product;
-if(x?.product&&typeof x.product==="object")return x.product.name||x.product.product||x.product.item||"Unknown Product";
-if(typeof x?.item==="string")return x.item;
-if(x?.item&&typeof x.item==="object")return x.item.name||x.item.product||"Unknown Product";
-return x?.name||"Unknown Product";
+
+    if(
+        typeof x?.product === "string"
+    ){
+
+        return x.product;
+
+    }
+
+
+    if(
+        x?.product &&
+        typeof x.product === "object"
+    ){
+
+        return (
+            x.product.name ||
+            x.product.product ||
+            x.product.item ||
+            "Unknown Product"
+        );
+
+    }
+
+
+    if(
+        typeof x?.item === "string"
+    ){
+
+        return x.item;
+
+    }
+
+
+    if(
+        x?.item &&
+        typeof x.item === "object"
+    ){
+
+        return (
+            x.item.name ||
+            x.item.product ||
+            "Unknown Product"
+        );
+
+    }
+
+
+    return x?.name ||
+        "Unknown Product";
+
 }
+
+
+/* =========================================================
+   PRODUCTION
+========================================================= */
 
 function renderProduction(){
-const list=data.production.filter(today),box=document.getElementById("productionList");
-let total=0;
-list.forEach(x=>total+=n(x.quantity??x.qty??x.produced??x.amount));
-box.innerHTML=list.length?list.slice().reverse().map(x=>`
-<div class="border-b py-3 flex justify-between gap-4"><div><p>${esc(pname(x))}</p><p class="text-xs text-gray-400 mt-1">${esc(x.time||"")}</p></div>
-<p>${n(x.quantity??x.qty??x.produced??x.amount)} ${esc(x.unit||x.units||"")}</p></div>`).join(""):`<p class="text-gray-400 text-sm">No production recorded today.</p>`;
-return total;
+
+    const list =
+        selectedRecords("production");
+
+
+    const box =
+        document.getElementById(
+            "productionList"
+        );
+
+
+    let total = 0;
+
+
+    list.forEach(x => {
+
+        total += n(
+            x.quantity ??
+            x.qty ??
+            x.produced ??
+            x.amount
+        );
+
+    });
+
+
+    box.innerHTML =
+        list.length
+
+            ? list
+                .slice()
+                .reverse()
+                .map(
+                    x => `
+
+<div class="border-b py-3 flex justify-between gap-4">
+
+<div>
+
+<p>
+${esc(pname(x))}
+</p>
+
+<p class="text-xs text-gray-400 mt-1">
+
+${esc(
+    x.date ||
+    formatDateKey(
+        selectedDateKey
+    )
+)}
+
+${
+    x.time
+        ? " · " + esc(x.time)
+        : ""
 }
+
+</p>
+
+</div>
+
+
+<p>
+
+${n(
+    x.quantity ??
+    x.qty ??
+    x.produced ??
+    x.amount
+)}
+
+${esc(
+    x.unit ||
+    x.units ||
+    ""
+)}
+
+</p>
+
+</div>
+
+`
+                )
+                .join("")
+
+            :
+
+            `
+
+<p class="text-gray-400 text-sm">
+No production recorded for ${esc(
+    formatDateKey(selectedDateKey)
+)}.
+</p>
+
+`;
+
+
+    return total;
+
+}
+
+
+/* =========================================================
+   WASTAGE
+========================================================= */
 
 function renderWastage(){
-const list=data.wastage.filter(today),box=document.getElementById("wastageList");
-const total=list.reduce((s,x)=>s+n(x.quantity),0);
-box.innerHTML=list.length?list.slice().reverse().map(x=>`
-<div class="border-b py-3 flex justify-between"><div><p>${esc(x.item||x.product||"")}</p><p class="text-xs text-gray-400 mt-1">${esc(x.reason||"No reason")}</p></div><p>${n(x.quantity)}</p></div>`).join(""):`<p class="text-gray-400 text-sm">No wastage recorded today.</p>`;
-return total;
+
+    const list =
+        selectedRecords("wastage");
+
+
+    const box =
+        document.getElementById(
+            "wastageList"
+        );
+
+
+    const total =
+        list.reduce(
+            (s,x) =>
+                s + n(x.quantity),
+            0
+        );
+
+
+    box.innerHTML =
+        list.length
+
+            ? list
+                .slice()
+                .reverse()
+                .map(
+                    x => `
+
+<div class="border-b py-3 flex justify-between">
+
+<div>
+
+<p>
+${esc(
+    x.item ||
+    x.product ||
+    ""
+)}
+</p>
+
+<p class="text-xs text-gray-400 mt-1">
+
+${esc(
+    x.reason ||
+    "No reason"
+)}
+
+</p>
+
+</div>
+
+<p>
+${n(x.quantity)}
+</p>
+
+</div>
+
+`
+                )
+                .join("")
+
+            :
+
+            `
+
+<p class="text-gray-400 text-sm">
+No wastage recorded for ${esc(
+    formatDateKey(selectedDateKey)
+)}.
+</p>
+
+`;
+
+
+    return total;
+
 }
+
+
+/* =========================================================
+   STOCK ALERTS
+   =========================================================
+
+   Stock alerts represent CURRENT stock,
+   so they are intentionally not changed
+   by the selected business date.
+
+========================================================= */
 
 function renderAlerts(){
-const b={};
-data.stock.forEach(x=>{
-const name=typeof x.item==="string"?x.item:x.item?.name||x.product?.name||x.product||"Unknown Item";
-if(!b[name])b[name]={quantity:0,unit:x.unit||""};
-b[name].quantity+=n(x.quantity);
-});
-data.wastage.forEach(x=>{
-const name=typeof x.item==="string"?x.item:x.item?.name||x.product?.name||x.product||"Unknown Item";
-if(!b[name])b[name]={quantity:0,unit:x.unit||""};
-b[name].quantity-=n(x.quantity);
-});
-const a=Object.entries(b).filter(([,x])=>x.quantity<3),box=document.getElementById("stockAlerts");
-box.innerHTML=a.length?a.map(([name,x])=>{const q=Math.max(0,x.quantity);return`
-<div class="border-b py-3 flex justify-between"><div><p>${esc(name)}</p><p class="text-xs text-gray-400 mt-1">${q<=0?"OUT OF STOCK":"LOW STOCK"}</p></div><p>${q} ${esc(x.unit)}</p></div>`}).join(""):`<p class="text-gray-400 text-sm">No low-stock items.</p>`;
+
+    const b = {};
+
+
+    data.stock.forEach(x => {
+
+        const name =
+            typeof x.item === "string"
+                ? x.item
+                : x.item?.name ||
+                  x.product?.name ||
+                  x.product ||
+                  "Unknown Item";
+
+
+        if(!b[name]){
+
+            b[name] = {
+
+                quantity:0,
+
+                unit:x.unit || ""
+
+            };
+
+        }
+
+
+        b[name].quantity +=
+            n(x.quantity);
+
+    });
+
+
+    data.wastage.forEach(x => {
+
+        const name =
+            typeof x.item === "string"
+                ? x.item
+                : x.item?.name ||
+                  x.product?.name ||
+                  x.product ||
+                  "Unknown Item";
+
+
+        if(!b[name]){
+
+            b[name] = {
+
+                quantity:0,
+
+                unit:x.unit || ""
+
+            };
+
+        }
+
+
+        b[name].quantity -=
+            n(x.quantity);
+
+    });
+
+
+    const a =
+        Object.entries(b)
+            .filter(
+                ([,x]) =>
+                    x.quantity < 3
+            );
+
+
+    const box =
+        document.getElementById(
+            "stockAlerts"
+        );
+
+
+    box.innerHTML =
+        a.length
+
+            ? a
+                .map(
+                    ([name,x]) => {
+
+                        const q =
+                            Math.max(
+                                0,
+                                x.quantity
+                            );
+
+
+                        return `
+
+<div class="border-b py-3 flex justify-between">
+
+<div>
+
+<p>
+${esc(name)}
+</p>
+
+<p class="text-xs text-gray-400 mt-1">
+
+${
+    q <= 0
+        ? "OUT OF STOCK"
+        : "LOW STOCK"
 }
+
+</p>
+
+</div>
+
+<p>
+${q} ${esc(x.unit)}
+</p>
+
+</div>
+
+`;
+
+                    }
+                )
+                .join("")
+
+            :
+
+            `
+
+<p class="text-gray-400 text-sm">
+No low-stock items.
+</p>
+
+`;
+
+}
+
+
+/* =========================================================
+   COMPLETE RENDER
+========================================================= */
 
 function render(){
-const s=renderFinancial(),p=renderProduction(),w=renderWastage();
-renderWorkers();renderExpenses();renderDebts();renderAlerts();
-document.getElementById("performanceSales").textContent=money(s.sales);
-document.getElementById("performanceExpenses").textContent=money(s.expenses);
-document.getElementById("performanceProfit").textContent=money(s.profit);
-document.getElementById("performanceMargin").textContent=s.margin.toFixed(1)+"%";
-document.getElementById("performanceProduction").textContent=p;
-document.getElementById("performanceWastage").textContent=w;
-document.getElementById("performanceMessage").textContent=s.sales===0?"No sales have been recorded yet today.":`Today's recorded sales are above expenses. Estimated profit is ${money(s.profit)} with a ${s.margin.toFixed(1)}% margin.`;
+
+    /*
+       If no date has been selected,
+       use today.
+    */
+
+    if(!selectedDateKey){
+
+        selectedDateKey =
+            todayDateKey();
+
+    }
+
+
+    const s =
+        renderFinancial();
+
+
+    const p =
+        renderProduction();
+
+
+    const w =
+        renderWastage();
+
+
+    renderWorkers();
+
+    renderExpenses();
+
+    renderDebts();
+
+    renderAlerts();
+
+
+    /* Performance */
+
+    document.getElementById(
+        "performanceSales"
+    ).textContent =
+        money(s.sales);
+
+
+    document.getElementById(
+        "performanceExpenses"
+    ).textContent =
+        money(s.expenses);
+
+
+    document.getElementById(
+        "performanceProfit"
+    ).textContent =
+        money(s.profit);
+
+
+    document.getElementById(
+        "performanceMargin"
+    ).textContent =
+        s.margin.toFixed(1) + "%";
+
+
+    document.getElementById(
+        "performanceProduction"
+    ).textContent =
+        p;
+
+
+    document.getElementById(
+        "performanceWastage"
+    ).textContent =
+        w;
+
+
+    const selectedLabel =
+        formatDateKey(
+            selectedDateKey
+        );
+
+
+    document.getElementById(
+        "performanceMessage"
+    ).textContent =
+
+        s.sales === 0
+
+            ? `No sales have been recorded for ${selectedLabel}.`
+
+            :
+
+            `Sales recorded for ${selectedLabel} are ${money(s.sales)}. Estimated profit is ${money(s.profit)} with a ${s.margin.toFixed(1)}% margin.`;
+
 }
 
-document.getElementById("currentDate").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
 
-document.querySelectorAll(".mobile-section-header").forEach(h=>h.addEventListener("click",()=>{
-if(innerWidth>767)return;
-h.classList.toggle("open");
-document.getElementById(h.dataset.section).classList.toggle("open");
-}));
+/* =========================================================
+   CURRENT DATE HEADER
+========================================================= */
 
-Object.keys(data).forEach(k=>data[k]=localRead(K[k]));
-render();startFirebase();
+document.getElementById(
+    "currentDate"
+).textContent =
+    new Date().toLocaleDateString(
+        undefined,
+        {
+            weekday:"long",
+            year:"numeric",
+            month:"long",
+            day:"numeric"
+        }
+    );
+
+
+/* =========================================================
+   MOBILE COLLAPSIBLE SECTIONS
+========================================================= */
+
+document
+    .querySelectorAll(
+        ".mobile-section-header"
+    )
+    .forEach(h => {
+
+        h.addEventListener(
+            "click",
+            () => {
+
+                if(innerWidth > 767){
+
+                    return;
+
+                }
+
+
+                h.classList.toggle(
+                    "open"
+                );
+
+
+                document
+                    .getElementById(
+                        h.dataset.section
+                    )
+                    .classList.toggle(
+                        "open"
+                    );
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+selectedDateKey =
+    todayDateKey();
+
+
+setBusinessDate();
+
+
+/* Load local cache first */
+
+Object.keys(data).forEach(k => {
+
+    data[k] =
+        localRead(
+            K[k]
+        );
+
+});
+
+
+render();
+
+
+/* Then connect to Firebase */
+
+startFirebase();
+
 </script>
+
 </body>
 </html>

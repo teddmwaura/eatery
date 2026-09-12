@@ -19,6 +19,7 @@
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-auth-compat.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAZn1AMnp1jr2VdztRpqRg-nrle2lflt8s",
@@ -31,6 +32,8 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const auth = firebase.auth();
+        const OWNER_EMAIL = "teddmwaura@gmail.com";
     </script>
 
 
@@ -254,6 +257,19 @@
 
 </header>
 
+<div id="authBar" class="fixed top-[73px] left-0 w-full bg-white border-b border-gray-200 z-40">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+            <p id="authStatus" class="text-sm text-gray-600">Checking account...</p>
+            <p id="permissionStatus" class="text-xs text-gray-400 mt-1"></p>
+        </div>
+        <div class="flex gap-2">
+            <button id="googleSignInButton" onclick="signInWithGoogle()" class="border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100">Sign in with Google</button>
+            <button id="googleSignOutButton" onclick="signOutUser()" class="hidden border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100">Sign out</button>
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -462,7 +478,7 @@
 
 
 
-            <button onclick="confirmPayment()"
+            <button data-owner-only onclick="confirmPayment()"
 
                     class="bg-black text-white px-5 py-3 hover:bg-gray-800">
 
@@ -560,7 +576,7 @@
 
 
 
-            <button onclick="confirmRemoveOrder()"
+            <button data-owner-only onclick="confirmRemoveOrder()"
 
                     class="bg-black text-white px-5 py-3 hover:bg-gray-800">
 
@@ -596,7 +612,7 @@
 
 
 
-<main class="max-w-7xl mx-auto px-6 pt-28 pb-16">
+<main class="max-w-7xl mx-auto px-6 pt-36 pb-16">
 
 
 
@@ -884,7 +900,7 @@
 
 
 
-        <button onclick="saveOpeningBalance()"
+        <button data-owner-only onclick="saveOpeningBalance()"
 
                 class="border border-gray-300 px-5 py-3 mt-5 hover:bg-gray-100">
 
@@ -1122,7 +1138,7 @@
 
 
 
-                <button onclick="addExpense()"
+                <button data-owner-only onclick="addExpense()"
 
                         class="w-full bg-black text-white p-3 hover:bg-gray-800">
 
@@ -1244,7 +1260,7 @@
 
 
 
-                <button onclick="addWorker()"
+                <button data-owner-only onclick="addWorker()"
 
                         class="w-full bg-black text-white p-3 hover:bg-gray-800">
 
@@ -1366,7 +1382,7 @@
 
 
 
-                <button onclick="addDebt()"
+                <button data-owner-only onclick="addDebt()"
 
                         class="w-full bg-black text-white p-3 hover:bg-gray-800">
 
@@ -1449,6 +1465,67 @@ let popupTimer;
 
 
 
+
+/* =====================================================
+
+   OWNER AUTHENTICATION
+
+===================================================== */
+
+let currentUser = null;
+let firebaseStarted = false;
+
+function isOwner() {
+    return !!currentUser && String(currentUser.email || "").toLowerCase() === OWNER_EMAIL.toLowerCase();
+}
+
+function requireOwner(action) {
+    if (isOwner()) return true;
+    showPopup("Owner access required", currentUser ? "Only the owner can " + action + "." : "Please sign in with the owner Google account first.", true);
+    return false;
+}
+
+function updateAuthUI() {
+    const status = document.getElementById("authStatus");
+    const permission = document.getElementById("permissionStatus");
+    const signIn = document.getElementById("googleSignInButton");
+    const signOut = document.getElementById("googleSignOutButton");
+    if (!currentUser) {
+        status.textContent = "Not signed in";
+        permission.textContent = "Sign in with Google to access Firebase data.";
+        signIn.classList.remove("hidden");
+        signOut.classList.add("hidden");
+        return;
+    }
+    status.textContent = "Signed in as " + currentUser.email;
+    permission.textContent = isOwner() ? "OWNER • Full cashier control" : "STAFF • View only • Owner approval required for changes";
+    signIn.classList.add("hidden");
+    signOut.classList.remove("hidden");
+}
+
+async function signInWithGoogle() {
+    try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+    catch (error) { console.error(error); showPopup("Sign-in failed", "Google sign-in could not be completed. Please try again.", true); }
+}
+
+async function signOutUser() {
+    try { await auth.signOut(); }
+    catch (error) { console.error(error); showPopup("Sign-out failed", "Please try again.", true); }
+}
+
+function protectOwnerControls() {
+    const ids = ["openingBalance", "expenseDescription", "expenseAmount", "workerName", "workerWage", "debtName", "debtAmount"];
+    ids.forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.disabled = !isOwner();
+    });
+    document.querySelectorAll("button[data-owner-only]").forEach(function(button) {
+        button.disabled = !isOwner();
+        button.title = isOwner() ? "Owner control" : "Owner only";
+        button.classList.toggle("opacity-50", !isOwner());
+        button.classList.toggle("cursor-not-allowed", !isOwner());
+    });
+}
 
 /* =====================================================
 
@@ -1627,6 +1704,7 @@ async function saveProductionToFirebase() {
 }
 
 async function migrateLocalCollectionIfEmpty(collectionName, key, label) {
+    if (!isOwner()) return;
     try {
         const snapshot = await db.collection(collectionName).limit(1).get();
         if (!snapshot.empty) return;
@@ -3012,6 +3090,7 @@ function selectPayment(method) {
 
 
 async function confirmPayment() {
+    if (!requireOwner("confirm customer payments")) return;
 
 
 
@@ -3338,6 +3417,7 @@ function closeRemoveModal() {
 
 
 async function confirmRemoveOrder() {
+    if (!requireOwner("remove or reject orders")) return;
 
 
 
@@ -3872,6 +3952,7 @@ function getOpeningBalance() {
 
 
 function saveOpeningBalance() {
+    if (!requireOwner("change the opening balance")) return;
 
 
 
@@ -4052,6 +4133,7 @@ function saveOpeningBalance() {
 
 
 function addExpense() {
+    if (!requireOwner("add expenses")) return;
 
 
 
@@ -4420,6 +4502,7 @@ function renderExpenses() {
 
 
 function addWorker() {
+    if (!requireOwner("add workers")) return;
 
 
 
@@ -4620,6 +4703,7 @@ function addWorker() {
 
 
 function toggleWorkerPayment(id) {
+    if (!requireOwner("change worker payment status")) return;
 
 
 
@@ -4873,7 +4957,7 @@ function renderWorkers() {
 
                     <button
 
-                        onclick="toggleWorkerPayment('${worker.id}')"
+                        data-owner-only onclick="toggleWorkerPayment('${worker.id}')"
 
                         class="border border-gray-300 px-4 py-2 hover:bg-gray-100">
 
@@ -4926,6 +5010,7 @@ function renderWorkers() {
 
 
 function addDebt() {
+    if (!requireOwner("add customer debts")) return;
 
 
 
@@ -5126,6 +5211,7 @@ function addDebt() {
 
 
 function toggleDebtPayment(id) {
+    if (!requireOwner("change debt payment status")) return;
 
 
 
@@ -5393,7 +5479,7 @@ function renderDebts() {
 
                         <button
 
-                            onclick="toggleDebtPayment('${debt.id}')"
+                            data-owner-only onclick="toggleDebtPayment('${debt.id}')"
 
                             class="border border-gray-300 px-4 py-2 hover:bg-gray-100">
 
@@ -5786,6 +5872,7 @@ function renderFinancialSummary() {
 
 
 function renderAll() {
+    protectOwnerControls();
 
 
 
@@ -5929,7 +6016,26 @@ ordersCache = getLocalData(ORDER_KEY);
 productionCache = getLocalData(PRODUCTION_KEY);
 
 renderAll();
-startFirebaseListeners();
+
+// Firebase data is only loaded after Google authentication.
+// The owner account gets full cashier control; other signed-in users are read-only.
+auth.onAuthStateChanged(function(user) {
+    currentUser = user;
+    updateAuthUI();
+    protectOwnerControls();
+
+    if (!user) {
+        firebaseStarted = false;
+        return;
+    }
+
+    if (!firebaseStarted) {
+        firebaseStarted = true;
+        startFirebaseListeners();
+    }
+
+    renderAll();
+});
 
 
 
