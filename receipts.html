@@ -12,6 +12,7 @@
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-auth-compat.js"></script>
 
     <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -167,6 +168,20 @@
             <p class="text-sm text-gray-500 mt-2">
                 View paid receipts, customer debts and daily sales reports.
             </p>
+
+            <div id="authBar" class="mt-4 bg-white border border-gray-200 p-4">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                        <p class="text-xs text-gray-500">SIGNED-IN ACCOUNT</p>
+                        <p id="authUser" class="text-sm mt-1">Checking authentication...</p>
+                        <p id="authRole" class="text-xs text-gray-500 mt-1"></p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="signInButton" onclick="signInWithGoogle()" class="bg-green-900 text-white px-4 py-2 text-sm hover:bg-green-800 hidden">Sign in with Google</button>
+                        <button id="signOutButton" onclick="signOutUser()" class="border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50 hidden">Sign out</button>
+                    </div>
+                </div>
+            </div>
 
         </div>
 
@@ -332,7 +347,7 @@
              DELETE RECEIPTS BY DATE
         ===================================================== -->
 
-        <section class="bg-white border border-red-200 p-6 mb-8">
+        <section id="ownerDeleteSection" class="bg-white border border-red-200 p-6 mb-8 hidden">
 
             <div>
 
@@ -577,6 +592,11 @@
         firebase.initializeApp(firebaseConfig);
 
         const db = firebase.firestore();
+        const auth = firebase.auth();
+        const OWNER_EMAIL = "teddmwaura@gmail.com";
+        let currentUser = null;
+        let isOwner = false;
+        let firebaseListenersStarted = false;
 
 
         /* =====================================================
@@ -875,6 +895,60 @@
 
         }
 
+
+        /* =====================================================
+           AUTHENTICATION
+        ===================================================== */
+
+        function updateAuthUI() {
+            const userText = document.getElementById("authUser");
+            const roleText = document.getElementById("authRole");
+            const signInButton = document.getElementById("signInButton");
+            const signOutButton = document.getElementById("signOutButton");
+            const ownerDeleteSection = document.getElementById("ownerDeleteSection");
+
+            if (!currentUser) {
+                userText.textContent = "Not signed in";
+                roleText.textContent = "Sign in with Google to view receipts.";
+                signInButton.classList.remove("hidden");
+                signOutButton.classList.add("hidden");
+                ownerDeleteSection.classList.add("hidden");
+                return;
+            }
+
+            userText.textContent = currentUser.email || "Google account";
+            roleText.textContent = isOwner ? "OWNER • Full receipt control" : "STAFF • View only";
+            signInButton.classList.add("hidden");
+            signOutButton.classList.remove("hidden");
+            ownerDeleteSection.classList.toggle("hidden", !isOwner);
+        }
+
+        async function signInWithGoogle() {
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                await auth.signInWithPopup(provider);
+            } catch (error) {
+                console.error("Google sign-in error:", error);
+                showToast("Sign-in failed", error.message || "Could not sign in with Google.", "error");
+            }
+        }
+
+        async function signOutUser() {
+            try {
+                await auth.signOut();
+            } catch (error) {
+                console.error("Sign-out error:", error);
+                showToast("Sign-out failed", "Could not sign out.", "error");
+            }
+        }
+
+        function requireOwner() {
+            if (!isOwner) {
+                showToast("Owner access required", "Only teddmwaura@gmail.com can make this change.", "error");
+                return false;
+            }
+            return true;
+        }
 
         /* =====================================================
            FIRESTORE LISTENERS
@@ -1861,9 +1935,23 @@
 
                                 <span class="${
                                     isPaid
-                                        ? "text-green-700"
-                                        : "text-red-700"
-                                }">
+                                        ? `
+                                            <span class="text-gray-400">
+                                                Completed
+                                            </span>
+                                          `
+                                        : isOwner
+                                            ? `
+                                                <button
+                                                    onclick="openDebtPayment('${escapeAttribute(debt.id)}')"
+                                                    class="bg-green-900 text-white px-3 py-2 text-xs hover:bg-green-800">
+                                                    Receive Payment
+                                                </button>
+                                              `
+                                            : `
+                                                <span class="text-gray-400 text-xs">Owner only</span>
+                                              `
+                                }}">
 
                                     ${
                                         isPaid
@@ -2014,6 +2102,7 @@
 
                 event.preventDefault();
 
+                if (!requireOwner()) return;
 
                 const id =
                     document.getElementById(
@@ -2135,6 +2224,8 @@
         ===================================================== */
 
         async function deleteReceiptsForDate() {
+
+            if (!requireOwner()) return;
 
             const input =
                 document.getElementById(
@@ -2793,15 +2884,29 @@
 
 
         /* =====================================================
-           START FIREBASE
+           START AUTHENTICATION + FIREBASE
         ===================================================== */
 
-        migrateLocalData()
-            .finally(() => {
+        auth.onAuthStateChanged(async user => {
+            currentUser = user;
+            isOwner = !!user && String(user.email || "").toLowerCase() === OWNER_EMAIL.toLowerCase();
+            updateAuthUI();
 
-                startFirebaseListeners();
+            if (!user) {
+                ordersCache = [];
+                debtsCache = [];
+                firebaseReady = false;
+                firebaseListenersStarted = false;
+                render();
+                return;
+            }
 
-            });
+            if (firebaseListenersStarted) return;
+            firebaseListenersStarted = true;
+
+            await migrateLocalData();
+            startFirebaseListeners();
+        });
 
 
     </script>
