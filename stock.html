@@ -1674,31 +1674,37 @@ async function setItemRemoved(item) {
         !firebaseReady ||
         !isOwner()
     ) {
-
-        return;
-
+        throw new Error("Owner authentication required.");
     }
 
+    const normalizedItem = normalizeKey(item);
 
-    await db
-        .collection(SETTINGS_COLLECTION)
-        .doc(
-            "removed_" +
-            normalizeKey(item)
-        )
-        .set({
+    // Update local state immediately so the item disappears after confirmation.
+    removedItems.add(normalizedItem);
 
-            type: "removedItem",
+    try {
+        await db
+            .collection(SETTINGS_COLLECTION)
+            .doc(
+                "removed_" +
+                normalizedItem
+            )
+            .set({
 
-            item: item,
+                type: "removedItem",
 
-            removed: true,
+                item: item,
 
-            updatedAt:
-                firebase.firestore.FieldValue.serverTimestamp()
+                removed: true,
 
-        });
+                updatedAt:
+                    firebase.firestore.FieldValue.serverTimestamp()
 
+            });
+    } catch (error) {
+        removedItems.delete(normalizedItem);
+        throw error;
+    }
 }
 
 
@@ -2346,27 +2352,45 @@ function deleteStock(id) {
 
 function removeItem(item) {
 
+    if (!firebaseReady || !isOwner()) {
+        showToast("Please sign in as owner first.");
+        return;
+    }
+
     openConfirmModal(
-
         "Remove Item",
-
         "Remove this item from the stock display?",
-
         async function () {
 
-            await setItemRemoved(item);
+            try {
+                await setItemRemoved(item);
 
-            showToast(
-                item + " removed from display."
-            );
+                render();
 
-            render();
+                showToast(
+                    item + " removed from display."
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Remove item error:",
+                    error
+                );
+
+                render();
+
+                showToast(
+                    "The item could not be removed. Check Firestore permissions."
+                );
+
+            }
 
         }
-
     );
 
 }
+
 
 
 /* =========================================================
