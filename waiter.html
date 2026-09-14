@@ -6,33 +6,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Serene Eatery | Cashier Dashboard</title>
+    <title>Serene Eatery | Waiter Dashboard</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-auth-compat.js"></script>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAZn1AMnp1jr2VdztRpqRg-nrle2lflt8s",
-            authDomain: "serene-eatery.firebaseapp.com",
-            projectId: "serene-eatery",
-            storageBucket: "serene-eatery.firebasestorage.app",
-            messagingSenderId: "743500466630",
-            appId: "1:743500466630:web:85e2fdebd776e47d9ccac7",
-            measurementId: "G-T94HN3RMZX"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-
-        const db = firebase.firestore();
-        const auth = firebase.auth();
-
-        const OWNER_EMAIL = "teddmwaura@gmail.com";
-    </script>
+    <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore-compat.js"></script>
 
     <style>
 
@@ -76,72 +57,12 @@
             display: flex;
         }
 
-        .receipt-card {
-            transition: all 0.2s ease;
+        .item-row {
+            transition: background 0.2s ease;
         }
 
-        .receipt-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .mobile-section-toggle {
-            display: none;
-        }
-
-        .mobile-section-body {
-            display: block;
-        }
-
-        @media (max-width: 767px) {
-
-            .mobile-collapsible {
-                padding: 0 !important;
-                overflow: hidden;
-            }
-
-            .mobile-section-toggle {
-                display: flex;
-                width: 100%;
-                align-items: center;
-                justify-content: space-between;
-                gap: 1rem;
-                padding: 1rem;
-                background: white;
-                border: 0;
-                text-align: left;
-                font-size: 1rem;
-            }
-
-            .mobile-section-toggle:hover {
-                background: #fafafa;
-            }
-
-            .mobile-section-arrow {
-                font-size: 1rem;
-                transition: transform 0.2s ease;
-            }
-
-            .mobile-collapsible.is-open .mobile-section-arrow {
-                transform: rotate(180deg);
-            }
-
-            .mobile-section-body {
-                display: none;
-                padding: 0 1rem 1rem;
-                border-top: 1px solid #e5e7eb;
-            }
-
-            .mobile-collapsible.is-open .mobile-section-body {
-                display: block;
-            }
-
-            .mobile-collapsible[data-mobile-title="Financial Summary"] .mobile-section-body {
-                padding-top: 1rem;
-            }
-
-            .mobile-collapsible[data-mobile-title="Financial Summary"] .mobile-section-body > div {
-                margin-bottom: 0.75rem;
-            }
+        .item-row:hover {
+            background: #fafafa;
         }
 
     </style>
@@ -152,7 +73,7 @@
 <body>
 
 
-<!-- HEADER -->
+<!-- ================= HEADER ================= -->
 
 <header class="fixed top-0 left-0 w-full bg-white border-b border-gray-200 z-50">
 
@@ -163,76 +84,50 @@
             Serene Eatery
         </a>
 
-        <div class="md:flex gap-6 text-sm">
+
+        <div class="hidden md:flex gap-6 text-sm">
+
+            <a href="waiter.html"
+               class="text-green-900">
+                Waiter
+            </a>
+
+            <a href="cashier.html"
+               class="hover:text-green-900 transition">
+                Cashier
+            </a>
 
             <a href="stock.html"
-               class="text-green-900 mr-4">
-                stock
+               class="hover:text-green-900 transition">
+                Stock
             </a>
 
             <a href="receipts.html"
-               class="text-green-900 mr-4">
+               class="hover:text-green-900 transition">
                 Receipts
             </a>
 
             <a href="admin.html"
-               class="text-green-900">
-                admin
+               class="hover:text-green-900 transition">
+                Admin
             </a>
 
         </div>
+
+
+        <!-- Cashier link on small screens -->
+
+        <a href="cashier.html"
+           class="md:hidden fixed top-4 right-6 z-[60] text-sm text-green-900">
+            Cashier
+        </a>
 
     </nav>
 
 </header>
 
 
-<!-- AUTH BAR -->
-
-<div id="authBar"
-     class="fixed top-[73px] left-0 w-full bg-white border-b border-gray-200 z-40">
-
-    <div class="max-w-7xl mx-auto px-6 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-
-        <div>
-
-            <p id="authStatus"
-               class="text-sm text-gray-600">
-                Checking account...
-            </p>
-
-            <p id="permissionStatus"
-               class="text-xs text-gray-400 mt-1">
-            </p>
-
-        </div>
-
-        <div class="flex gap-2">
-
-            <button id="googleSignInButton"
-                    onclick="signInWithGoogle()"
-                    class="border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100">
-
-                Sign in with Google
-
-            </button>
-
-            <button id="googleSignOutButton"
-                    onclick="signOutUser()"
-                    class="hidden border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100">
-
-                Sign out
-
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- POPUP -->
+<!-- ================= POPUP ================= -->
 
 <div id="popup"
      class="popup fixed top-24 right-5 z-[100]">
@@ -266,65 +161,42 @@
 </div>
 
 
-<!-- PAYMENT MODAL -->
+<!-- ================= CONFIRM ORDER MODAL ================= -->
 
-<div id="paymentModal"
+<div id="orderModal"
      class="modal fixed inset-0 bg-black/40 z-[90] items-center justify-center p-5">
 
-    <div class="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
+    <div class="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6">
 
         <div class="flex justify-between items-center">
 
             <h2 class="text-xl">
-                Confirm Customer Payment
+                Confirm Order
             </h2>
 
-            <button onclick="closePaymentModal()"
+            <button onclick="closeOrderModal()"
                     class="text-2xl text-gray-500 hover:text-black">
                 ×
             </button>
 
         </div>
 
-        <div id="paymentPreview"
+
+        <div id="orderPreview"
              class="mt-6">
         </div>
 
-        <div class="mt-6">
-
-            <p class="text-xs text-gray-500 mb-3">
-                SELECT PAYMENT METHOD
-            </p>
-
-            <div class="grid grid-cols-2 gap-4">
-
-                <button id="cashButton"
-                        onclick="selectPayment('Cash')"
-                        class="border border-gray-300 p-4 hover:bg-gray-100 transition">
-                    Cash
-                </button>
-
-                <button id="pochiButton"
-                        onclick="selectPayment('Pochi')"
-                        class="border border-gray-300 p-4 hover:bg-gray-100 transition">
-                    Pochi
-                </button>
-
-            </div>
-
-        </div>
 
         <div class="border-t border-gray-200 mt-6 pt-5 flex justify-end gap-3">
 
-            <button onclick="closePaymentModal()"
+            <button onclick="closeOrderModal()"
                     class="border border-gray-300 px-5 py-3 hover:bg-gray-100">
                 Cancel
             </button>
 
-            <button data-owner-only
-                    onclick="confirmPayment()"
+            <button onclick="placeOrder()"
                     class="bg-black text-white px-5 py-3 hover:bg-gray-800">
-                Confirm Payment
+                Place Order
             </button>
 
         </div>
@@ -334,669 +206,513 @@
 </div>
 
 
-<!-- REMOVE ORDER MODAL -->
+<!-- ================= MAIN ================= -->
 
-<div id="removeModal"
-     class="modal fixed inset-0 bg-black/40 z-[90] items-center justify-center p-5">
-
-    <div class="bg-white w-full max-w-md p-6">
-
-        <h2 class="text-xl">
-            Remove Order
-        </h2>
-
-        <p class="text-sm text-gray-500 mt-3">
-            Are you sure the customer rejected this order?
-        </p>
-
-        <p class="text-sm text-gray-500 mt-2">
-            The order will be removed and all product quantities will be returned to production stock.
-        </p>
-
-        <div class="flex justify-end gap-3 mt-8">
-
-            <button onclick="closeRemoveModal()"
-                    class="border border-gray-300 px-5 py-3 hover:bg-gray-100">
-                Keep Order
-            </button>
-
-            <button data-owner-only
-                    onclick="confirmRemoveOrder()"
-                    class="bg-black text-white px-5 py-3 hover:bg-gray-800">
-                Remove Order
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
+<main class="max-w-7xl mx-auto px-6 pt-28 pb-16">
 
 
-<!-- MAIN -->
+    <!-- ================= PAGE TITLE ================= -->
 
-<main class="max-w-7xl mx-auto px-6 pt-36 pb-16">
-
-
-    <!-- TITLE -->
-
-    <section class="mb-8">
+    <div class="mb-8">
 
         <p class="text-xs tracking-widest text-green-900">
             SERENE EATERY
         </p>
 
         <h1 class="text-3xl mt-2">
-            Cashier Dashboard
+            Waiter Dashboard
         </h1>
 
+        <p class="text-gray-500 mt-2">
+            Place customer orders using currently available kitchen production from Firebase.
+        </p>
+
         <p id="todayDate"
-           class="text-sm text-gray-500 mt-2">
+           class="text-xs text-gray-400 mt-2">
         </p>
 
-    </section>
+    </div>
 
 
-    <!-- FINANCIAL SUMMARY -->
+    <!-- ==================================================
+         AVAILABLE KITCHEN PRODUCTION
+    ================================================== -->
 
-    <section class="grid md:grid-cols-4 gap-5 mb-8 mobile-collapsible"
-             data-mobile-title="Financial Summary">
+    <section class="bg-white border border-gray-200 p-6 mb-8">
 
-        <div class="bg-white border border-gray-200 p-5">
-
-            <p class="text-xs text-gray-400">
-                TOTAL SALES
-            </p>
-
-            <p id="totalSales"
-               class="text-2xl mt-3">
-                Ksh 0
-            </p>
-
-        </div>
-
-        <div class="bg-white border border-gray-200 p-5">
-
-            <p class="text-xs text-gray-400">
-                TOTAL EXPENSES
-            </p>
-
-            <p id="totalExpenses"
-               class="text-2xl mt-3">
-                Ksh 0
-            </p>
-
-        </div>
-
-        <div class="bg-white border border-gray-200 p-5">
-
-            <p class="text-xs text-gray-400">
-                ESTIMATED PROFIT
-            </p>
-
-            <p id="estimatedProfit"
-               class="text-2xl mt-3">
-                Ksh 0
-            </p>
-
-        </div>
-
-        <div class="bg-white border border-gray-200 p-5">
-
-            <p class="text-xs text-gray-400">
-                PROFIT MARGIN
-            </p>
-
-            <p id="profitMargin"
-               class="text-2xl mt-3">
-                0%
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <!-- DAILY CASH BALANCE -->
-
-    <section class="bg-white border border-gray-200 p-6 mb-8 mobile-collapsible"
-             data-mobile-title="Daily Cash Balance">
-
-        <h2 class="text-xl">
-            Daily Cash Balance
-        </h2>
-
-        <p class="text-sm text-gray-400 mt-1">
-            Opening balance, cash sales and business balance.
-        </p>
-
-        <div class="grid md:grid-cols-3 gap-5 mt-6">
-
-            <div>
-
-                <label class="text-xs text-gray-500">
-                    OPENING BALANCE
-                </label>
-
-                <input id="openingBalance"
-                       type="number"
-                       min="0"
-                       placeholder="Ksh 0"
-                       class="w-full border border-gray-300 p-3 mt-2">
-
-            </div>
-
-            <div>
-
-                <p class="text-xs text-gray-500">
-                    CASH SALES
-                </p>
-
-                <p id="cashSales"
-                   class="text-xl mt-3">
-                    Ksh 0
-                </p>
-
-            </div>
-
-            <div>
-
-                <p class="text-xs text-gray-500">
-                    POCHI SALES
-                </p>
-
-                <p id="pochiSales"
-                   class="text-xl mt-3">
-                    Ksh 0
-                </p>
-
-            </div>
-
-        </div>
-
-        <button data-owner-only
-                onclick="saveOpeningBalance()"
-                class="border border-gray-300 px-5 py-3 mt-5 hover:bg-gray-100">
-
-            Save Opening Balance
-
-        </button>
-
-        <div class="grid md:grid-cols-2 gap-5 mt-8 pt-6 border-t border-gray-200">
-
-            <div>
-
-                <p class="text-xs text-gray-500">
-                    EXPECTED CASH AT HAND
-                </p>
-
-                <p id="expectedCash"
-                   class="text-2xl mt-2">
-                    Ksh 0
-                </p>
-
-            </div>
-
-            <div>
-
-                <p class="text-xs text-gray-500">
-                    CLOSING BALANCE
-                </p>
-
-                <p id="closingBalance"
-                   class="text-2xl mt-2">
-                    Ksh 0
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- PENDING ORDERS -->
-
-    <section class="bg-white border border-gray-200 p-6 mb-8 mobile-collapsible"
-             data-mobile-title="Orders Awaiting Payment">
-
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center mb-6">
 
             <div>
 
                 <h2 class="text-xl">
-                    Orders Awaiting Payment
+                    Available Kitchen Production
                 </h2>
 
                 <p class="text-sm text-gray-400 mt-1">
-                    Customer orders sent from the waiter dashboard.
+                    Select a product to see its current available quantity.
                 </p>
 
             </div>
 
-            <button onclick="renderAll()"
-                    class="border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100">
-                Refresh
+
+            <button onclick="refreshWaiterStock()"
+                    class="border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100 transition">
+
+                Refresh Stock
+
             </button>
 
         </div>
 
-        <div id="pendingOrders"
-             class="mt-6">
+
+        <!-- ================= PRODUCT DROPDOWN ================= -->
+
+        <div>
+
+            <label class="text-xs text-gray-500">
+                AVAILABLE PRODUCTS
+            </label>
+
+
+            <select id="productionSelect"
+                    onchange="showSelectedProduction()"
+                    class="w-full border border-gray-300 p-3 mt-2 bg-white">
+
+                <option value="">
+                    Select available kitchen product
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- ================= SELECTED PRODUCT INFO ================= -->
+
+        <div id="productionInfo"
+             class="hidden border border-gray-200 mt-5 p-5">
+
+        </div>
+
+
+        <!-- ================= EMPTY MESSAGE ================= -->
+
+        <div id="productionEmpty"
+             class="hidden text-center py-8">
+
+            <p class="text-gray-400">
+                No kitchen production is currently available.
+            </p>
+
         </div>
 
     </section>
 
 
-    <!-- EXPENSES -->
+    <!-- ==================================================
+         ADD PRODUCT
+    ================================================== -->
 
-    <section class="bg-white border border-gray-200 p-6 mb-8 mobile-collapsible"
-             data-mobile-title="Expenses">
+    <section class="bg-white border border-gray-200 p-6 mb-8">
 
-        <h2 class="text-xl">
-            Record Expense
-        </h2>
 
-        <div class="grid md:grid-cols-3 gap-5 mt-6">
+        <div class="flex justify-between items-center mb-6">
 
             <div>
 
-                <label class="text-xs text-gray-500">
-                    EXPENSE DESCRIPTION
-                </label>
+                <h2 class="text-xl">
+                    Add Product
+                </h2>
 
-                <input id="expenseDescription"
-                       type="text"
-                       placeholder="Example: Transport"
-                       class="w-full border border-gray-300 p-3 mt-2">
+                <p class="text-sm text-gray-400 mt-1">
+                    Only products currently available from the kitchen appear.
+                </p>
 
             </div>
 
+
+            <button onclick="refreshWaiterStock()"
+                    class="border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100 transition">
+
+                Refresh Stock
+
+            </button>
+
+        </div>
+
+
+        <div class="grid md:grid-cols-3 gap-5">
+
+
+            <!-- CATEGORY -->
+
             <div>
 
                 <label class="text-xs text-gray-500">
-                    AMOUNT
+                    CATEGORY
                 </label>
 
-                <input id="expenseAmount"
+                <select id="categorySelect"
+                        onchange="loadProducts()"
+                        class="w-full border border-gray-300 p-3 mt-2 bg-white">
+
+                    <option value="">
+                        Select category
+                    </option>
+
+                    <option value="Snacks">
+                        Snacks
+                    </option>
+
+                    <option value="Beverages">
+                        Beverages
+                    </option>
+
+                    <option value="Food">
+                        Food
+                    </option>
+
+                    <option value="Drinks">
+                        Drinks
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- PRODUCT -->
+
+            <div>
+
+                <label class="text-xs text-gray-500">
+                    PRODUCT
+                </label>
+
+                <select id="productSelect"
+                        onchange="updateProductInfo()"
+                        class="w-full border border-gray-300 p-3 mt-2 bg-white">
+
+                    <option value="">
+                        Select category first
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- QUANTITY -->
+
+            <div>
+
+                <label class="text-xs text-gray-500">
+                    QUANTITY
+                </label>
+
+                <input id="quantity"
                        type="number"
                        min="1"
-                       placeholder="Ksh"
+                       placeholder="Quantity"
+                       oninput="updateProductInfo()"
                        class="w-full border border-gray-300 p-3 mt-2">
 
             </div>
 
-            <div class="flex items-end">
+        </div>
 
-                <button data-owner-only
-                        onclick="addExpense()"
-                        class="w-full bg-black text-white p-3 hover:bg-gray-800">
 
-                    Add Expense
+        <!-- PRODUCT INFO -->
 
-                </button>
-
-            </div>
+        <div id="productInfo"
+             class="hidden border border-gray-200 mt-6 p-5">
 
         </div>
 
-        <div id="expensesContainer"
-             class="mt-8">
-        </div>
+
+        <button onclick="addToCart()"
+                class="w-full bg-black text-white p-3 mt-6 hover:bg-gray-800 transition">
+
+            Add To Order
+
+        </button>
 
     </section>
 
 
-    <!-- WORKERS -->
+    <!-- ==================================================
+         CURRENT ORDER
+    ================================================== -->
 
-    <section class="bg-white border border-gray-200 p-6 mb-8 mobile-collapsible"
-             data-mobile-title="Workers">
+    <section class="bg-white border border-gray-200 p-6 mb-8">
 
-        <h2 class="text-xl">
-            Workers for Today
-        </h2>
 
-        <div class="grid md:grid-cols-3 gap-5 mt-6">
+        <div class="flex justify-between items-center mb-6">
 
             <div>
 
-                <label class="text-xs text-gray-500">
-                    WORKER NAME
-                </label>
+                <h2 class="text-xl">
+                    Current Order
+                </h2>
 
-                <input id="workerName"
-                       type="text"
-                       placeholder="Worker name"
-                       class="w-full border border-gray-300 p-3 mt-2">
-
-            </div>
-
-            <div>
-
-                <label class="text-xs text-gray-500">
-                    DAILY WAGE
-                </label>
-
-                <input id="workerWage"
-                       type="number"
-                       min="0"
-                       placeholder="Ksh"
-                       class="w-full border border-gray-300 p-3 mt-2">
+                <p class="text-sm text-gray-400 mt-1">
+                    You can update or remove products before placing the order.
+                </p>
 
             </div>
 
-            <div class="flex items-end">
 
-                <button data-owner-only
-                        onclick="addWorker()"
-                        class="w-full bg-black text-white p-3 hover:bg-gray-800">
-
-                    Add Worker
-
-                </button>
-
-            </div>
+            <p id="cartCount"
+               class="text-sm text-gray-400">
+                0 items
+            </p>
 
         </div>
 
-        <div id="workersContainer"
-             class="mt-8">
+
+        <div id="cartContainer">
         </div>
 
-    </section>
+
+        <div id="cartFooter"
+             class="hidden border-t border-gray-200 mt-6 pt-6">
 
 
-    <!-- DEBTS -->
+            <div class="flex justify-between items-center mb-5">
 
-    <section class="bg-white border border-gray-200 p-6 mobile-collapsible"
-             data-mobile-title="Debts & Credit">
+                <p>
+                    Order Total
+                </p>
 
-        <h2 class="text-xl">
-            Debts & Credit
-        </h2>
-
-        <div class="grid md:grid-cols-3 gap-5 mt-6">
-
-            <div>
-
-                <label class="text-xs text-gray-500">
-                    CUSTOMER / DESCRIPTION
-                </label>
-
-                <input id="debtName"
-                       type="text"
-                       placeholder="Customer name"
-                       class="w-full border border-gray-300 p-3 mt-2">
+                <p id="cartTotal"
+                   class="text-2xl">
+                    Ksh 0
+                </p>
 
             </div>
 
-            <div>
 
-                <label class="text-xs text-gray-500">
-                    DEBT AMOUNT
-                </label>
+            <button onclick="openOrderConfirmation()"
+                    class="w-full bg-green-900 text-white p-4 hover:bg-green-800">
 
-                <input id="debtAmount"
-                       type="number"
-                       min="1"
-                       placeholder="Ksh"
-                       class="w-full border border-gray-300 p-3 mt-2">
+                Review & Place Order
 
-            </div>
+            </button>
 
-            <div class="flex items-end">
-
-                <button data-owner-only
-                        onclick="addDebt()"
-                        class="w-full bg-black text-white p-3 hover:bg-gray-800">
-
-                    Add Debt
-
-                </button>
-
-            </div>
-
-        </div>
-
-        <div id="debtsContainer"
-             class="mt-8">
         </div>
 
     </section>
+
 
 </main>
 
 
 <script>
 
-/* =====================================================
-   STORAGE KEYS
-===================================================== */
+/* ========================================================
+   FIREBASE
+======================================================== */
 
-const ORDER_KEY = "serene_orders";
-const EXPENSE_KEY = "serene_expenses";
-const WORKER_KEY = "serene_workers";
-const DEBT_KEY = "serene_debts";
-const BALANCE_KEY = "serene_daily_balances";
-const PRODUCTION_KEY = "serene_production";
+const firebaseConfig = {
+
+    apiKey: "AIzaSyAZn1AMnp1jr2VdztRpqRg-nrle2lflt8s",
+
+    authDomain: "serene-eatery.firebaseapp.com",
+
+    projectId: "serene-eatery",
+
+    storageBucket: "serene-eatery.firebasestorage.app",
+
+    messagingSenderId: "743500466630",
+
+    appId: "1:743500466630:web:85e2fdebd776e47d9ccac7",
+
+    measurementId: "G-T94HN3RMZX"
+
+};
 
 
-/* =====================================================
-   STATE
-===================================================== */
+if (!firebase.apps.length) {
 
-let selectedOrderId = null;
-let selectedPaymentMethod = null;
-let orderToRemove = null;
-let popupTimer;
+    firebase.initializeApp(firebaseConfig);
 
-let currentUser = null;
-let firebaseStarted = false;
+}
+
+
+const db =
+    firebase.firestore();
+
+
+const auth =
+    firebase.auth();
+
+
+const PRODUCTION_KEY =
+    "serene_production";
+
+
+const ORDER_KEY =
+    "serene_orders";
+
+
+let productionCache = [];
 
 let ordersCache = [];
-let productionCache = [];
-let expensesCache = [];
-let workersCache = [];
-let debtsCache = [];
-let balancesCache = [];
 
-let listenerStarted = false;
+let cart = [];
+
+let firebaseStarted = false;
 
 
-/* =====================================================
-   OWNER AUTHENTICATION
-===================================================== */
+/* ========================================================
+   MENU
+======================================================== */
 
-function isOwner() {
+const MENU = {
 
-    return !!currentUser &&
-        String(currentUser.email || "").toLowerCase() ===
-        OWNER_EMAIL.toLowerCase();
+    Snacks: {
 
-}
+        "Mandazi": 10,
+        "Pancakes": 30,
+        "Samosa Waru": 10,
+        "Samosa Beef": 50,
+        "Chapati": 30,
+        "chapati brown": 40,
+        "Smokie": 40,
+        "Sausage": 60,
+        "Bhajia": 50,
+        "rolex": 90,
+        "Smotcha": 70,
+        "Shawarma": 100,
+        "Chips": 120,
+        "Chips Masala": 150,
+        "eggs": 30,
+        "ommeletes": 80,
+        "cassava": 50,
+        "mayai": 100,
+        "boiled eggs": 30
+
+    },
 
 
-function requireOwner(action) {
+    Beverages: {
 
-    if (isOwner()) {
-        return true;
+        "Tea": 20,
+        "milk tea": 40,
+        "Black Coffee": 40,
+        "White Cofee": 60,
+        "Black Chocolate": 60,
+        "White Chocolate": 80,
+        "Milk": 60,
+        "Soup": 50,
+        "chocolate": 40,
+        "special tea": 30,
+        "lemon tea": 60
+
+    },
+
+
+    Food: {
+
+        "Kamande": 70,
+        "Minji": 70,
+        "Njahi": 70,
+        "Beans": 50,
+        "beef": 190,
+        "beef plain": 200,
+        "greens": 50,
+        "rice": 60,
+        "matumbo": 80,
+        "ugali": 50,
+        "ndengu": 50,
+        "chicken": 60,
+        "cabbage": 30,
+        "chicken @ 70 ": 70,
+        "mukimo": 100,
+        "githeri": 100
+
+    },
+
+
+    Drinks: {
+
+        "Water Small": 30,
+        "Water Big": 60,
+        "Fanta Orange 350ml": 60,
+        "Black Current 350ml": 60,
+        "Stoney 350ml": 60,
+        "Nuvida 350ml": 50,
+        "Passion 350ml": 50,
+        "Coke 350ml": 50,
+        "Sprite 350ml": 50,
+        "krest 350ml": 50,
+
+        "Fanta Orange 300ml": 50,
+        "Black Current 300ml": 50,
+        "Stoney 300ml": 50,
+        "Nuvida 300ml": 50,
+        "passion 300ml": 50,
+        "Coke 300ml": 50,
+        "Sprite 300ml": 50,
+        "krest 300ml": 50,
+
+        "Fanta Orange 500ml": 80,
+        "black current 500ml": 80,
+        "Stoney 500ml": 80,
+        "Nuvida 500ml": 80,
+        "Passion 500ml": 80,
+        "Coke 500ml": 80,
+        "Sprite 500ml": 80,
+        "krest 500ml": 80,
+
+        "Fanta Orange 500ml Plastic": 90,
+        "Black Current 500ml Plastic": 90,
+        "Stoney 500ml Plastic": 90,
+        "Nuvida 500ml Plastic": 90,
+        "Passion 500ml Plastic": 90,
+        "Coke 500ml Plastic": 90,
+        "Sprite 500ml Plastic": 90,
+        "krest 500ml Plastic": 90,
+
+        "Afia Small": 70,
+        "Afia Big": 100,
+        "Greens": 50,
+        "sugarcane": 70,
+        "passion": 70,
+        "mango": 70,
+        "mango big": 100,
+        "passion big": 100,
+        "nuvida": 60,
+        "krest 500ml": 80,
+        "cocktail": 100,
+        "pineaple": 70
+
     }
 
-    showPopup(
-        "Owner access required",
-        currentUser
-            ? "Only the owner can " + action + "."
-            : "Please sign in with the owner Google account first.",
-        true
-    );
-
-    return false;
-
-}
+};
 
 
-function updateAuthUI() {
-
-    const status =
-        document.getElementById("authStatus");
-
-    const permission =
-        document.getElementById("permissionStatus");
-
-    const signIn =
-        document.getElementById("googleSignInButton");
-
-    const signOut =
-        document.getElementById("googleSignOutButton");
-
-
-    if (!currentUser) {
-
-        status.textContent =
-            "Not signed in";
-
-        permission.textContent =
-            "Sign in with Google to access Firebase data.";
-
-        signIn.classList.remove("hidden");
-
-        signOut.classList.add("hidden");
-
-        return;
-
-    }
-
-
-    status.textContent =
-        "Signed in as " + currentUser.email;
-
-
-    permission.textContent =
-        isOwner()
-            ? "OWNER • Full cashier control"
-            : "STAFF • View only • Owner approval required for changes";
-
-
-    signIn.classList.add("hidden");
-
-    signOut.classList.remove("hidden");
-
-}
-
-
-async function signInWithGoogle() {
-
-    try {
-
-        await auth.signInWithPopup(
-            new firebase.auth.GoogleAuthProvider()
-        );
-
-    } catch (error) {
-
-        console.error(error);
-
-        showPopup(
-            "Sign-in failed",
-            "Google sign-in could not be completed. Please try again.",
-            true
-        );
-
-    }
-
-}
-
-
-async function signOutUser() {
-
-    try {
-
-        await auth.signOut();
-
-    } catch (error) {
-
-        console.error(error);
-
-        showPopup(
-            "Sign-out failed",
-            "Please try again.",
-            true
-        );
-
-    }
-
-}
-
-
-function protectOwnerControls() {
-
-    const ids = [
-        "openingBalance",
-        "expenseDescription",
-        "expenseAmount",
-        "workerName",
-        "workerWage",
-        "debtName",
-        "debtAmount"
-    ];
-
-
-    ids.forEach(function(id) {
-
-        const el =
-            document.getElementById(id);
-
-        if (el) {
-            el.disabled = !isOwner();
-        }
-
-    });
-
-
-    document
-        .querySelectorAll("button[data-owner-only]")
-        .forEach(function(button) {
-
-            button.disabled = !isOwner();
-
-            button.title =
-                isOwner()
-                    ? "Owner control"
-                    : "Owner only";
-
-            button.classList.toggle(
-                "opacity-50",
-                !isOwner()
-            );
-
-            button.classList.toggle(
-                "cursor-not-allowed",
-                !isOwner()
-            );
-
-        });
-
-}
-
-
-/* =====================================================
-   LOCAL CACHE
-===================================================== */
+/* ========================================================
+   LOCAL STORAGE
+======================================================== */
 
 function getLocalData(key) {
 
     try {
 
         const data =
-            JSON.parse(
-                localStorage.getItem(key)
-            );
+            localStorage.getItem(key);
 
-        return Array.isArray(data)
-            ? data
-            : [];
+        if (!data) return [];
+
+        return JSON.parse(data);
 
     } catch (error) {
+
+        console.error(
+            "Local data error:",
+            error
+        );
 
         return [];
 
@@ -1007,459 +723,69 @@ function getLocalData(key) {
 
 function saveLocalData(key, data) {
 
-    localStorage.setItem(
-        key,
-        JSON.stringify(
-            Array.isArray(data)
-                ? data
-                : []
-        )
-    );
+    try {
+
+        localStorage.setItem(
+            key,
+            JSON.stringify(data)
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Local save error:",
+            error
+        );
+
+    }
 
 }
 
-
-/* =====================================================
-   DATA ACCESS
-===================================================== */
 
 function getData(key) {
 
-    if (key === ORDER_KEY)
-        return ordersCache;
+    if (key === PRODUCTION_KEY) {
 
-    if (key === PRODUCTION_KEY)
         return productionCache;
 
-    if (key === EXPENSE_KEY)
-        return expensesCache;
-
-    if (key === WORKER_KEY)
-        return workersCache;
-
-    if (key === DEBT_KEY)
-        return debtsCache;
-
-    if (key === BALANCE_KEY)
-        return balancesCache;
-
-    return [];
-
-}
-
-
-/* =====================================================
-   SAFE FIRESTORE DOCUMENT WRITE
-===================================================== */
-
-async function saveRecordToFirebase(
-    collectionName,
-    record
-) {
-
-    if (!record || !record.id) {
-        throw new Error("Invalid record.");
     }
 
-    await db
-        .collection(collectionName)
-        .doc(String(record.id))
-        .set(record, { merge: true });
-
-}
-
-
-/* =====================================================
-   SAFE FIRESTORE DOCUMENT DELETE
-===================================================== */
-
-async function deleteRecordFromFirebase(
-    collectionName,
-    id
-) {
-
-    await db
-        .collection(collectionName)
-        .doc(String(id))
-        .delete();
-
-}
-
-
-/* =====================================================
-   SAVE DATA
-===================================================== */
-
-function saveData(key, data) {
 
     if (key === ORDER_KEY) {
 
-        ordersCache =
-            Array.isArray(data)
-                ? data
-                : [];
-
-        saveLocalData(
-            ORDER_KEY,
-            ordersCache
-        );
-
-        return;
+        return ordersCache;
 
     }
 
 
-    if (key === PRODUCTION_KEY) {
-
-        productionCache =
-            Array.isArray(data)
-                ? data
-                : [];
-
-        saveLocalData(
-            PRODUCTION_KEY,
-            productionCache
-        );
-
-        return;
-
-    }
-
-
-    if (key === EXPENSE_KEY) {
-
-        expensesCache =
-            Array.isArray(data)
-                ? data
-                : [];
-
-        saveLocalData(
-            EXPENSE_KEY,
-            expensesCache
-        );
-
-        return;
-
-    }
-
-
-    if (key === WORKER_KEY) {
-
-        workersCache =
-            Array.isArray(data)
-                ? data
-                : [];
-
-        saveLocalData(
-            WORKER_KEY,
-            workersCache
-        );
-
-        return;
-
-    }
-
-
-    if (key === DEBT_KEY) {
-
-        debtsCache =
-            Array.isArray(data)
-                ? data
-                : [];
-
-        saveLocalData(
-            DEBT_KEY,
-            debtsCache
-        );
-
-        return;
-
-    }
-
-
-    if (key === BALANCE_KEY) {
-
-        balancesCache =
-            Array.isArray(data)
-                ? data
-                : [];
-
-        saveLocalData(
-            BALANCE_KEY,
-            balancesCache
-        );
-
-        return;
-
-    }
+    return getLocalData(key);
 
 }
 
 
-/* =====================================================
-   SNAPSHOT NORMALIZATION
-===================================================== */
+/* ========================================================
+   HELPERS
+======================================================== */
 
-function normalizeSnapshot(snapshot) {
+function money(amount) {
 
-    return snapshot.docs.map(function(doc) {
-
-        return {
-            ...doc.data(),
-            id: doc.id
-        };
-
-    });
+    return "Ksh " +
+        Number(amount || 0)
+            .toLocaleString();
 
 }
 
 
-/* =====================================================
-   FIREBASE LISTENERS
-===================================================== */
-
-function startFirebaseListeners() {
-
-    if (listenerStarted) {
-        return;
-    }
-
-    listenerStarted = true;
-
-
-    /* ORDERS */
-
-    db.collection("orders").onSnapshot(
-
-        function(snapshot) {
-
-            ordersCache =
-                normalizeSnapshot(snapshot);
-
-            saveLocalData(
-                ORDER_KEY,
-                ordersCache
-            );
-
-            renderAll();
-
-        },
-
-        function(error) {
-
-            console.error(
-                "Orders Firebase listener error:",
-                error
-            );
-
-            showPopup(
-                "Firebase connection problem",
-                "Orders could not be loaded from Firebase.",
-                true
-            );
-
-        }
-
-    );
-
-
-    /* PRODUCTION */
-
-    db.collection("production").onSnapshot(
-
-        function(snapshot) {
-
-            productionCache =
-                normalizeSnapshot(snapshot);
-
-            saveLocalData(
-                PRODUCTION_KEY,
-                productionCache
-            );
-
-            renderAll();
-
-        },
-
-        function(error) {
-
-            console.error(
-                "Production Firebase listener error:",
-                error
-            );
-
-            showPopup(
-                "Firebase connection problem",
-                "Production stock could not be loaded from Firebase.",
-                true
-            );
-
-        }
-
-    );
-
-
-    /* EXPENSES */
-
-    db.collection("expenses").onSnapshot(
-
-        function(snapshot) {
-
-            expensesCache =
-                normalizeSnapshot(snapshot);
-
-            saveLocalData(
-                EXPENSE_KEY,
-                expensesCache
-            );
-
-            renderAll();
-
-        },
-
-        function(error) {
-
-            console.error(
-                "Expenses Firebase listener error:",
-                error
-            );
-
-            showPopup(
-                "Firebase connection problem",
-                "Expenses could not be loaded from Firebase.",
-                true
-            );
-
-        }
-
-    );
-
-
-    /* WORKERS */
-
-    db.collection("workers").onSnapshot(
-
-        function(snapshot) {
-
-            workersCache =
-                normalizeSnapshot(snapshot);
-
-            saveLocalData(
-                WORKER_KEY,
-                workersCache
-            );
-
-            renderAll();
-
-        },
-
-        function(error) {
-
-            console.error(
-                "Workers Firebase listener error:",
-                error
-            );
-
-            showPopup(
-                "Firebase connection problem",
-                "Workers could not be loaded from Firebase.",
-                true
-            );
-
-        }
-
-    );
-
-
-    /* DEBTS */
-
-    db.collection("debts").onSnapshot(
-
-        function(snapshot) {
-
-            debtsCache =
-                normalizeSnapshot(snapshot);
-
-            saveLocalData(
-                DEBT_KEY,
-                debtsCache
-            );
-
-            renderAll();
-
-        },
-
-        function(error) {
-
-            console.error(
-                "Debts Firebase listener error:",
-                error
-            );
-
-            showPopup(
-                "Firebase connection problem",
-                "Debts could not be loaded from Firebase.",
-                true
-            );
-
-        }
-
-    );
-
-
-    /* DAILY BALANCES */
-
-    db.collection("dailyBalances").onSnapshot(
-
-        function(snapshot) {
-
-            balancesCache =
-                normalizeSnapshot(snapshot);
-
-            saveLocalData(
-                BALANCE_KEY,
-                balancesCache
-            );
-
-            const openingInput =
-                document.getElementById(
-                    "openingBalance"
-                );
-
-            if (openingInput) {
-
-                openingInput.value =
-                    getOpeningBalance();
-
-            }
-
-            renderAll();
-
-        },
-
-        function(error) {
-
-            console.error(
-                "Daily balances Firebase listener error:",
-                error
-            );
-
-            showPopup(
-                "Firebase connection problem",
-                "Daily balances could not be loaded from Firebase.",
-                true
-            );
-
-        }
-
-    );
+function generateID() {
+
+    return Date.now() +
+        "-" +
+        Math.random()
+            .toString(36)
+            .substring(2, 9);
 
 }
 
-
-/* =====================================================
-   DATE FUNCTIONS
-===================================================== */
 
 function nowDate() {
 
@@ -1483,63 +809,6 @@ function nowTime() {
 }
 
 
-function getTodayKey() {
-
-    const date =
-        new Date();
-
-    const year =
-        date.getFullYear();
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, "0");
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-
-}
-
-
-function isToday(item) {
-
-    return item.date === nowDate();
-
-}
-
-
-/* =====================================================
-   HELPERS
-===================================================== */
-
-function money(amount) {
-
-    return "Ksh " +
-        Number(
-            amount || 0
-        ).toLocaleString();
-
-}
-
-
-function generateID() {
-
-    return (
-        Date.now() +
-        "-" +
-        Math.random()
-            .toString(36)
-            .substring(2, 9)
-    );
-
-}
-
-
 function escapeHTML(value) {
 
     const div =
@@ -1553,9 +822,262 @@ function escapeHTML(value) {
 }
 
 
-/* =====================================================
+/* ========================================================
+   FIREBASE ORDER SAVE
+======================================================== */
+
+async function saveOrderToFirebase(order) {
+
+    try {
+
+        if (!order || !order.id) {
+
+            throw new Error(
+                "Invalid order."
+            );
+
+        }
+
+
+        await db
+            .collection("orders")
+            .doc(String(order.id))
+            .set(order);
+
+
+        console.log(
+            "Order saved:",
+            order.orderNumber
+        );
+
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Order Firebase save error:",
+            error
+        );
+
+
+        showPopup(
+            "Firebase error",
+            error.code === "permission-denied"
+                ? "You are not authorized to create orders. Please sign in again."
+                : "Order could not be saved to Firebase.",
+            true
+        );
+
+
+        return false;
+
+    }
+
+}
+
+
+/* ========================================================
+   AUTHENTICATION
+======================================================== */
+
+function startFirebaseAuth() {
+
+    auth.onAuthStateChanged(
+        function(user) {
+
+            if (!user) {
+
+                console.warn(
+                    "No authenticated Firebase user."
+                );
+
+
+                showPopup(
+                    "Login required",
+                    "Please sign in before using the waiter dashboard.",
+                    true
+                );
+
+
+                return;
+
+            }
+
+
+            console.log(
+                "Signed in:",
+                user.email
+            );
+
+
+            startFirebaseListeners();
+
+        }
+    );
+
+}
+
+
+/* ========================================================
+   FIREBASE LISTENERS
+======================================================== */
+
+function startFirebaseListeners() {
+
+    if (firebaseStarted) return;
+
+    firebaseStarted = true;
+
+
+    /* ================= PRODUCTION ================= */
+
+    db.collection("production")
+        .onSnapshot(
+
+            function(snapshot) {
+
+                productionCache =
+                    snapshot.docs.map(
+                        function(doc) {
+
+                            return {
+
+                                ...doc.data(),
+
+                                id: doc.id
+
+                            };
+
+                        }
+                    );
+
+
+                saveLocalData(
+                    PRODUCTION_KEY,
+                    productionCache
+                );
+
+
+                renderProductionDropdown();
+
+
+                const category =
+                    document.getElementById(
+                        "categorySelect"
+                    ).value;
+
+
+                if (category) {
+
+                    loadProducts();
+
+                    updateProductInfo();
+
+                }
+
+            },
+
+
+            function(error) {
+
+                console.error(
+                    "Production listener error:",
+                    error
+                );
+
+
+                productionCache =
+                    getLocalData(
+                        PRODUCTION_KEY
+                    );
+
+
+                renderProductionDropdown();
+
+            }
+
+        );
+
+
+    /* ================= ORDERS ================= */
+
+    db.collection("orders")
+        .onSnapshot(
+
+            function(snapshot) {
+
+                ordersCache =
+                    snapshot.docs.map(
+                        function(doc) {
+
+                            return {
+
+                                ...doc.data(),
+
+                                id: doc.id
+
+                            };
+
+                        }
+                    );
+
+
+                saveLocalData(
+                    ORDER_KEY,
+                    ordersCache
+                );
+
+
+                renderProductionDropdown();
+
+
+                const category =
+                    document.getElementById(
+                        "categorySelect"
+                    ).value;
+
+
+                if (category) {
+
+                    loadProducts();
+
+                    updateProductInfo();
+
+                }
+
+            },
+
+
+            function(error) {
+
+                console.error(
+                    "Orders listener error:",
+                    error
+                );
+
+
+                ordersCache =
+                    getLocalData(
+                        ORDER_KEY
+                    );
+
+
+                renderProductionDropdown();
+
+            }
+
+        );
+
+}
+
+
+/* ========================================================
    POPUP
-===================================================== */
+======================================================== */
+
+let popupTimer;
+
 
 function showPopup(
     title,
@@ -1564,30 +1086,44 @@ function showPopup(
 ) {
 
     const popup =
-        document.getElementById("popup");
+        document.getElementById(
+            "popup"
+        );
+
 
     document.getElementById(
         "popupTitle"
-    ).textContent = title;
+    ).textContent =
+        title;
+
 
     document.getElementById(
         "popupMessage"
-    ).textContent = message;
+    ).textContent =
+        message;
+
 
     document.getElementById(
         "popupIcon"
     ).textContent =
         error ? "×" : "✓";
 
+
     popup.classList.add("show");
 
-    clearTimeout(popupTimer);
+
+    clearTimeout(
+        popupTimer
+    );
+
 
     popupTimer =
         setTimeout(
             function() {
 
-                popup.classList.remove("show");
+                popup.classList.remove(
+                    "show"
+                );
 
             },
             3500
@@ -1596,297 +1132,746 @@ function showPopup(
 }
 
 
-/* =====================================================
-   PENDING ORDERS
-===================================================== */
+/* ========================================================
+   PRODUCTION
+======================================================== */
 
-function getPendingOrders() {
+function getProduction() {
 
-    return getData(ORDER_KEY)
-        .filter(function(order) {
-
-            return (
-                order.paymentStatus === "pending" ||
-                !order.paymentStatus
-            );
-
-        });
+    return getData(
+        PRODUCTION_KEY
+    );
 
 }
 
 
-function renderPendingOrders() {
+/* ========================================================
+   PRODUCTION BALANCES
+======================================================== */
 
-    const container =
-        document.getElementById(
-            "pendingOrders"
-        );
+function getProductionBalances() {
+
+    const production =
+        getProduction();
+
+
+    const balances = {};
+
+
+    /*
+       ADD PRODUCTION
+    */
+
+    production.forEach(
+        function(record) {
+
+            const product =
+                record.product ||
+                record.name ||
+                record.item;
+
+
+            if (!product) return;
+
+
+            const key =
+                String(product)
+                    .trim()
+                    .toLowerCase();
+
+
+            const quantity =
+                Number(
+                    record.quantity ??
+                    record.qty ??
+                    record.produced ??
+                    record.amount ??
+                    0
+                );
+
+
+            if (!balances[key]) {
+
+                balances[key] = {
+
+                    product:
+                        product,
+
+                    quantity:
+                        0
+
+                };
+
+            }
+
+
+            balances[key].quantity +=
+                quantity;
+
+        }
+    );
+
+
+    /*
+       SUBTRACT PENDING ORDERS
+    */
 
     const orders =
-        getPendingOrders();
+        getData(
+            ORDER_KEY
+        );
 
-    container.innerHTML = "";
+
+    orders.forEach(
+        function(order) {
+
+            const status =
+                String(
+                    order.status ||
+                    order.paymentStatus ||
+                    ""
+                ).toLowerCase();
 
 
-    if (!orders.length) {
+            if (
+                status !== "pending" &&
+                status !== "placed"
+            ) {
 
-        container.innerHTML = `
+                return;
 
-            <div class="text-center py-10">
+            }
 
-                <p class="text-gray-400">
 
-                    No customer orders are awaiting payment.
+            const products =
+                order.products ||
+                order.items ||
+                [];
 
-                </p>
 
-            </div>
+            products.forEach(
+                function(item) {
 
-        `;
+                    const product =
+                        item.product ||
+                        item.name ||
+                        item.item;
+
+
+                    if (!product) return;
+
+
+                    const key =
+                        String(product)
+                            .trim()
+                            .toLowerCase();
+
+
+                    const quantity =
+                        Number(
+                            item.quantity ??
+                            item.qty ??
+                            0
+                        );
+
+
+                    if (balances[key]) {
+
+                        balances[key].quantity -=
+                            quantity;
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+       NEVER SHOW NEGATIVE STOCK
+    */
+
+    Object.keys(
+        balances
+    ).forEach(
+        function(key) {
+
+            balances[key].quantity =
+                Math.max(
+                    0,
+                    balances[key].quantity
+                );
+
+        }
+    );
+
+
+    return balances;
+
+}
+
+
+/* ========================================================
+   PRODUCT STOCK
+======================================================== */
+
+function getProductStock(product) {
+
+    const balances =
+        getProductionBalances();
+
+
+    const key =
+        String(product)
+            .trim()
+            .toLowerCase();
+
+
+    if (!balances[key]) {
+
+        return 0;
+
+    }
+
+
+    return Number(
+        balances[key].quantity
+    );
+
+}
+
+
+/* ========================================================
+   NEW:
+   AVAILABLE KITCHEN PRODUCTS DROPDOWN
+======================================================== */
+
+function renderProductionDropdown() {
+
+    const select =
+        document.getElementById(
+            "productionSelect"
+        );
+
+
+    const info =
+        document.getElementById(
+            "productionInfo"
+        );
+
+
+    const empty =
+        document.getElementById(
+            "productionEmpty"
+        );
+
+
+    if (!select) return;
+
+
+    const balances =
+        getProductionBalances();
+
+
+    /*
+       Only show products with stock above zero.
+    */
+
+    const products =
+        Object.values(
+            balances
+        )
+        .filter(
+            function(item) {
+
+                return Number(
+                    item.quantity
+                ) > 0;
+
+            }
+        )
+        .sort(
+            function(a, b) {
+
+                return a.product.localeCompare(
+                    b.product
+                );
+
+            }
+        );
+
+
+    /*
+       Reset dropdown.
+    */
+
+    select.innerHTML =
+        `<option value="">
+            Select available kitchen product
+        </option>`;
+
+
+    info.classList.add(
+        "hidden"
+    );
+
+
+    info.innerHTML = "";
+
+
+    /*
+       No available products.
+    */
+
+    if (!products.length) {
+
+        empty.classList.remove(
+            "hidden"
+        );
+
+        select.disabled = true;
 
         return;
 
     }
 
 
-    orders
-        .slice()
-        .reverse()
-        .forEach(function(order) {
+    empty.classList.add(
+        "hidden"
+    );
 
-            let productsHTML = "";
 
-            const items =
-                order.products ||
-                order.items ||
-                [];
+    select.disabled = false;
 
 
-            items.forEach(function(item) {
+    /*
+       Add available products.
+    */
 
-                productsHTML += `
+    products.forEach(
+        function(item) {
 
-                    <div class="flex justify-between border-b border-gray-100 py-2 text-sm">
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-                        <span>
 
-                            ${escapeHTML(
-                                item.product ||
-                                item.name ||
-                                ""
-                            )}
+            option.value =
+                item.product;
 
-                            ×
 
-                            ${Number(
-                                item.quantity || 0
-                            )}
+            option.textContent =
+                `${item.product} — ${item.quantity} available`;
 
-                        </span>
 
-                        <span>
+            select.appendChild(
+                option
+            );
 
-                            ${money(
-                                item.total
-                            )}
-
-                        </span>
-
-                    </div>
-
-                `;
-
-            });
-
-
-            container.innerHTML += `
-
-                <div class="receipt-card border border-gray-200 p-5 mt-4">
-
-                    <div class="flex flex-col md:flex-row md:justify-between gap-5">
-
-                        <div class="flex-1">
-
-                            <div class="flex justify-between">
-
-                                <div>
-
-                                    <p class="text-xs text-gray-400">
-                                        ORDER NUMBER
-                                    </p>
-
-                                    <p class="mt-1">
-
-                                        ${escapeHTML(
-                                            order.orderNumber ||
-                                            order.id
-                                        )}
-
-                                    </p>
-
-                                </div>
-
-                                <p class="text-sm text-gray-500">
-                                    Payment Pending
-                                </p>
-
-                            </div>
-
-
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5">
-
-                                <div>
-
-                                    <p class="text-xs text-gray-400">
-                                        TABLE
-                                    </p>
-
-                                    <p class="mt-1">
-
-                                        Table ${escapeHTML(
-                                            order.table || "-"
-                                        )}
-
-                                    </p>
-
-                                </div>
-
-
-                                <div>
-
-                                    <p class="text-xs text-gray-400">
-                                        WAITER
-                                    </p>
-
-                                    <p class="mt-1">
-
-                                        ${escapeHTML(
-                                            order.waiter || "-"
-                                        )}
-
-                                    </p>
-
-                                </div>
-
-
-                                <div>
-
-                                    <p class="text-xs text-gray-400">
-                                        DATE
-                                    </p>
-
-                                    <p class="mt-1">
-
-                                        ${escapeHTML(
-                                            order.date || "-"
-                                        )}
-
-                                    </p>
-
-                                </div>
-
-
-                                <div>
-
-                                    <p class="text-xs text-gray-400">
-                                        TIME
-                                    </p>
-
-                                    <p class="mt-1">
-
-                                        ${escapeHTML(
-                                            order.time || "-"
-                                        )}
-
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="mt-5">
-
-                                ${productsHTML}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="md:w-52 flex flex-col justify-between">
-
-                            <div>
-
-                                <p class="text-xs text-gray-400">
-                                    TOTAL AMOUNT
-                                </p>
-
-                                <p class="text-2xl mt-2">
-
-                                    ${money(
-                                        order.total
-                                    )}
-
-                                </p>
-
-                            </div>
-
-
-                            <div class="flex flex-col gap-3 mt-5">
-
-                                <button
-                                    onclick="openPaymentModal('${escapeHTML(order.id)}')"
-                                    class="bg-black text-white p-3 hover:bg-gray-800 transition">
-
-                                    Confirm Payment
-
-                                </button>
-
-
-                                <button
-                                    onclick="openRemoveModal('${escapeHTML(order.id)}')"
-                                    class="border border-gray-300 p-3 hover:bg-gray-100 transition">
-
-                                    Remove Order
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        });
+        }
+    );
 
 }
 
 
-/* =====================================================
-   PAYMENT
-===================================================== */
+/* ========================================================
+   SHOW SELECTED PRODUCTION
+======================================================== */
 
-function openPaymentModal(orderId) {
+function showSelectedProduction() {
 
-    const orders =
-        getData(ORDER_KEY);
-
-    const order =
-        orders.find(
-            order => order.id === orderId
+    const select =
+        document.getElementById(
+            "productionSelect"
         );
 
 
-    if (!order) {
+    const info =
+        document.getElementById(
+            "productionInfo"
+        );
+
+
+    const product =
+        select.value;
+
+
+    if (!product) {
+
+        info.classList.add(
+            "hidden"
+        );
+
+        info.innerHTML = "";
+
+        return;
+
+    }
+
+
+    const stock =
+        getProductStock(
+            product
+        );
+
+
+    let status =
+        "Available";
+
+
+    if (stock < 3) {
+
+        status =
+            "Running out";
+
+    }
+
+
+    info.classList.remove(
+        "hidden"
+    );
+
+
+    info.innerHTML = `
+
+        <div class="grid md:grid-cols-3 gap-5">
+
+
+            <div>
+
+                <p class="text-xs text-gray-400">
+                    PRODUCT
+                </p>
+
+                <p class="mt-2">
+                    ${escapeHTML(product)}
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <p class="text-xs text-gray-400">
+                    AVAILABLE QUANTITY
+                </p>
+
+                <p class="mt-2 text-xl">
+                    ${stock}
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <p class="text-xs text-gray-400">
+                    STATUS
+                </p>
+
+                <p class="mt-2">
+                    ${status}
+                </p>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ========================================================
+   AVAILABLE MENU PRODUCTS
+======================================================== */
+
+function getAvailableProducts(category) {
+
+    const menu =
+        MENU[category] || {};
+
+
+    const products = [];
+
+
+    Object.keys(menu)
+        .forEach(
+            function(product) {
+
+                const stock =
+                    getProductStock(
+                        product
+                    );
+
+
+                if (stock > 0) {
+
+                    products.push({
+
+                        product:
+                            product,
+
+                        price:
+                            menu[product],
+
+                        stock:
+                            stock
+
+                    });
+
+                }
+
+            }
+        );
+
+
+    return products;
+
+}
+
+
+/* ========================================================
+   LOAD PRODUCTS
+======================================================== */
+
+function loadProducts() {
+
+    const category =
+        document.getElementById(
+            "categorySelect"
+        ).value;
+
+
+    const select =
+        document.getElementById(
+            "productSelect"
+        );
+
+
+    select.innerHTML =
+        `<option value="">
+            Select product
+        </option>`;
+
+
+    document.getElementById(
+        "productInfo"
+    ).classList.add(
+        "hidden"
+    );
+
+
+    if (!category) return;
+
+
+    const products =
+        getAvailableProducts(
+            category
+        );
+
+
+    if (!products.length) {
+
+        select.innerHTML =
+            `<option value="">
+                No products currently available
+            </option>`;
+
+        return;
+
+    }
+
+
+    products.forEach(
+        function(item) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                item.product;
+
+
+            option.textContent =
+                `${item.product} | ${money(item.price)} | ${item.stock} left`;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+/* ========================================================
+   PRODUCT INFO
+======================================================== */
+
+function updateProductInfo() {
+
+    const category =
+        document.getElementById(
+            "categorySelect"
+        ).value;
+
+
+    const product =
+        document.getElementById(
+            "productSelect"
+        ).value;
+
+
+    const quantity =
+        Number(
+            document.getElementById(
+                "quantity"
+            ).value || 0
+        );
+
+
+    const info =
+        document.getElementById(
+            "productInfo"
+        );
+
+
+    if (!category || !product) {
+
+        info.classList.add(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+
+    const price =
+        MENU[category][product];
+
+
+    const stock =
+        getProductStock(
+            product
+        );
+
+
+    const remaining =
+        Math.max(
+            0,
+            stock - quantity
+        );
+
+
+    info.classList.remove(
+        "hidden"
+    );
+
+
+    info.innerHTML = `
+
+        <div class="grid md:grid-cols-4 gap-5">
+
+
+            <div>
+
+                <p class="text-xs text-gray-400">
+                    PRICE
+                </p>
+
+                <p class="mt-2">
+                    ${money(price)}
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <p class="text-xs text-gray-400">
+                    AVAILABLE BEFORE ORDER
+                </p>
+
+                <p class="mt-2">
+                    ${stock}
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <p class="text-xs text-gray-400">
+                    REQUESTED
+                </p>
+
+                <p class="mt-2">
+                    ${quantity}
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <p class="text-xs text-gray-400">
+                    REMAINING AFTER ORDER
+                </p>
+
+                <p class="mt-2">
+                    ${remaining}
+                </p>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ========================================================
+   ADD TO CART
+======================================================== */
+
+function addToCart() {
+
+    const category =
+        document.getElementById(
+            "categorySelect"
+        ).value;
+
+
+    const product =
+        document.getElementById(
+            "productSelect"
+        ).value;
+
+
+    const quantity =
+        Number(
+            document.getElementById(
+                "quantity"
+            ).value
+        );
+
+
+    if (!category) {
 
         showPopup(
-            "Order not found",
-            "This order could not be found.",
+            "Category missing",
+            "Please select a category.",
             true
         );
 
@@ -1895,90 +1880,560 @@ function openPaymentModal(orderId) {
     }
 
 
-    selectedOrderId =
-        orderId;
+    if (!product) {
 
-    selectedPaymentMethod =
-        null;
+        showPopup(
+            "Product missing",
+            "Please select a product.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !Number.isInteger(quantity) ||
+        quantity <= 0
+    ) {
+
+        showPopup(
+            "Quantity missing",
+            "Please enter a valid quantity.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    const stock =
+        getProductStock(
+            product
+        );
+
+
+    const alreadyInCart =
+        cart
+            .filter(
+                function(item) {
+
+                    return item.product === product;
+
+                }
+            )
+            .reduce(
+                function(total, item) {
+
+                    return total +
+                        item.quantity;
+
+                },
+                0
+            );
+
+
+    if (
+        quantity +
+        alreadyInCart >
+        stock
+    ) {
+
+        showPopup(
+            "Not enough stock",
+            `Only ${Math.max(
+                0,
+                stock - alreadyInCart
+            )} ${product} remain available for this order.`,
+            true
+        );
+
+        return;
+
+    }
+
+
+    const price =
+        MENU[category][product];
+
+
+    cart.push({
+
+        id:
+            generateID(),
+
+        category:
+            category,
+
+        product:
+            product,
+
+        quantity:
+            quantity,
+
+        price:
+            price,
+
+        total:
+            quantity * price,
+
+        stockBeforeOrder:
+            stock
+
+    });
+
+
+    renderCart();
 
 
     document.getElementById(
-        "cashButton"
-    ).className =
-        "border border-gray-300 p-4 hover:bg-gray-100 transition";
+        "productSelect"
+    ).value = "";
 
 
     document.getElementById(
-        "pochiButton"
-    ).className =
-        "border border-gray-300 p-4 hover:bg-gray-100 transition";
+        "quantity"
+    ).value = "";
 
 
-    let productsHTML = "";
+    document.getElementById(
+        "productInfo"
+    ).classList.add(
+        "hidden"
+    );
 
 
-    (
-        order.products ||
-        order.items ||
-        []
-    ).forEach(function(item) {
+    showPopup(
+        "Added to order",
+        `${quantity} ${product} added.`
+    );
 
-        productsHTML += `
+}
 
-            <div class="flex justify-between py-2 border-b border-gray-100">
 
-                <span>
+/* ========================================================
+   CART
+======================================================== */
 
-                    ${escapeHTML(
-                        item.product ||
-                        item.name ||
-                        ""
-                    )}
+function renderCart() {
 
-                    ×
+    const container =
+        document.getElementById(
+            "cartContainer"
+        );
 
-                    ${Number(
-                        item.quantity || 0
-                    )}
 
-                </span>
+    const footer =
+        document.getElementById(
+            "cartFooter"
+        );
 
-                <span>
 
-                    ${money(
-                        item.total
-                    )}
+    container.innerHTML = "";
 
-                </span>
+
+    document.getElementById(
+        "cartCount"
+    ).textContent =
+        `${cart.length} ${
+            cart.length === 1
+                ? "item"
+                : "items"
+        }`;
+
+
+    if (!cart.length) {
+
+        footer.classList.add(
+            "hidden"
+        );
+
+
+        container.innerHTML = `
+
+            <div class="text-center py-10">
+
+                <p class="text-gray-400">
+                    No products added to this order.
+                </p>
 
             </div>
 
         `;
 
-    });
+
+        return;
+
+    }
+
+
+    footer.classList.remove(
+        "hidden"
+    );
+
+
+    let total = 0;
+
+
+    cart.forEach(
+        function(item, index) {
+
+            total += item.total;
+
+
+            container.innerHTML += `
+
+                <div class="item-row border-b border-gray-200 py-5">
+
+                    <div class="grid md:grid-cols-6 gap-4 items-center">
+
+
+                        <div>
+
+                            <p class="text-xs text-gray-400">
+                                CATEGORY
+                            </p>
+
+                            <p class="mt-1">
+                                ${escapeHTML(item.category)}
+                            </p>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="text-xs text-gray-400">
+                                PRODUCT
+                            </p>
+
+                            <p class="mt-1">
+                                ${escapeHTML(item.product)}
+                            </p>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="text-xs text-gray-400">
+                                QUANTITY
+                            </p>
+
+                            <input
+                                type="number"
+                                min="1"
+                                value="${item.quantity}"
+                                onchange="updateCartQuantity(${index}, this.value)"
+                                class="border border-gray-300 p-2 w-20 mt-1"
+                            >
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="text-xs text-gray-400">
+                                PRICE
+                            </p>
+
+                            <p class="mt-1">
+                                ${money(item.price)}
+                            </p>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="text-xs text-gray-400">
+                                TOTAL
+                            </p>
+
+                            <p class="mt-1">
+                                ${money(item.total)}
+                            </p>
+
+                        </div>
+
+
+                        <div class="text-right">
+
+                            <button
+                                onclick="removeFromCart(${index})"
+                                class="text-sm text-gray-500 hover:text-black">
+                                Remove
+                            </button>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+    );
 
 
     document.getElementById(
-        "paymentPreview"
-    ).innerHTML = `
+        "cartTotal"
+    ).textContent =
+        money(total);
+
+}
+
+
+/* ========================================================
+   UPDATE CART QUANTITY
+======================================================== */
+
+function updateCartQuantity(
+    index,
+    value
+) {
+
+    const quantity =
+        Number(value);
+
+
+    const item =
+        cart[index];
+
+
+    if (!item) return;
+
+
+    if (
+        !Number.isInteger(quantity) ||
+        quantity <= 0
+    ) {
+
+        showPopup(
+            "Invalid quantity",
+            "Quantity must be at least 1.",
+            true
+        );
+
+
+        renderCart();
+
+        return;
+
+    }
+
+
+    const stock =
+        getProductStock(
+            item.product
+        );
+
+
+    const otherQuantity =
+        cart
+            .filter(
+                function(cartItem, i) {
+
+                    return (
+                        i !== index &&
+                        cartItem.product ===
+                        item.product
+                    );
+
+                }
+            )
+            .reduce(
+                function(total, cartItem) {
+
+                    return total +
+                        cartItem.quantity;
+
+                },
+                0
+            );
+
+
+    if (
+        quantity +
+        otherQuantity >
+        stock
+    ) {
+
+        showPopup(
+            "Not enough stock",
+            `Only ${Math.max(
+                0,
+                stock - otherQuantity
+            )} more ${item.product} can be ordered.`,
+            true
+        );
+
+
+        renderCart();
+
+        return;
+
+    }
+
+
+    item.quantity =
+        quantity;
+
+
+    item.total =
+        quantity *
+        item.price;
+
+
+    renderCart();
+
+}
+
+
+/* ========================================================
+   REMOVE CART ITEM
+======================================================== */
+
+function removeFromCart(index) {
+
+    if (!cart[index]) return;
+
+
+    const product =
+        cart[index].product;
+
+
+    cart.splice(
+        index,
+        1
+    );
+
+
+    renderCart();
+
+
+    showPopup(
+        "Removed",
+        `${product} removed from the order.`
+    );
+
+}
+
+
+/* ========================================================
+   VALIDATE ORDER
+======================================================== */
+
+function validateOrder() {
+
+    if (!cart.length) {
+
+        showPopup(
+            "Order empty",
+            "Add at least one product.",
+            true
+        );
+
+
+        return false;
+
+    }
+
+
+    const grouped = {};
+
+
+    cart.forEach(
+        function(item) {
+
+            if (!grouped[item.product]) {
+
+                grouped[item.product] = 0;
+
+            }
+
+
+            grouped[item.product] +=
+                item.quantity;
+
+        }
+    );
+
+
+    for (
+        const product in grouped
+    ) {
+
+        const stock =
+            getProductStock(
+                product
+            );
+
+
+        if (
+            grouped[product] >
+            stock
+        ) {
+
+            showPopup(
+                "Stock changed",
+                `Only ${stock} ${product} remain.`,
+                true
+            );
+
+
+            return false;
+
+        }
+
+    }
+
+
+    return true;
+
+}
+
+
+/* ========================================================
+   ORDER CONFIRMATION
+======================================================== */
+
+function openOrderConfirmation() {
+
+    if (!validateOrder()) return;
+
+
+    const total =
+        cart.reduce(
+            function(sum, item) {
+
+                return sum +
+                    item.total;
+
+            },
+            0
+        );
+
+
+    let html = `
 
         <div class="border border-gray-200 p-5">
 
-            <div class="grid grid-cols-2 gap-5">
+            <div class="grid md:grid-cols-2 gap-5 mb-6">
+
 
                 <div>
 
                     <p class="text-xs text-gray-400">
-                        ORDER
+                        DATE
                     </p>
 
-                    <p class="mt-1">
-
-                        ${escapeHTML(
-                            order.orderNumber ||
-                            order.id
-                        )}
-
+                    <p class="mt-2">
+                        ${nowDate()}
                     </p>
 
                 </div>
@@ -1987,42 +2442,146 @@ function openPaymentModal(orderId) {
                 <div>
 
                     <p class="text-xs text-gray-400">
-                        TABLE
+                        TIME
                     </p>
 
-                    <p class="mt-1">
-
-                        Table ${escapeHTML(
-                            order.table || "-"
-                        )}
-
+                    <p class="mt-2">
+                        ${nowTime()}
                     </p>
 
                 </div>
 
-            </div>
-
-
-            <div class="mt-5">
-
-                ${productsHTML}
 
             </div>
 
 
-            <div class="border-t border-gray-200 mt-5 pt-5 flex justify-between">
+            <div class="border-t border-gray-200">
 
-                <span>
+    `;
+
+
+    cart.forEach(
+        function(item) {
+
+            const currentStock =
+                getProductStock(
+                    item.product
+                );
+
+
+            const afterOrder =
+                Math.max(
+                    0,
+                    currentStock -
+                    item.quantity
+                );
+
+
+            html += `
+
+                <div class="grid md:grid-cols-6 gap-4 py-4 border-b border-gray-100">
+
+
+                    <div>
+
+                        <p class="text-xs text-gray-400">
+                            CATEGORY
+                        </p>
+
+                        <p class="mt-1">
+                            ${escapeHTML(item.category)}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <p class="text-xs text-gray-400">
+                            PRODUCT
+                        </p>
+
+                        <p class="mt-1">
+                            ${escapeHTML(item.product)}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <p class="text-xs text-gray-400">
+                            QTY
+                        </p>
+
+                        <p class="mt-1">
+                            ${item.quantity}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <p class="text-xs text-gray-400">
+                            BEFORE
+                        </p>
+
+                        <p class="mt-1">
+                            ${currentStock}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <p class="text-xs text-gray-400">
+                            AFTER
+                        </p>
+
+                        <p class="mt-1">
+                            ${afterOrder}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <p class="text-xs text-gray-400">
+                            TOTAL
+                        </p>
+
+                        <p class="mt-1">
+                            ${money(item.total)}
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+            </div>
+
+
+            <div class="flex justify-between mt-6">
+
+                <p class="text-lg">
                     TOTAL
-                </span>
+                </p>
 
-                <span class="text-2xl">
-
-                    ${money(
-                        order.total
-                    )}
-
-                </span>
+                <p class="text-2xl">
+                    ${money(total)}
+                </p>
 
             </div>
 
@@ -2032,704 +2591,150 @@ function openPaymentModal(orderId) {
 
 
     document.getElementById(
-        "paymentModal"
-    ).classList.add("show");
-
-}
-
-
-function closePaymentModal() {
-
-    document.getElementById(
-        "paymentModal"
-    ).classList.remove("show");
-
-    selectedOrderId = null;
-    selectedPaymentMethod = null;
-
-}
-
-
-function selectPayment(method) {
-
-    selectedPaymentMethod =
-        method;
-
-
-    const cashButton =
-        document.getElementById(
-            "cashButton"
-        );
-
-    const pochiButton =
-        document.getElementById(
-            "pochiButton"
-        );
-
-
-    cashButton.className =
-        "border border-gray-300 p-4 hover:bg-gray-100 transition";
-
-    pochiButton.className =
-        "border border-gray-300 p-4 hover:bg-gray-100 transition";
-
-
-    if (method === "Cash") {
-
-        cashButton.className =
-            "border border-black bg-gray-100 p-4";
-
-    }
-
-
-    if (method === "Pochi") {
-
-        pochiButton.className =
-            "border border-black bg-gray-100 p-4";
-
-    }
-
-}
-
-
-async function confirmPayment() {
-
-    if (!requireOwner("confirm customer payments"))
-        return;
-
-
-    if (!selectedOrderId) {
-
-        showPopup(
-            "No order selected",
-            "Please select an order.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    if (!selectedPaymentMethod) {
-
-        showPopup(
-            "Payment method required",
-            "Please select Cash or Pochi.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    const orderId =
-        String(selectedOrderId);
-
-
-    /*
-       IMPORTANT:
-
-       Read the latest order directly from Firestore.
-
-       This prevents an old cashier cache from overwriting
-       a newer version of the order.
-    */
-
-    try {
-
-        const orderRef =
-            db.collection("orders")
-                .doc(orderId);
-
-        const latestSnapshot =
-            await orderRef.get();
-
-
-        if (!latestSnapshot.exists) {
-
-            showPopup(
-                "Order not found",
-                "This order no longer exists in Firebase.",
-                true
-            );
-
-            closePaymentModal();
-
-            return;
-
-        }
-
-
-        const order =
-            {
-                ...latestSnapshot.data(),
-                id: latestSnapshot.id
-            };
-
-
-        if (order.paymentStatus === "paid") {
-
-            showPopup(
-                "Already paid",
-                "This order has already been confirmed.",
-                true
-            );
-
-            closePaymentModal();
-
-            return;
-
-        }
-
-
-        const updatedOrder = {
-
-            ...order,
-
-            paymentStatus: "paid",
-
-            status: "paid",
-
-            paymentMethod:
-                selectedPaymentMethod,
-
-            paidDate:
-                nowDate(),
-
-            paidTime:
-                nowTime(),
-
-            paidAt:
-                new Date().toISOString()
-
-        };
-
-
-        await orderRef.set(
-            updatedOrder,
-            { merge: true }
-        );
-
-
-        closePaymentModal();
-
-        showPopup(
-            "Payment confirmed",
-            `${money(order.total)} received through ${selectedPaymentMethod}.`
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Order payment update error:",
-            error
-        );
-
-        showPopup(
-            "Firebase error",
-            "Payment could not be saved. Please try again.",
-            true
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   REMOVE ORDER
-===================================================== */
-
-function openRemoveModal(orderId) {
-
-    const orders =
-        getData(ORDER_KEY);
-
-    const order =
-        orders.find(
-            order => order.id === orderId
-        );
-
-
-    if (!order) {
-
-        showPopup(
-            "Order not found",
-            "This order could not be found.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    if (
-        order.paymentStatus === "paid"
-    ) {
-
-        showPopup(
-            "Cannot remove",
-            "A paid receipt cannot be removed from pending orders.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    orderToRemove =
-        orderId;
+        "orderPreview"
+    ).innerHTML =
+        html;
 
 
     document.getElementById(
-        "removeModal"
-    ).classList.add("show");
+        "orderModal"
+    ).classList.add(
+        "show"
+    );
 
 }
 
 
-function closeRemoveModal() {
+/* ========================================================
+   CLOSE MODAL
+======================================================== */
+
+function closeOrderModal() {
 
     document.getElementById(
-        "removeModal"
-    ).classList.remove("show");
-
-    orderToRemove = null;
+        "orderModal"
+    ).classList.remove(
+        "show"
+    );
 
 }
 
 
-async function confirmRemoveOrder() {
+/* ========================================================
+   PLACE ORDER
+======================================================== */
 
-    if (!requireOwner("remove or reject orders"))
-        return;
+async function placeOrder() {
 
+    if (!validateOrder()) {
 
-    if (!orderToRemove) {
-
-        showPopup(
-            "No order selected",
-            "Please select an order first.",
-            true
-        );
+        closeOrderModal();
 
         return;
 
     }
 
 
-    const orderId =
-        String(orderToRemove);
+    const user =
+        auth.currentUser;
 
 
-    try {
+    if (!user) {
 
-        /*
-           Get the latest order directly from Firebase.
-        */
-
-        const orderRef =
-            db.collection("orders")
-                .doc(orderId);
-
-        const orderSnapshot =
-            await orderRef.get();
+        showPopup(
+            "Login required",
+            "You must be signed in before placing an order.",
+            true
+        );
 
 
-        if (!orderSnapshot.exists) {
+        return;
 
-            closeRemoveModal();
-
-            showPopup(
-                "Order not found",
-                "The order no longer exists.",
-                true
-            );
-
-            return;
-
-        }
+    }
 
 
-        const order =
-            {
-                ...orderSnapshot.data(),
-                id: orderSnapshot.id
-            };
+    const total =
+        cart.reduce(
+            function(sum, item) {
+
+                return sum +
+                    item.total;
+
+            },
+            0
+        );
 
 
-        if (
-            order.paymentStatus === "paid"
-        ) {
+    const products =
+        cart.map(
+            function(item) {
 
-            closeRemoveModal();
-
-            showPopup(
-                "Cannot remove",
-                "This receipt has already been paid.",
-                true
-            );
-
-            return;
-
-        }
-
-
-        /*
-           GET CURRENT PRODUCTION STOCK
-        */
-
-        const productionSnapshot =
-            await db.collection("production").get();
-
-        const production =
-            normalizeSnapshot(
-                productionSnapshot
-            );
-
-
-        const orderItems =
-            order.products ||
-            order.items ||
-            [];
-
-
-        /*
-           RETURN PRODUCTS TO PRODUCTION STOCK
-        */
-
-        for (
-            const item of orderItems
-        ) {
-
-            const itemName =
-                String(
-                    item.product ||
-                    item.name ||
-                    ""
-                )
-                .trim()
-                .toLowerCase();
-
-
-            const itemCategory =
-                String(
-                    item.category ||
-                    ""
-                )
-                .trim()
-                .toLowerCase();
-
-
-            const quantity =
-                Number(
-                    item.quantity || 0
-                );
-
-
-            const productionProduct =
-                production.find(
-                    function(product) {
-
-                        const productionName =
-                            String(
-                                product.product ||
-                                product.name ||
-                                ""
-                            )
-                            .trim()
-                            .toLowerCase();
-
-
-                        const productionCategory =
-                            String(
-                                product.category ||
-                                ""
-                            )
-                            .trim()
-                            .toLowerCase();
-
-
-                        return (
-
-                            productionName === itemName
-
-                            &&
-
-                            (
-                                !itemCategory ||
-                                !productionCategory ||
-                                productionCategory === itemCategory
-                            )
-
-                        );
-
-                    }
-                );
-
-
-            if (productionProduct) {
-
-                const quantityField =
-                    productionProduct.quantity !== undefined
-                        ? "quantity"
-                        : (
-                            productionProduct.available !== undefined
-                                ? "available"
-                                : "quantity"
-                        );
-
-
-                productionProduct[quantityField] =
-                    Number(
-                        productionProduct[quantityField] || 0
-                    ) + quantity;
-
-
-                /*
-                   Update only this production document.
-                */
-
-                await db
-                    .collection("production")
-                    .doc(
-                        String(
-                            productionProduct.id
-                        )
-                    )
-                    .set(
-                        productionProduct,
-                        { merge: true }
+                const before =
+                    getProductStock(
+                        item.product
                     );
 
+
+                return {
+
+                    category:
+                        item.category,
+
+                    product:
+                        item.product,
+
+                    quantity:
+                        item.quantity,
+
+                    price:
+                        item.price,
+
+                    total:
+                        item.total,
+
+                    stockBeforeOrder:
+                        before,
+
+                    stockAfterOrder:
+                        Math.max(
+                            0,
+                            before -
+                            item.quantity
+                        )
+
+                };
+
             }
-
-        }
-
-
-        /*
-           DELETE ONLY THIS ORDER.
-        */
-
-        await orderRef.delete();
-
-
-        closeRemoveModal();
-
-
-        showPopup(
-            "Order removed",
-            "The rejected order was removed and the quantities were returned to production stock."
         );
 
 
-    } catch (error) {
+    const orderId =
+        generateID();
 
-        console.error(
-            "Order removal error:",
-            error
-        );
 
-        showPopup(
-            "Firebase error",
-            "The order could not be removed. Please try again.",
-            true
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   OPENING BALANCE
-===================================================== */
-
-function getOpeningBalance() {
-
-    const balances =
-        getData(BALANCE_KEY);
-
-    const today =
-        getTodayKey();
-
-
-    const record =
-        balances.find(
-            item =>
-                item.date === today
-        );
-
-
-    return record
-        ? Number(
-            record.openingBalance || 0
-        )
-        : 0;
-
-}
-
-
-async function saveOpeningBalance() {
-
-    if (!requireOwner("change the opening balance"))
-        return;
-
-
-    const amount =
-        Number(
-            document.getElementById(
-                "openingBalance"
-            ).value
-        );
-
-
-    if (
-        isNaN(amount) ||
-        amount < 0
-    ) {
-
-        showPopup(
-            "Invalid balance",
-            "Please enter a valid opening balance.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    const today =
-        getTodayKey();
-
-
-    const record = {
-
-        id: today,
-
-        date: today,
-
-        openingBalance: amount,
-
-        updatedAt:
-            new Date().toISOString()
-
-    };
-
-
-    try {
-
-        /*
-           Daily balance is now stored in Firestore.
-
-           Document ID = date.
-
-           Example:
-           dailyBalances/2026-09-12
-        */
-
-        await db
-            .collection("dailyBalances")
-            .doc(today)
-            .set(
-                record,
-                { merge: true }
-            );
-
-
-        showPopup(
-            "Saved",
-            "Opening balance has been saved to Firebase."
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Opening balance save error:",
-            error
-        );
-
-        showPopup(
-            "Firebase error",
-            "Opening balance could not be saved.",
-            true
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   EXPENSES
-===================================================== */
-
-async function addExpense() {
-
-    if (!requireOwner("add expenses"))
-        return;
-
-
-    const description =
-        document.getElementById(
-            "expenseDescription"
-        ).value.trim();
-
-
-    const amount =
-        Number(
-            document.getElementById(
-                "expenseAmount"
-            ).value
-        );
-
-
-    if (!description) {
-
-        showPopup(
-            "Description missing",
-            "Please enter an expense description.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    if (
-        isNaN(amount) ||
-        amount <= 0
-    ) {
-
-        showPopup(
-            "Invalid amount",
-            "Please enter a valid amount.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    const record = {
+    const order = {
 
         id:
-            generateID(),
+            orderId,
 
-        description:
-            description,
+        orderNumber:
+            "ORD-" +
+            Date.now(),
 
-        amount:
-            amount,
+        products:
+            products,
+
+        total:
+            total,
+
+        status:
+            "pending",
+
+        paymentStatus:
+            "pending",
+
+        paymentMethod:
+            null,
 
         date:
             nowDate(),
@@ -2738,1154 +2743,214 @@ async function addExpense() {
             nowTime(),
 
         createdAt:
-            new Date().toISOString()
+            new Date().toISOString(),
+
+        createdBy:
+            user.email || null,
+
+        createdByUid:
+            user.uid || null
 
     };
 
 
-    try {
+    /*
+       IMPORTANT:
 
-        await saveRecordToFirebase(
-            "expenses",
-            record
+       ONLY CREATE THE NEW DOCUMENT.
+
+       This is compatible with:
+
+       allow create: if signedIn();
+
+    */
+
+    const saved =
+        await saveOrderToFirebase(
+            order
         );
 
 
-        document.getElementById(
-            "expenseDescription"
-        ).value = "";
-
-        document.getElementById(
-            "expenseAmount"
-        ).value = "";
-
-
-        showPopup(
-            "Expense added",
-            `${money(amount)} was recorded.`
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Expense save error:",
-            error
-        );
-
-        showPopup(
-            "Firebase error",
-            "The expense could not be saved.",
-            true
-        );
-
-    }
-
-}
-
-
-function renderExpenses() {
-
-    const container =
-        document.getElementById(
-            "expensesContainer"
-        );
-
-
-    const expenses =
-        getData(EXPENSE_KEY)
-            .filter(isToday);
-
-
-    container.innerHTML = "";
-
-
-    if (!expenses.length) {
-
-        container.innerHTML = `
-
-            <p class="text-gray-400 text-sm py-4">
-
-                No expenses recorded today.
-
-            </p>
-
-        `;
+    if (!saved) {
 
         return;
 
     }
 
 
-    expenses
-        .slice()
-        .reverse()
-        .forEach(function(expense) {
+    ordersCache.push(
+        order
+    );
 
-            container.innerHTML += `
 
-                <div class="flex justify-between items-center border-b border-gray-100 py-4">
+    saveLocalData(
+        ORDER_KEY,
+        ordersCache
+    );
 
-                    <div>
 
-                        <p>
+    cart = [];
 
-                            ${escapeHTML(
-                                expense.description
-                            )}
 
-                        </p>
-
-                        <p class="text-xs text-gray-400 mt-1">
-
-                            ${escapeHTML(expense.date)}
-
-                            ·
-
-                            ${escapeHTML(expense.time)}
-
-                        </p>
-
-                    </div>
-
-                    <p>
-
-                        ${money(
-                            expense.amount
-                        )}
-
-                    </p>
-
-                </div>
-
-            `;
-
-        });
-
-}
-
-
-/* =====================================================
-   WORKERS
-===================================================== */
-
-async function addWorker() {
-
-    if (!requireOwner("add workers"))
-        return;
-
-
-    const name =
-        document.getElementById(
-            "workerName"
-        ).value.trim();
-
-
-    const wage =
-        Number(
-            document.getElementById(
-                "workerWage"
-            ).value
-        );
-
-
-    if (!name) {
-
-        showPopup(
-            "Worker missing",
-            "Please enter the worker name.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    if (
-        isNaN(wage) ||
-        wage < 0
-    ) {
-
-        showPopup(
-            "Invalid wage",
-            "Please enter a valid wage.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    const record = {
-
-        id:
-            generateID(),
-
-        name:
-            name,
-
-        wage:
-            wage,
-
-        status:
-            "pending",
-
-        date:
-            nowDate(),
-
-        createdAt:
-            new Date().toISOString()
-
-    };
-
-
-    try {
-
-        await saveRecordToFirebase(
-            "workers",
-            record
-        );
-
-
-        document.getElementById(
-            "workerName"
-        ).value = "";
-
-        document.getElementById(
-            "workerWage"
-        ).value = "";
-
-
-        showPopup(
-            "Worker added",
-            `${name} was added to today's workers.`
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Worker save error:",
-            error
-        );
-
-        showPopup(
-            "Firebase error",
-            "The worker could not be saved.",
-            true
-        );
-
-    }
-
-}
-
-
-async function toggleWorkerPayment(id) {
-
-    if (!requireOwner("change worker payment status"))
-        return;
-
-
-    try {
-
-        const workerRef =
-            db.collection("workers")
-                .doc(String(id));
-
-
-        const snapshot =
-            await workerRef.get();
-
-
-        if (!snapshot.exists) {
-
-            showPopup(
-                "Worker not found",
-                "This worker no longer exists.",
-                true
-            );
-
-            return;
-
-        }
-
-
-        const worker =
-            snapshot.data();
-
-
-        const newStatus =
-            worker.status === "paid"
-                ? "pending"
-                : "paid";
-
-
-        await workerRef.set({
-
-            status:
-                newStatus,
-
-            paidAt:
-                newStatus === "paid"
-                    ? new Date().toISOString()
-                    : null
-
-        }, { merge: true });
-
-
-        showPopup(
-            "Worker updated",
-            `Wage is now ${newStatus}.`
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Worker payment error:",
-            error
-        );
-
-        showPopup(
-            "Firebase error",
-            "Worker payment status could not be updated.",
-            true
-        );
-
-    }
-
-}
-
-
-function renderWorkers() {
-
-    const container =
-        document.getElementById(
-            "workersContainer"
-        );
-
-
-    const workers =
-        getData(WORKER_KEY)
-            .filter(isToday);
-
-
-    container.innerHTML = "";
-
-
-    if (!workers.length) {
-
-        container.innerHTML = `
-
-            <p class="text-gray-400 text-sm py-4">
-
-                No workers added today.
-
-            </p>
-
-        `;
-
-        return;
-
-    }
-
-
-    workers.forEach(function(worker) {
-
-        const paid =
-            worker.status === "paid";
-
-
-        container.innerHTML += `
-
-            <div class="flex justify-between items-center border-b border-gray-100 py-4">
-
-                <div>
-
-                    <p>
-
-                        ${escapeHTML(
-                            worker.name
-                        )}
-
-                    </p>
-
-                    <p class="text-sm text-gray-400 mt-1">
-
-                        Wage:
-
-                        ${money(
-                            worker.wage
-                        )}
-
-                    </p>
-
-                </div>
-
-
-                <div class="flex items-center gap-5">
-
-                    <p class="text-sm">
-
-                        ${
-                            paid
-                                ? "Paid"
-                                : "Pending"
-                        }
-
-                    </p>
-
-
-                    <button
-                        data-owner-only
-                        onclick="toggleWorkerPayment('${escapeHTML(worker.id)}')"
-                        class="border border-gray-300 px-4 py-2 hover:bg-gray-100">
-
-                        ${
-                            paid
-                                ? "Mark Pending"
-                                : "Mark Paid"
-                        }
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        `;
-
-    });
-
-}
-
-
-/* =====================================================
-   DEBTS
-===================================================== */
-
-async function addDebt() {
-
-    if (!requireOwner("add customer debts"))
-        return;
-
-
-    const name =
-        document.getElementById(
-            "debtName"
-        ).value.trim();
-
-
-    const amount =
-        Number(
-            document.getElementById(
-                "debtAmount"
-            ).value
-        );
-
-
-    if (!name) {
-
-        showPopup(
-            "Name missing",
-            "Please enter a customer or description.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    if (
-        isNaN(amount) ||
-        amount <= 0
-    ) {
-
-        showPopup(
-            "Invalid amount",
-            "Please enter a valid debt amount.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    const record = {
-
-        id:
-            generateID(),
-
-        name:
-            name,
-
-        amount:
-            amount,
-
-        status:
-            "pending",
-
-        date:
-            nowDate(),
-
-        createdAt:
-            new Date().toISOString()
-
-    };
-
-
-    try {
-
-        await saveRecordToFirebase(
-            "debts",
-            record
-        );
-
-
-        document.getElementById(
-            "debtName"
-        ).value = "";
-
-        document.getElementById(
-            "debtAmount"
-        ).value = "";
-
-
-        showPopup(
-            "Debt added",
-            `${name}'s debt was recorded.`
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Debt save error:",
-            error
-        );
-
-        showPopup(
-            "Firebase error",
-            "The debt could not be saved.",
-            true
-        );
-
-    }
-
-}
-
-
-async function toggleDebtPayment(id) {
-
-    if (!requireOwner("change debt payment status"))
-        return;
-
-
-    try {
-
-        const debtRef =
-            db.collection("debts")
-                .doc(String(id));
-
-
-        const snapshot =
-            await debtRef.get();
-
-
-        if (!snapshot.exists) {
-
-            showPopup(
-                "Debt not found",
-                "This debt no longer exists.",
-                true
-            );
-
-            return;
-
-        }
-
-
-        const debt =
-            snapshot.data();
-
-
-        const newStatus =
-            debt.status === "paid"
-                ? "pending"
-                : "paid";
-
-
-        await debtRef.set({
-
-            status:
-                newStatus,
-
-            paidAt:
-                newStatus === "paid"
-                    ? new Date().toISOString()
-                    : null
-
-        }, { merge: true });
-
-
-        showPopup(
-            "Debt updated",
-            `Debt is now ${newStatus}.`
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Debt payment error:",
-            error
-        );
-
-        showPopup(
-            "Firebase error",
-            "Debt payment status could not be updated.",
-            true
-        );
-
-    }
-
-}
-
-
-function renderDebts() {
-
-    const container =
-        document.getElementById(
-            "debtsContainer"
-        );
-
-
-    const debts =
-        getData(DEBT_KEY);
-
-
-    container.innerHTML = "";
-
-
-    if (!debts.length) {
-
-        container.innerHTML = `
-
-            <p class="text-gray-400 text-sm py-4">
-
-                No debts recorded.
-
-            </p>
-
-        `;
-
-        return;
-
-    }
-
-
-    debts
-        .slice()
-        .reverse()
-        .forEach(function(debt) {
-
-            const paid =
-                debt.status === "paid";
-
-
-            container.innerHTML += `
-
-                <div class="flex justify-between items-center border-b border-gray-100 py-4">
-
-                    <div>
-
-                        <p>
-
-                            ${escapeHTML(
-                                debt.name
-                            )}
-
-                        </p>
-
-                        <p class="text-xs text-gray-400 mt-1">
-
-                            ${escapeHTML(
-                                debt.date
-                            )}
-
-                        </p>
-
-                    </div>
-
-
-                    <div class="flex items-center gap-5">
-
-                        <p>
-
-                            ${money(
-                                debt.amount
-                            )}
-
-                        </p>
-
-
-                        <p class="text-sm">
-
-                            ${
-                                paid
-                                    ? "Paid"
-                                    : "Pending"
-                            }
-
-                        </p>
-
-
-                        <button
-                            data-owner-only
-                            onclick="toggleDebtPayment('${escapeHTML(debt.id)}')"
-                            class="border border-gray-300 px-4 py-2 hover:bg-gray-100">
-
-                            ${
-                                paid
-                                    ? "Mark Pending"
-                                    : "Mark Paid"
-                            }
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        });
-
-}
-
-
-/* =====================================================
-   FINANCIAL SUMMARY
-===================================================== */
-
-function renderFinancialSummary() {
-
-    const orders =
-        getData(ORDER_KEY)
-            .filter(function(order) {
-
-                return (
-
-                    order.paymentStatus === "paid"
-
-                    &&
-
-                    (
-                        order.paidDate === nowDate()
-
-                        ||
-
-                        order.date === nowDate()
-                    )
-
-                );
-
-            });
-
-
-    const expenses =
-        getData(EXPENSE_KEY)
-            .filter(isToday);
-
-
-    const totalSales =
-        orders.reduce(
-            (total, order) =>
-                total +
-                Number(
-                    order.total || 0
-                ),
-            0
-        );
-
-
-    const cashSales =
-        orders
-            .filter(
-                order =>
-                    order.paymentMethod === "Cash"
-            )
-            .reduce(
-                (total, order) =>
-                    total +
-                    Number(
-                        order.total || 0
-                    ),
-                0
-            );
-
-
-    const pochiSales =
-        orders
-            .filter(
-                order =>
-                    order.paymentMethod === "Pochi"
-            )
-            .reduce(
-                (total, order) =>
-                    total +
-                    Number(
-                        order.total || 0
-                    ),
-                0
-            );
-
-
-    const totalExpenses =
-        expenses.reduce(
-            (total, expense) =>
-                total +
-                Number(
-                    expense.amount || 0
-                ),
-            0
-        );
-
-
-    const profit =
-        totalSales -
-        totalExpenses;
-
-
-    const margin =
-        totalSales > 0
-            ? (
-                profit /
-                totalSales
-            ) * 100
-            : 0;
-
-
-    const openingBalance =
-        getOpeningBalance();
-
-
-    const expectedCash =
-        openingBalance +
-        cashSales -
-        totalExpenses;
-
-
-    const closingBalance =
-        openingBalance +
-        totalSales -
-        totalExpenses;
+    renderCart();
 
 
     document.getElementById(
-        "totalSales"
-    ).textContent =
-        money(totalSales);
+        "categorySelect"
+    ).value = "";
 
 
     document.getElementById(
-        "totalExpenses"
-    ).textContent =
-        money(totalExpenses);
+        "productSelect"
+    ).innerHTML =
+        `<option value="">
+            Select category first
+        </option>`;
 
 
     document.getElementById(
-        "estimatedProfit"
-    ).textContent =
-        money(profit);
+        "quantity"
+    ).value = "";
 
 
     document.getElementById(
-        "profitMargin"
-    ).textContent =
-        margin.toFixed(1) + "%";
+        "productInfo"
+    ).classList.add(
+        "hidden"
+    );
 
 
-    document.getElementById(
-        "cashSales"
-    ).textContent =
-        money(cashSales);
+    closeOrderModal();
 
 
-    document.getElementById(
-        "pochiSales"
-    ).textContent =
-        money(pochiSales);
+    renderProductionDropdown();
 
 
-    document.getElementById(
-        "expectedCash"
-    ).textContent =
-        money(expectedCash);
-
-
-    document.getElementById(
-        "closingBalance"
-    ).textContent =
-        money(closingBalance);
+    showPopup(
+        "Order placed",
+        `${order.orderNumber} has been sent to the cashier and saved to Firebase.`
+    );
 
 }
 
 
-/* =====================================================
-   RENDER EVERYTHING
-===================================================== */
+/* ========================================================
+   REFRESH STOCK
+======================================================== */
 
-function renderAll() {
+function refreshWaiterStock() {
 
-    protectOwnerControls();
-
-    renderFinancialSummary();
-
-    renderPendingOrders();
-
-    renderExpenses();
-
-    renderWorkers();
-
-    renderDebts();
-
-}
+    renderProductionDropdown();
 
 
-/* =====================================================
-   STORAGE EVENT
-===================================================== */
+    const category =
+        document.getElementById(
+            "categorySelect"
+        ).value;
 
-window.addEventListener(
-    "storage",
-    function(event) {
 
-        if (
+    if (category) {
 
-            event.key === ORDER_KEY ||
+        loadProducts();
 
-            event.key === PRODUCTION_KEY ||
-
-            event.key === EXPENSE_KEY ||
-
-            event.key === WORKER_KEY ||
-
-            event.key === DEBT_KEY ||
-
-            event.key === BALANCE_KEY
-
-        ) {
-
-            renderAll();
-
-        }
+        updateProductInfo();
 
     }
-);
 
 
-/* =====================================================
-   START APPLICATION
-===================================================== */
+    showPopup(
+        "Stock updated",
+        "The latest available kitchen production has been loaded."
+    );
+
+}
+
+
+/* ========================================================
+   DATE
+======================================================== */
 
 document.getElementById(
     "todayDate"
 ).textContent =
-    new Date()
-        .toLocaleDateString(
-            undefined,
-            {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-            }
-        );
+    new Date().toLocaleDateString(
+        undefined,
+        {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        }
+    );
 
 
-/*
-   Load local cache immediately so the page
-   doesn't appear completely empty while Firebase
-   authentication is loading.
-*/
+/* ========================================================
+   CROSS TAB REFRESH
+======================================================== */
 
-ordersCache =
-    getLocalData(ORDER_KEY);
+window.addEventListener(
+    "storage",
+    function() {
 
-productionCache =
-    getLocalData(PRODUCTION_KEY);
-
-expensesCache =
-    getLocalData(EXPENSE_KEY);
-
-workersCache =
-    getLocalData(WORKER_KEY);
-
-debtsCache =
-    getLocalData(DEBT_KEY);
-
-balancesCache =
-    getLocalData(BALANCE_KEY);
+        productionCache =
+            getLocalData(
+                PRODUCTION_KEY
+            );
 
 
-document.getElementById(
-    "openingBalance"
-).value =
-    getOpeningBalance();
+        ordersCache =
+            getLocalData(
+                ORDER_KEY
+            );
 
 
-renderAll();
+        renderProductionDropdown();
 
 
-/*
-   Firebase authentication.
-*/
-
-auth.onAuthStateChanged(
-    function(user) {
-
-        currentUser = user;
-
-        updateAuthUI();
-
-        protectOwnerControls();
+        const category =
+            document.getElementById(
+                "categorySelect"
+            ).value;
 
 
-        if (!user) {
+        if (category) {
 
-            firebaseStarted = false;
+            loadProducts();
 
-            listenerStarted = false;
-
-            return;
+            updateProductInfo();
 
         }
-
-
-        if (!firebaseStarted) {
-
-            firebaseStarted = true;
-
-            startFirebaseListeners();
-
-        }
-
-
-        renderAll();
 
     }
 );
 
 
 /* ========================================================
-   MOBILE COLLAPSIBLE DASHBOARD SECTIONS
+   INITIAL LOAD
 ======================================================== */
 
-function setupMobileCollapsibles() {
-
-    document
-        .querySelectorAll(".mobile-collapsible")
-        .forEach(function(section) {
-
-            if (
-                section.querySelector(
-                    ":scope > .mobile-section-toggle"
-                )
-            ) {
-                return;
-            }
+productionCache =
+    getLocalData(
+        PRODUCTION_KEY
+    );
 
 
-            const title =
-                section.dataset.mobileTitle ||
-                "Section";
+ordersCache =
+    getLocalData(
+        ORDER_KEY
+    );
 
 
-            const body =
-                document.createElement("div");
-
-            body.className =
-                "mobile-section-body";
+renderCart();
 
 
-            while (section.firstChild) {
-
-                body.appendChild(
-                    section.firstChild
-                );
-
-            }
+renderProductionDropdown();
 
 
-            const toggle =
-                document.createElement("button");
-
-
-            toggle.type =
-                "button";
-
-
-            toggle.className =
-                "mobile-section-toggle";
-
-
-            toggle.setAttribute(
-                "aria-expanded",
-                "false"
-            );
-
-
-            toggle.innerHTML = `
-
-                <span>
-                    ${escapeHTML(title)}
-                </span>
-
-                <span
-                    class="mobile-section-arrow"
-                    aria-hidden="true">
-                    ▼
-                </span>
-
-            `;
-
-
-            toggle.addEventListener(
-                "click",
-                function() {
-
-                    const open =
-                        section.classList.toggle(
-                            "is-open"
-                        );
-
-
-                    toggle.setAttribute(
-                        "aria-expanded",
-                        String(open)
-                    );
-
-                }
-            );
-
-
-            section.appendChild(toggle);
-
-            section.appendChild(body);
-
-        });
-
-}
-
-
-setupMobileCollapsibles();
+startFirebaseAuth();
 
 </script>
 
 </body>
+
 </html>

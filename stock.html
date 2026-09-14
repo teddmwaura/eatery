@@ -15,295 +15,991 @@
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore-compat.js"></script>
 
-    <style>
+```html
+<style>
 
-        * {
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: 400 !important;
-        }
+    * {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 400 !important;
+        box-sizing: border-box;
+    }
 
+    html {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    body {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        background: #f8f8f8;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    /*
+       IMPORTANT:
+       Prevent flex/grid children from creating
+       a page wider than the phone.
+    */
+    main,
+    header,
+    nav,
+    section,
+    div {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    button,
+    a,
+    select,
+    input,
+    textarea {
+        cursor: pointer;
+        max-width: 100%;
+    }
+
+    img,
+    video,
+    iframe {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .modal {
+        display: none;
+    }
+
+    .modal.active {
+        display: flex;
+    }
+
+    .toast {
+        transform: translateY(-20px);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+
+    .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .section-content {
+        transition: all 0.3s ease;
+    }
+
+    .rotate-icon {
+        transition: transform 0.3s ease;
+    }
+
+    .rotate-icon.open {
+        transform: rotate(180deg);
+    }
+
+    /*
+       TABLE CONTAINER
+       Horizontal scrolling is allowed ONLY here.
+    */
+    .mobile-table {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-table table {
+        border-collapse: collapse;
+    }
+
+    @media (max-width: 640px) {
+
+        html,
         body {
-            background: #f8f8f8;
+            width: 100vw;
+            max-width: 100vw;
+            min-width: 0;
+            overflow-x: hidden !important;
         }
 
-        button,
-        a,
+        /*
+           Prevent Tailwind flex/grid containers
+           from expanding beyond the phone.
+        */
+        .flex,
+        .grid {
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        /*
+           Long text/numbers must not push the page wider.
+        */
+        h1,
+        h2,
+        h3,
+        h4,
+        p,
+        span,
+        label {
+            max-width: 100%;
+            overflow-wrap: anywhere;
+        }
+
+        /*
+           Keep form elements inside the screen.
+        */
+        input,
         select,
-        input {
-            cursor: pointer;
+        textarea,
+        button {
+            max-width: 100%;
         }
 
-        .modal {
-            display: none;
+        /*
+           Tables are the ONLY place where horizontal
+           scrolling should happen.
+        */
+        .mobile-table {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .modal.active {
-            display: flex;
+        .mobile-table table {
+            min-width: 600px;
+            width: max-content;
+            max-width: none;
         }
 
-        .toast {
-            transform: translateY(-20px);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-        }
+    }
 
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
+</style>
+```
 
-        .section-content {
-            transition: all 0.3s ease;
-        }
-
-        .rotate-icon {
-            transition: transform 0.3s ease;
-        }
-
-        .rotate-icon.open {
-            transform: rotate(180deg);
-        }
-
-        @media (max-width: 640px) {
-
-            .mobile-table {
-                overflow-x: auto;
-            }
-
-            .mobile-table table {
-                min-width: 650px;
-            }
-
-        }
-
-    </style>
 
 </head>
 
 
 <body class="text-gray-800">
 
-    <!-- =========================
-         NAVIGATION
-    ========================== -->
 
-    <header class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
+<!-- =========================================================
+     HEADER
+========================================================= -->
 
-        <div class="max-w-7xl mx-auto px-4">
+<header class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
 
-            <div class="h-16 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4">
 
-                <div>
-                    <a href="index.html"
-                       class="text-green-900 text-lg">
-                        Serene Eatery
-                    </a>
-                </div>
+        <div class="h-16 flex items-center justify-between">
 
+            <div>
 
-                <nav class="hidden md:flex items-center gap-6 text-sm">
+                <a href="index.html"
+                   class="text-green-900 text-lg">
 
-                    <a href="waiter.html"
-                       class="hover:text-green-900 transition">
-                        Waiter
-                    </a>
+                    Serene Eatery
 
-                    <a href="cashier.html"
-                       class="hover:text-green-900 transition">
-                        Cashier
-                    </a>
-
-                    <a href="stock.html"
-                       class="text-green-900">
-                        Stock
-                    </a>
-
-                    <a href="receipts.html"
-                       class="hover:text-green-900 transition">
-                        Receipts
-                    </a>
-
-                    <a href="admin.html"
-                       class="hover:text-green-900 transition">
-                        Admin
-                    </a>
-
-                </nav>
-
-
-                <button id="mobileMenuButton"
-                        class="md:hidden text-gray-700">
-
-                    ☰
-
-                </button>
+                </a>
 
             </div>
 
 
-            <div id="mobileMenu"
-                 class="hidden md:hidden border-t border-gray-200 py-4">
+            <nav class="hidden md:flex items-center gap-6 text-sm">
 
-                <div class="flex flex-col gap-4 text-sm">
+                <a href="waiter.html"
+                   class="hover:text-green-900 transition">
 
-                    <a href="waiter.html">
-                        Waiter
-                    </a>
+                    Waiter
 
-                    <a href="cashier.html">
-                        Cashier
-                    </a>
+                </a>
 
-                    <a href="stock.html"
-                       class="text-green-900">
-                        Stock
-                    </a>
+                <a href="cashier.html"
+                   class="hover:text-green-900 transition">
 
-                    <a href="receipts.html">
-                        Receipts
-                    </a>
+                    Cashier
 
-                    <a href="admin.html">
-                        Admin
-                    </a>
+                </a>
 
-                </div>
+                <a href="stock.html"
+                   class="text-green-900">
 
-            </div>
+                    Stock
+
+                </a>
+
+                <a href="receipts.html"
+                   class="hover:text-green-900 transition">
+
+                    Receipts
+
+                </a>
+
+                <a href="admin.html"
+                   class="hover:text-green-900 transition">
+
+                    Admin
+
+                </a>
+
+            </nav>
+
+
+            <button
+                id="mobileMenuButton"
+                class="md:hidden text-gray-700">
+
+                ☰
+
+            </button>
 
         </div>
 
-    </header>
 
+        <div
+            id="mobileMenu"
+            class="hidden md:hidden border-t border-gray-200 py-4">
 
+            <div class="flex flex-col gap-4 text-sm">
 
-    <!-- =========================
-         LOGIN MODAL
-    ========================== -->
+                <a href="waiter.html">
+                    Waiter
+                </a>
 
-    <div id="loginModal"
-         class="modal fixed inset-0 z-[200] bg-black/50 items-center justify-center p-5">
+                <a href="cashier.html">
+                    Cashier
+                </a>
 
-        <div class="bg-white w-full max-w-md p-6">
+                <a href="stock.html"
+                   class="text-green-900">
 
-            <p class="text-xs tracking-widest text-green-900">
-                SERENE EATERY
-            </p>
+                    Stock
 
-            <h2 class="text-2xl text-black mt-2">
-                Stock Dashboard Login
-            </h2>
+                </a>
 
-            <p class="text-sm text-gray-500 mt-2">
-                Owner authentication is required to manage stock and production.
-            </p>
+                <a href="receipts.html">
+                    Receipts
+                </a>
 
+                <a href="admin.html">
+                    Admin
+                </a>
 
-            <form id="ownerLoginForm"
-                  class="mt-6 space-y-4">
-
-                <input
-                    id="ownerEmail"
-                    type="email"
-                    autocomplete="email"
-                    placeholder="Owner email"
-                    value="teddmwaura@gmail.com"
-                    class="border border-gray-300 p-3 w-full outline-none focus:border-gray-600"
-                    required
-                >
-
-
-                <input
-                    id="ownerPassword"
-                    type="password"
-                    autocomplete="current-password"
-                    placeholder="Password"
-                    class="border border-gray-300 p-3 w-full outline-none focus:border-gray-600"
-                    required
-                >
-
-
-                <button
-                    id="loginButton"
-                    type="submit"
-                    class="bg-black text-white p-3 w-full hover:bg-gray-800">
-
-                    Sign In
-
-                </button>
-
-            </form>
-
-
-            <p id="loginError"
-               class="text-sm text-red-700 mt-4 hidden">
-            </p>
+            </div>
 
         </div>
 
     </div>
 
+</header>
 
 
-    <!-- =========================
-         TOAST
-    ========================== -->
 
-    <div id="toast"
-         class="toast fixed top-20 right-5 z-[150] bg-black text-white px-5 py-3 text-sm shadow-lg">
+<!-- =========================================================
+     LOGIN MODAL
+========================================================= -->
 
-        <span id="toastMessage">
-            Done
+<div
+    id="loginModal"
+    class="modal fixed inset-0 z-[200] bg-black/50 items-center justify-center p-5">
+
+    <div class="bg-white w-full max-w-md p-6">
+
+        <p class="text-xs tracking-widest text-green-900">
+
+            SERENE EATERY
+
+        </p>
+
+
+        <h2 class="text-2xl text-black mt-2">
+
+            Stock Dashboard Login
+
+        </h2>
+
+
+        <p class="text-sm text-gray-500 mt-2">
+
+            Owner authentication is required to manage stock and production.
+
+        </p>
+
+
+        <form
+            id="ownerLoginForm"
+            class="mt-6 space-y-4">
+
+
+            <input
+                id="ownerEmail"
+                type="email"
+                autocomplete="email"
+                placeholder="Owner email"
+                value="teddmwaura@gmail.com"
+                class="border border-gray-300 p-3 w-full outline-none"
+                required
+            >
+
+
+            <input
+                id="ownerPassword"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Password"
+                class="border border-gray-300 p-3 w-full outline-none"
+                required
+            >
+
+
+            <button
+                id="loginButton"
+                type="submit"
+                class="bg-black text-white p-3 w-full hover:bg-gray-800">
+
+                Sign In
+
+            </button>
+
+        </form>
+
+
+        <p
+            id="loginError"
+            class="text-sm text-red-700 mt-4 hidden">
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     TOAST
+========================================================= -->
+
+<div
+    id="toast"
+    class="toast fixed top-20 right-5 z-[150] bg-black text-white px-5 py-3 text-sm shadow-lg">
+
+    <span id="toastMessage">
+
+        Done
+
+    </span>
+
+</div>
+
+
+
+<!-- =========================================================
+     CONFIRM MODAL
+========================================================= -->
+
+<div
+    id="confirmModal"
+    class="modal fixed inset-0 z-[180] bg-black/50 items-center justify-center p-5">
+
+    <div class="bg-white w-full max-w-md p-6">
+
+        <h2
+            id="confirmTitle"
+            class="text-xl text-black">
+
+            Confirm Action
+
+        </h2>
+
+
+        <p
+            id="confirmMessage"
+            class="text-sm text-gray-500 mt-3">
+
+            Are you sure?
+
+        </p>
+
+
+        <div class="flex gap-3 mt-6">
+
+            <button
+                id="confirmCancel"
+                class="border border-gray-300 px-5 py-3 flex-1">
+
+                Cancel
+
+            </button>
+
+
+            <button
+                id="confirmYes"
+                class="bg-black text-white px-5 py-3 flex-1">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="pt-24 pb-16">
+
+<div class="max-w-7xl mx-auto px-4">
+
+
+<!-- =========================================================
+     PAGE HEADER
+========================================================= -->
+
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+    <div>
+
+        <p class="text-xs tracking-widest text-green-900">
+
+            SERENE EATERY
+
+        </p>
+
+
+        <h1 class="text-3xl mt-2">
+
+            Stock Dashboard
+
+        </h1>
+
+
+        <p
+            id="currentDate"
+            class="text-sm text-gray-500 mt-2">
+
+        </p>
+
+    </div>
+
+
+    <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+
+        <div class="text-sm text-gray-500">
+            <span id="firebaseStatus">
+                Checking connection...
+            </span>
+        </div>
+
+        <button
+            type="button"
+            id="newStockDayButton"
+            onclick="startNewStockRecordingDay()"
+            class="border border-red-300 text-red-700 px-4 py-2 text-sm hover:bg-red-50">
+            Start New Stock Day
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     SUMMARY
+========================================================= -->
+
+<section class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+
+
+    <div class="bg-white border border-gray-200 p-5">
+
+        <p class="text-xs text-gray-500">
+
+            STOCK ITEMS
+
+        </p>
+
+
+        <p
+            id="summaryStockItems"
+            class="text-2xl mt-2">
+
+            0
+
+        </p>
+
+    </div>
+
+
+
+    <div class="bg-white border border-gray-200 p-5">
+
+        <p class="text-xs text-gray-500">
+
+            LOW STOCK
+
+        </p>
+
+
+        <p
+            id="summaryLowStock"
+            class="text-2xl mt-2">
+
+            0
+
+        </p>
+
+    </div>
+
+
+
+    <div class="bg-white border border-gray-200 p-5">
+
+        <p class="text-xs text-gray-500">
+
+            OUT OF STOCK
+
+        </p>
+
+
+        <p
+            id="summaryOutStock"
+            class="text-2xl mt-2">
+
+            0
+
+        </p>
+
+    </div>
+
+
+
+    <div class="bg-white border border-gray-200 p-5">
+
+        <p class="text-xs text-gray-500">
+
+            RECORDS
+
+        </p>
+
+
+        <p
+            id="summaryRecords"
+            class="text-2xl mt-2">
+
+            0
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     STOCK IN
+========================================================= -->
+
+<section class="bg-white border border-gray-200 mt-8">
+
+
+    <button
+        class="w-full px-5 py-4 flex justify-between items-center text-left"
+        onclick="toggleSection('stockInSection','stockInIcon')">
+
+        <span class="text-lg">
+
+            Stock In
+
         </span>
 
+
+        <span
+            id="stockInIcon"
+            class="rotate-icon">
+
+            ▼
+
+        </span>
+
+    </button>
+
+
+
+    <div
+        id="stockInSection"
+        class="section-content px-5 pb-6">
+
+
+        <form
+            id="stockForm"
+            class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+
+            <div>
+
+                <label class="text-sm text-gray-500">
+
+                    Item
+
+                </label>
+
+
+                <input
+                    id="stockItem"
+                    type="text"
+                    placeholder="e.g. Potatoes"
+                    class="border border-gray-300 p-3 w-full mt-1 outline-none"
+                    required
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label class="text-sm text-gray-500">
+
+                    Quantity
+
+                </label>
+
+
+                <input
+                    id="stockQuantity"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="Quantity"
+                    class="border border-gray-300 p-3 w-full mt-1 outline-none"
+                    required
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label class="text-sm text-gray-500">
+
+                    Unit
+
+                </label>
+
+
+                <input
+                    id="stockUnit"
+                    type="text"
+                    placeholder="kg, packets, pieces..."
+                    class="border border-gray-300 p-3 w-full mt-1 outline-none"
+                    required
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label class="text-sm text-gray-500">
+
+                    Date
+
+                </label>
+
+
+                <input
+                    id="stockDate"
+                    type="date"
+                    class="border border-gray-300 p-3 w-full mt-1 outline-none"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="md:col-span-4">
+
+                <button
+                    type="submit"
+                    class="bg-black text-white px-6 py-3 hover:bg-gray-800">
+
+                    Add Stock
+
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
 
+</section>
 
 
-    <!-- =========================
-         CONFIRM MODAL
-    ========================== -->
 
-    <div id="confirmModal"
-         class="modal fixed inset-0 z-[180] bg-black/50 items-center justify-center p-5">
+<!-- =========================================================
+     AVAILABLE STOCK
+========================================================= -->
 
-        <div class="bg-white w-full max-w-md p-6">
-
-            <h2 id="confirmTitle"
-                class="text-xl text-black">
-
-                Confirm Action
-
-            </h2>
+<section class="bg-white border border-gray-200 mt-6">
 
 
-            <p id="confirmMessage"
-               class="text-sm text-gray-500 mt-3">
+    <button
+        class="w-full px-5 py-4 flex justify-between items-center text-left"
+        onclick="toggleSection('availableStockSection','availableStockIcon')">
 
-                Are you sure?
+        <span class="text-lg">
+
+            Available Stock
+
+        </span>
+
+
+        <span
+            id="availableStockIcon"
+            class="rotate-icon open">
+
+            ▼
+
+        </span>
+
+    </button>
+
+
+
+    <div
+        id="availableStockSection"
+        class="section-content px-5 pb-6">
+
+
+        <div id="availableStockContainer">
+
+            <p class="text-sm text-gray-500">
+
+                No stock available.
 
             </p>
 
+        </div>
 
-            <div class="flex gap-3 mt-6">
+    </div>
 
-                <button
-                    id="confirmCancel"
-                    class="border border-gray-300 px-5 py-3 flex-1">
-
-                    Cancel
-
-                </button>
+</section>
 
 
-                <button
-                    id="confirmYes"
-                    class="bg-black text-white px-5 py-3 flex-1">
 
-                    Confirm
+<!-- =========================================================
+     PRODUCTION
+========================================================= -->
 
-                </button>
+<section class="bg-white border border-gray-200 mt-6">
+
+
+    <button
+        class="w-full px-5 py-4 flex justify-between items-center text-left"
+        onclick="toggleSection('productionSection','productionIcon')">
+
+        <span class="text-lg">
+
+            Production
+
+        </span>
+
+
+        <span
+            id="productionIcon"
+            class="rotate-icon">
+
+            ▼
+
+        </span>
+
+    </button>
+
+
+
+    <div
+        id="productionSection"
+        class="section-content px-5 pb-6 hidden">
+
+
+        <form
+            id="productionForm"
+            class="space-y-5">
+
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+
+                <div>
+
+                    <label class="text-sm text-gray-500">
+
+                        Product
+
+                    </label>
+
+
+                    <input
+                        id="productionProduct"
+                        type="text"
+                        placeholder="e.g. Mandazi"
+                        class="border border-gray-300 p-3 w-full mt-1 outline-none"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div>
+
+                    <label class="text-sm text-gray-500">
+
+                        Quantity Produced
+
+                    </label>
+
+
+                    <input
+                        id="productionQuantity"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        placeholder="Quantity"
+                        class="border border-gray-300 p-3 w-full mt-1 outline-none"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div>
+
+                    <label class="text-sm text-gray-500">
+
+                        Date
+
+                    </label>
+
+
+                    <input
+                        id="productionDate"
+                        type="date"
+                        class="border border-gray-300 p-3 w-full mt-1 outline-none"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+
+            <!-- STOCK USED -->
+
+            <div class="border border-gray-200 p-4">
+
+
+                <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+
+
+                    <div>
+
+                        <p class="text-sm">
+
+                            Stock Used For This Production
+
+                        </p>
+
+
+                        <p class="text-xs text-gray-500 mt-1">
+
+                            These items will be deducted from raw stock.
+
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        onclick="addStockUseRow()"
+                        class="border border-gray-300 px-4 py-2">
+
+                        + Add Item
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="stockUsageContainer"
+                    class="mt-4 space-y-3">
+
+                </div>
+
+            </div>
+
+
+
+            <button
+                type="submit"
+                class="bg-black text-white px-6 py-3 hover:bg-gray-800">
+
+                Add Production
+
+            </button>
+
+        </form>
+
+
+
+        <div class="mt-8">
+
+
+            <h3 class="text-sm text-gray-500 mb-4">
+
+                Production Records
+
+            </h3>
+
+
+            <div id="productionContainer">
+
+                <p class="text-sm text-gray-500">
+
+                    No production records.
+
+                </p>
 
             </div>
 
@@ -311,530 +1007,174 @@
 
     </div>
 
+</section>
 
 
-    <!-- =========================
-         MAIN
-    ========================== -->
 
-    <main class="pt-24 pb-16">
+<!-- =========================================================
+     FINISHED FOOD
+========================================================= -->
 
-        <div class="max-w-7xl mx-auto px-4">
+<section class="bg-white border border-gray-200 mt-6">
 
 
-            <!-- HEADER -->
+    <button
+        class="w-full px-5 py-4 flex justify-between items-center text-left"
+        onclick="toggleSection('finishedSection','finishedIcon')">
 
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <span class="text-lg">
 
-                <div>
+            Finished Food Stock
 
-                    <p class="text-xs tracking-widest text-green-900">
-                        SERENE EATERY
-                    </p>
+        </span>
 
-                    <h1 class="text-3xl mt-2">
-                        Stock Dashboard
-                    </h1>
 
-                    <p id="currentDate"
-                       class="text-sm text-gray-500 mt-2">
-                    </p>
+        <span
+            id="finishedIcon"
+            class="rotate-icon">
 
-                </div>
+            ▼
 
+        </span>
 
-                <div class="text-sm text-gray-500">
+    </button>
 
-                    <span id="firebaseStatus">
-                        Checking connection...
-                    </span>
 
-                </div>
 
-            </div>
+    <div
+        id="finishedSection"
+        class="section-content px-5 pb-6 hidden">
 
 
+        <div id="finishedContainer">
 
-            <!-- =========================
-                 SUMMARY
-            ========================== -->
+            <p class="text-sm text-gray-500">
 
-            <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                No finished products.
 
-                <div class="bg-white border border-gray-200 p-5">
-
-                    <p class="text-xs text-gray-500">
-                        STOCK ITEMS
-                    </p>
-
-                    <p id="summaryStockItems"
-                       class="text-2xl mt-2">
-                        0
-                    </p>
-
-                </div>
-
-
-                <div class="bg-white border border-gray-200 p-5">
-
-                    <p class="text-xs text-gray-500">
-                        LOW STOCK
-                    </p>
-
-                    <p id="summaryLowStock"
-                       class="text-2xl mt-2">
-                        0
-                    </p>
-
-                </div>
-
-
-                <div class="bg-white border border-gray-200 p-5">
-
-                    <p class="text-xs text-gray-500">
-                        OUT OF STOCK
-                    </p>
-
-                    <p id="summaryOutStock"
-                       class="text-2xl mt-2">
-                        0
-                    </p>
-
-                </div>
-
-
-                <div class="bg-white border border-gray-200 p-5">
-
-                    <p class="text-xs text-gray-500">
-                        RECORDS
-                    </p>
-
-                    <p id="summaryRecords"
-                       class="text-2xl mt-2">
-                        0
-                    </p>
-
-                </div>
-
-            </section>
-
-
-
-            <!-- =========================
-                 STOCK IN
-            ========================== -->
-
-            <section class="bg-white border border-gray-200 mt-8">
-
-                <button
-                    class="w-full px-5 py-4 flex justify-between items-center text-left"
-                    onclick="toggleSection('stockInSection','stockInIcon')">
-
-                    <span class="text-lg">
-                        Stock In
-                    </span>
-
-                    <span id="stockInIcon"
-                          class="rotate-icon">
-
-                        ▼
-
-                    </span>
-
-                </button>
-
-
-                <div id="stockInSection"
-                     class="section-content px-5 pb-6">
-
-                    <form id="stockForm"
-                          class="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-
-                        <div>
-
-                            <label class="text-sm text-gray-500">
-                                Item
-                            </label>
-
-                            <input
-                                id="stockItem"
-                                type="text"
-                                placeholder="e.g. Potatoes"
-                                class="border border-gray-300 p-3 w-full mt-1 outline-none"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div>
-
-                            <label class="text-sm text-gray-500">
-                                Quantity
-                            </label>
-
-                            <input
-                                id="stockQuantity"
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                placeholder="Quantity"
-                                class="border border-gray-300 p-3 w-full mt-1 outline-none"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div>
-
-                            <label class="text-sm text-gray-500">
-                                Unit
-                            </label>
-
-                            <input
-                                id="stockUnit"
-                                type="text"
-                                placeholder="kg, packets, pieces..."
-                                class="border border-gray-300 p-3 w-full mt-1 outline-none"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div>
-
-                            <label class="text-sm text-gray-500">
-                                Date
-                            </label>
-
-                            <input
-                                id="stockDate"
-                                type="date"
-                                class="border border-gray-300 p-3 w-full mt-1 outline-none"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="md:col-span-4">
-
-                            <button
-                                type="submit"
-                                class="bg-black text-white px-6 py-3 hover:bg-gray-800">
-
-                                Add Stock
-
-                            </button>
-
-                        </div>
-
-                    </form>
-
-                </div>
-
-            </section>
-
-
-
-            <!-- =========================
-                 AVAILABLE STOCK
-            ========================== -->
-
-            <section class="bg-white border border-gray-200 mt-6">
-
-                <button
-                    class="w-full px-5 py-4 flex justify-between items-center text-left"
-                    onclick="toggleSection('availableStockSection','availableStockIcon')">
-
-                    <span class="text-lg">
-                        Available Stock
-                    </span>
-
-                    <span id="availableStockIcon"
-                          class="rotate-icon open">
-
-                        ▼
-
-                    </span>
-
-                </button>
-
-
-                <div id="availableStockSection"
-                     class="section-content px-5 pb-6">
-
-                    <div id="availableStockContainer">
-
-                        <p class="text-sm text-gray-500">
-                            No stock available.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-
-            <!-- =========================
-                 PRODUCTION
-            ========================== -->
-
-            <section class="bg-white border border-gray-200 mt-6">
-
-                <button
-                    class="w-full px-5 py-4 flex justify-between items-center text-left"
-                    onclick="toggleSection('productionSection','productionIcon')">
-
-                    <span class="text-lg">
-                        Production
-                    </span>
-
-                    <span id="productionIcon"
-                          class="rotate-icon">
-
-                        ▼
-
-                    </span>
-
-                </button>
-
-
-                <div id="productionSection"
-                     class="section-content px-5 pb-6 hidden">
-
-
-                    <form id="productionForm"
-                          class="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-
-                        <div>
-
-                            <label class="text-sm text-gray-500">
-                                Product
-                            </label>
-
-                            <input
-                                id="productionProduct"
-                                type="text"
-                                placeholder="e.g. Mandazi"
-                                class="border border-gray-300 p-3 w-full mt-1 outline-none"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div>
-
-                            <label class="text-sm text-gray-500">
-                                Quantity Produced
-                            </label>
-
-                            <input
-                                id="productionQuantity"
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                placeholder="Quantity"
-                                class="border border-gray-300 p-3 w-full mt-1 outline-none"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div>
-
-                            <label class="text-sm text-gray-500">
-                                Date
-                            </label>
-
-                            <input
-                                id="productionDate"
-                                type="date"
-                                class="border border-gray-300 p-3 w-full mt-1 outline-none"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="flex items-end">
-
-                            <button
-                                type="submit"
-                                class="bg-black text-white px-6 py-3 w-full hover:bg-gray-800">
-
-                                Add Production
-
-                            </button>
-
-                        </div>
-
-
-                    </form>
-
-
-                    <div class="mt-8">
-
-                        <h3 class="text-sm text-gray-500 mb-4">
-                            Production Records
-                        </h3>
-
-                        <div id="productionContainer">
-
-                            <p class="text-sm text-gray-500">
-                                No production records.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-
-            <!-- =========================
-                 FINISHED FOOD STOCK
-            ========================== -->
-
-            <section class="bg-white border border-gray-200 mt-6">
-
-                <button
-                    class="w-full px-5 py-4 flex justify-between items-center text-left"
-                    onclick="toggleSection('finishedSection','finishedIcon')">
-
-                    <span class="text-lg">
-                        Finished Food Stock
-                    </span>
-
-                    <span id="finishedIcon"
-                          class="rotate-icon">
-
-                        ▼
-
-                    </span>
-
-                </button>
-
-
-                <div id="finishedSection"
-                     class="section-content px-5 pb-6 hidden">
-
-                    <div id="finishedContainer">
-
-                        <p class="text-sm text-gray-500">
-                            No finished products.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-
-            <!-- =========================
-                 WARNINGS
-            ========================== -->
-
-            <section class="bg-white border border-gray-200 mt-6">
-
-                <button
-                    class="w-full px-5 py-4 flex justify-between items-center text-left"
-                    onclick="toggleSection('warningsSection','warningsIcon')">
-
-                    <span class="text-lg">
-                        Stock Warnings
-                    </span>
-
-                    <span id="warningsIcon"
-                          class="rotate-icon">
-
-                        ▼
-
-                    </span>
-
-                </button>
-
-
-                <div id="warningsSection"
-                     class="section-content px-5 pb-6 hidden">
-
-                    <div id="warningsContainer">
-
-                        <p class="text-sm text-gray-500">
-                            No stock warnings.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-
-            <!-- =========================
-                 STOCK HISTORY
-            ========================== -->
-
-            <section class="bg-white border border-gray-200 mt-6">
-
-                <button
-                    class="w-full px-5 py-4 flex justify-between items-center text-left"
-                    onclick="toggleSection('historySection','historyIcon')">
-
-                    <span class="text-lg">
-                        Stock History
-                    </span>
-
-                    <span id="historyIcon"
-                          class="rotate-icon">
-
-                        ▼
-
-                    </span>
-
-                </button>
-
-
-                <div id="historySection"
-                     class="section-content px-5 pb-6 hidden">
-
-                    <div id="historyContainer">
-
-                        <p class="text-sm text-gray-500">
-                            No stock history.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
+            </p>
 
         </div>
 
-    </main>
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     WARNINGS
+========================================================= -->
+
+<section class="bg-white border border-gray-200 mt-6">
+
+
+    <button
+        class="w-full px-5 py-4 flex justify-between items-center text-left"
+        onclick="toggleSection('warningsSection','warningsIcon')">
+
+        <span class="text-lg">
+
+            Stock Warnings
+
+        </span>
+
+
+        <span
+            id="warningsIcon"
+            class="rotate-icon">
+
+            ▼
+
+        </span>
+
+    </button>
+
+
+
+    <div
+        id="warningsSection"
+        class="section-content px-5 pb-6 hidden">
+
+
+        <div id="warningsContainer">
+
+            <p class="text-sm text-gray-500">
+
+                No stock warnings.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     HISTORY
+========================================================= -->
+
+<section class="bg-white border border-gray-200 mt-6">
+
+
+    <button
+        class="w-full px-5 py-4 flex justify-between items-center text-left"
+        onclick="toggleSection('historySection','historyIcon')">
+
+        <span class="text-lg">
+
+            Stock History
+
+        </span>
+
+
+        <span
+            id="historyIcon"
+            class="rotate-icon">
+
+            ▼
+
+        </span>
+
+    </button>
+
+
+
+    <div
+        id="historySection"
+        class="section-content px-5 pb-6 hidden">
+
+
+        <div id="historyContainer">
+
+            <p class="text-sm text-gray-500">
+
+                No stock history.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</div>
+
+</main>
 
 
 
 <script>
 
 /* =========================================================
-   FIREBASE CONFIGURATION
+   FIREBASE CONFIG
 ========================================================= */
+
 const firebaseConfig = {
   apiKey: "AIzaSyAZn1AMnp1jr2VdztRpqRg-nrle2lflt8s",
   authDomain: "serene-eatery.firebaseapp.com",
@@ -844,144 +1184,241 @@ const firebaseConfig = {
   appId: "1:743500466630:web:85e2fdebd776e47d9ccac7",
   measurementId: "G-T94HN3RMZX"
 };
-firebase.initializeApp(firebaseConfig);
+
+
+firebase.initializeApp(
+    firebaseConfig
+);
+
+
+const db =
+    firebase.firestore();
+
+
+const auth =
+    firebase.auth();
+
 
 
 /* =========================================================
-   FIREBASE SERVICES
+   COLLECTIONS
 ========================================================= */
 
-const db = firebase.firestore();
+const STOCK_COLLECTION =
+    "stock";
 
-const auth = firebase.auth();
+const PRODUCTION_COLLECTION =
+    "production";
 
+const ORDERS_COLLECTION =
+    "orders";
 
-/* =========================================================
-   COLLECTION NAMES
-========================================================= */
+const SETTINGS_COLLECTION =
+    "stockSettings";
 
-const STOCK_COLLECTION = "stock";
-
-const PRODUCTION_COLLECTION = "production";
-
-const SETTINGS_COLLECTION = "stockSettings";
 
 
 /* =========================================================
-   LOCAL STATE
+   STATE
 ========================================================= */
 
 let stockCache = [];
 
 let productionCache = [];
 
-const removedItems = new Set();
+let ordersCache = [];
 
-const hiddenWarnings = new Set();
+const removedItems =
+    new Set();
 
+const hiddenWarnings =
+    new Set();
 
-let firebaseReady = false;
+let firebaseReady =
+    false;
 
-let listenersStarted = false;
+let listenersStarted =
+    false;
 
+let confirmAction =
+    null;
 
-/* =========================================================
-   DOM READY
-========================================================= */
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    initializePage();
-
-});
 
 
 /* =========================================================
-   INITIALIZE PAGE
+   PAGE INITIALIZATION
 ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        initializePage();
+
+    }
+);
+
 
 function initializePage() {
 
-    document.getElementById("stockDate").value = getDate();
-
-    document.getElementById("productionDate").value = getDate();
-
-    document.getElementById("currentDate").textContent =
-        new Date().toLocaleDateString("en-KE", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-        });
+    document
+        .getElementById("stockDate")
+        .value =
+        getDate();
 
 
-    document.getElementById("mobileMenuButton").addEventListener(
-        "click",
-        function () {
+    document
+        .getElementById("productionDate")
+        .value =
+        getDate();
 
-            document
-                .getElementById("mobileMenu")
-                .classList.toggle("hidden");
 
-        }
-    );
+    document
+        .getElementById("currentDate")
+        .textContent =
+        new Date().toLocaleDateString(
+            "en-KE",
+            {
+
+                weekday: "long",
+
+                year: "numeric",
+
+                month: "long",
+
+                day: "numeric"
+
+            }
+        );
+
+
+    document
+        .getElementById("mobileMenuButton")
+        .addEventListener(
+            "click",
+            function () {
+
+                document
+                    .getElementById("mobileMenu")
+                    .classList.toggle("hidden");
+
+            }
+        );
 
 
     document
         .getElementById("ownerLoginForm")
-        .addEventListener("submit", async function (event) {
+        .addEventListener(
+            "submit",
+            async function (event) {
 
-            event.preventDefault();
+                event.preventDefault();
 
-            await authenticateOwner();
+                await authenticateOwner();
 
-        });
+            }
+        );
 
 
     document
         .getElementById("stockForm")
-        .addEventListener("submit", async function (event) {
+        .addEventListener(
+            "submit",
+            async function (event) {
 
-            event.preventDefault();
+                event.preventDefault();
 
-            await addStock();
+                await addStock();
 
-        });
+            }
+        );
 
 
     document
         .getElementById("productionForm")
-        .addEventListener("submit", async function (event) {
+        .addEventListener(
+            "submit",
+            async function (event) {
 
-            event.preventDefault();
+                event.preventDefault();
 
-            await addProduction();
+                await addProduction();
 
-        });
+            }
+        );
 
 
     document
         .getElementById("confirmCancel")
-        .addEventListener("click", closeConfirmModal);
+        .addEventListener(
+            "click",
+            closeConfirmModal
+        );
 
 
     document
         .getElementById("confirmYes")
-        .addEventListener("click", executeConfirmAction);
+        .addEventListener(
+            "click",
+            executeConfirmAction
+        );
 
+
+    
+
+    const newStockDayButton =
+        document.getElementById("newStockDayButton");
+
+    if (newStockDayButton) {
+        newStockDayButton.disabled = true;
+        newStockDayButton.classList.add(
+            "opacity-50",
+            "cursor-not-allowed"
+        );
+    }
+addStockUseRow();
 
     render();
 
 }
 
 
+
 /* =========================================================
-   AUTHENTICATION
+   FIREBASE STATUS
+========================================================= */
+
+function updateFirebaseStatus(message) {
+
+    const status =
+        document.getElementById(
+            "firebaseStatus"
+        );
+
+
+    if (!status) {
+
+        return;
+
+    }
+
+
+    status.textContent =
+        message;
+
+}
+
+
+
+/* =========================================================
+   AUTH
 ========================================================= */
 
 function isOwner() {
 
-    const user = auth.currentUser;
+    const user =
+        auth.currentUser;
+
 
     return (
 
@@ -989,72 +1426,84 @@ function isOwner() {
 
         user.email &&
 
-        user.email.toLowerCase() === "teddmwaura@gmail.com"
+        user.email.toLowerCase() ===
+        "teddmwaura@gmail.com"
 
     );
 
 }
 
 
+
 async function authenticateOwner() {
 
     const email =
-        document.getElementById("ownerEmail")
-            .value
-            .trim();
+        document
+        .getElementById("ownerEmail")
+        .value
+        .trim();
+
 
     const password =
-        document.getElementById("ownerPassword")
-            .value;
+        document
+        .getElementById("ownerPassword")
+        .value;
 
 
     const loginButton =
-        document.getElementById("loginButton");
+        document
+        .getElementById("loginButton");
+
 
     const loginError =
-        document.getElementById("loginError");
+        document
+        .getElementById("loginError");
 
 
-    loginError.classList.add("hidden");
+    loginError.classList.add(
+        "hidden"
+    );
 
-    loginError.textContent = "";
+
+    loginButton.disabled =
+        true;
 
 
-    loginButton.disabled = true;
-
-    loginButton.textContent = "Signing in...";
+    loginButton.textContent =
+        "Signing in...";
 
 
     try {
 
         const result =
-            await auth.signInWithEmailAndPassword(
+            await auth
+            .signInWithEmailAndPassword(
                 email,
                 password
             );
 
 
-        const user = result.user;
-
-
         if (
-            !user.email ||
-            user.email.toLowerCase() !==
+            !result.user.email ||
+            result.user.email.toLowerCase() !==
             "teddmwaura@gmail.com"
         ) {
 
             await auth.signOut();
 
             throw new Error(
-                "This account is not authorized to manage the stock dashboard."
+                "This account is not authorized."
             );
 
         }
 
 
-        firebaseReady = true;
+        firebaseReady =
+            true;
+
 
         hideLoginModal();
+
 
         updateFirebaseStatus(
             "Connected as owner"
@@ -1063,49 +1512,65 @@ async function authenticateOwner() {
 
         startFirebaseListeners();
 
-        await migrateLocalData();
+
+        
+
+        const newStockDayButton =
+            document.getElementById("newStockDayButton");
+
+        if (newStockDayButton) {
+            newStockDayButton.disabled = false;
+            newStockDayButton.classList.remove(
+                "opacity-50",
+                "cursor-not-allowed"
+            );
+        }
+await migrateLocalData();
+
 
         render();
 
-        showToast("Stock dashboard connected.");
+
+        showToast(
+            "Stock dashboard connected."
+        );
 
 
     } catch (error) {
 
-        console.error(
-            "Owner login error:",
-            error
-        );
+        console.error(error);
 
 
         loginError.textContent =
-            getAuthErrorMessage(error);
+            getAuthErrorMessage(
+                error
+            );
 
 
-        loginError.classList.remove("hidden");
+        loginError.classList.remove(
+            "hidden"
+        );
 
 
     } finally {
 
-        loginButton.disabled = false;
+        loginButton.disabled =
+            false;
 
-        loginButton.textContent = "Sign In";
+
+        loginButton.textContent =
+            "Sign In";
 
     }
 
 }
 
 
+
 function getAuthErrorMessage(error) {
 
-    if (!error) {
-
-        return "Unable to sign in.";
-
-    }
-
-
-    const code = error.code || "";
+    const code =
+        error.code || "";
 
 
     if (
@@ -1119,31 +1584,40 @@ function getAuthErrorMessage(error) {
     }
 
 
-    if (code === "auth/too-many-requests") {
+    if (
+        code === "auth/too-many-requests"
+    ) {
 
-        return "Too many login attempts. Please wait and try again.";
-
-    }
-
-
-    if (code === "auth/invalid-email") {
-
-        return "Please enter a valid email address.";
+        return "Too many login attempts. Please wait.";
 
     }
 
 
-    if (code === "auth/network-request-failed") {
+    if (
+        code === "auth/invalid-email"
+    ) {
 
-        return "Network error. Check your internet connection.";
+        return "Please enter a valid email.";
 
     }
 
 
-    return error.message ||
-        "Unable to sign in.";
+    if (
+        code === "auth/network-request-failed"
+    ) {
+
+        return "Network error. Check your internet.";
+
+    }
+
+
+    return (
+        error.message ||
+        "Unable to sign in."
+    );
 
 }
+
 
 
 function showLoginModal() {
@@ -1155,6 +1629,7 @@ function showLoginModal() {
 }
 
 
+
 function hideLoginModal() {
 
     document
@@ -1164,104 +1639,112 @@ function hideLoginModal() {
 }
 
 
+
 /* =========================================================
    AUTH STATE
 ========================================================= */
 
-auth.onAuthStateChanged(async function (user) {
+auth.onAuthStateChanged(
+    async function (user) {
 
-    if (!user) {
+        if (!user) {
 
-        firebaseReady = false;
+            firebaseReady =
+                false;
+
+
+            listenersStarted =
+                false;
+
+
+            
+
+            const newStockDayButton =
+                document.getElementById("newStockDayButton");
+
+            if (newStockDayButton) {
+                newStockDayButton.disabled = true;
+                newStockDayButton.classList.add(
+                    "opacity-50",
+                    "cursor-not-allowed"
+                );
+            }
+updateFirebaseStatus(
+                "Owner login required"
+            );
+
+
+            showLoginModal();
+
+
+            return;
+
+        }
+
+
+        if (
+            !user.email ||
+            user.email.toLowerCase() !==
+            "teddmwaura@gmail.com"
+        ) {
+
+            await auth.signOut();
+
+            return;
+
+        }
+
+
+        firebaseReady =
+            true;
+
+
+        hideLoginModal();
+
 
         updateFirebaseStatus(
-            "Owner login required"
+            "Connected as owner"
         );
 
-        showLoginModal();
 
-        return;
-
-    }
+        startFirebaseListeners();
 
 
-    if (
-        !user.email ||
-        user.email.toLowerCase() !==
-        "teddmwaura@gmail.com"
-    ) {
+        
 
-        await auth.signOut();
+        const newStockDayButton =
+            document.getElementById("newStockDayButton");
 
-        firebaseReady = false;
+        if (newStockDayButton) {
+            newStockDayButton.disabled = false;
+            newStockDayButton.classList.remove(
+                "opacity-50",
+                "cursor-not-allowed"
+            );
+        }
+try {
 
-        updateFirebaseStatus(
-            "Owner login required"
-        );
+            await migrateLocalData();
 
-        showLoginModal();
+        } catch (error) {
 
-        return;
+            console.error(
+                "Migration error:",
+                error
+            );
 
-    }
-
-
-    firebaseReady = true;
-
-
-    hideLoginModal();
-
-
-    updateFirebaseStatus(
-        "Connected as owner"
-    );
+        }
 
 
-    startFirebaseListeners();
-
-
-    try {
-
-        await migrateLocalData();
-
-    } catch (error) {
-
-        console.error(
-            "Migration error:",
-            error
-        );
+        render();
 
     }
+);
 
-
-    render();
-
-});
 
 
 /* =========================================================
-   FIREBASE STATUS
-========================================================= */
-
-function updateFirebaseStatus(message) {
-
-    const element =
-        document.getElementById(
-            "firebaseStatus"
-        );
-
-
-    if (element) {
-
-        element.textContent = message;
-
-    }
-
-}
-
-
-/* =========================================================
-   FIRESTORE LISTENERS
+   FIREBASE LISTENERS
 ========================================================= */
 
 function startFirebaseListeners() {
@@ -1283,18 +1766,22 @@ function startFirebaseListeners() {
     }
 
 
-    listenersStarted = true;
+    listenersStarted =
+        true;
+
 
 
     /* STOCK */
 
-    db.collection(STOCK_COLLECTION)
-        .onSnapshot(
+    db.collection(
+        STOCK_COLLECTION
+    )
+    .onSnapshot(
+        function (snapshot) {
 
-            function (snapshot) {
-
-                stockCache =
-                    snapshot.docs.map(function (doc) {
+            stockCache =
+                snapshot.docs.map(
+                    function (doc) {
 
                         return {
 
@@ -1304,39 +1791,43 @@ function startFirebaseListeners() {
 
                         };
 
-                    });
-
-
-                render();
-
-            },
-
-
-            function (error) {
-
-                console.error(
-                    "Stock Firebase listener error:",
-                    error
+                    }
                 );
 
-                updateFirebaseStatus(
-                    "Stock permission error"
-                );
 
-            }
+            refreshStockUseSelects();
 
-        );
+            render();
+
+        },
+        function (error) {
+
+            console.error(
+                "Stock listener error:",
+                error
+            );
+
+
+            updateFirebaseStatus(
+                "Stock permission error"
+            );
+
+        }
+    );
+
 
 
     /* PRODUCTION */
 
-    db.collection(PRODUCTION_COLLECTION)
-        .onSnapshot(
+    db.collection(
+        PRODUCTION_COLLECTION
+    )
+    .onSnapshot(
+        function (snapshot) {
 
-            function (snapshot) {
-
-                productionCache =
-                    snapshot.docs.map(function (doc) {
+            productionCache =
+                snapshot.docs.map(
+                    function (doc) {
 
                         return {
 
@@ -1346,564 +1837,146 @@ function startFirebaseListeners() {
 
                         };
 
-                    });
-
-
-                render();
-
-            },
-
-
-            function (error) {
-
-                console.error(
-                    "Production Firebase listener error:",
-                    error
+                    }
                 );
 
-                updateFirebaseStatus(
-                    "Production permission error"
+
+            render();
+
+        },
+        function (error) {
+
+            console.error(
+                "Production listener error:",
+                error
+            );
+
+
+            updateFirebaseStatus(
+                "Production permission error"
+            );
+
+        }
+    );
+
+
+
+    /* ORDERS */
+
+    db.collection(
+        ORDERS_COLLECTION
+    )
+    .onSnapshot(
+        function (snapshot) {
+
+            ordersCache =
+                snapshot.docs.map(
+                    function (doc) {
+
+                        return {
+
+                            ...doc.data(),
+
+                            id: doc.id
+
+                        };
+
+                    }
                 );
 
-            }
 
-        );
+            render();
+
+        },
+        function (error) {
+
+            console.error(
+                "Orders listener error:",
+                error
+            );
+
+
+            updateFirebaseStatus(
+                "Orders permission error"
+            );
+
+        }
+    );
+
 
 
     /* SETTINGS */
 
-    db.collection(SETTINGS_COLLECTION)
-        .onSnapshot(
+    db.collection(
+        SETTINGS_COLLECTION
+    )
+    .onSnapshot(
+        function (snapshot) {
 
-            function (snapshot) {
+            removedItems.clear();
 
-                removedItems.clear();
-
-                hiddenWarnings.clear();
+            hiddenWarnings.clear();
 
 
-                snapshot.forEach(function (doc) {
+            snapshot.forEach(
+                function (doc) {
 
-                    const data = doc.data();
+                    const data =
+                        doc.data();
 
 
                     if (
-                        data.type === "removedItem" &&
+                        data.type ===
+                        "removedItem" &&
                         data.removed === true
                     ) {
 
                         removedItems.add(
-                            data.item
+                            normalizeKey(
+                                data.item
+                            )
                         );
 
                     }
 
 
                     if (
-                        data.type === "hiddenWarning" &&
+                        data.type ===
+                        "hiddenWarning" &&
                         data.hidden === true
                     ) {
 
                         hiddenWarnings.add(
-                            data.item
+                            normalizeKey(
+                                data.item
+                            )
                         );
 
                     }
 
-                });
-
-
-                render();
-
-            },
-
-
-            function (error) {
-
-                console.error(
-                    "Settings Firebase listener error:",
-                    error
-                );
-
-                updateFirebaseStatus(
-                    "Settings permission error"
-                );
-
-            }
-
-        );
-
-}
-
-
-/* =========================================================
-   FIRESTORE SAVE
-========================================================= */
-
-async function syncCollection(
-    collectionName,
-    data
-) {
-
-    if (
-        !firebaseReady ||
-        !isOwner()
-    ) {
-
-        console.error(
-            "Firebase write blocked: owner is not authenticated."
-        );
-
-        showToast(
-            "Please sign in as owner first."
-        );
-
-        return;
-
-    }
-
-
-    const collectionRef =
-        db.collection(collectionName);
-
-
-    try {
-
-        const existingSnapshot =
-            await collectionRef.get();
-
-
-        const incomingIds =
-            new Set(
-                data.map(function (item) {
-
-                    return String(item.id);
-
-                })
-            );
-
-
-        const batch =
-            db.batch();
-
-
-        let operationCount = 0;
-
-
-        existingSnapshot.forEach(function (doc) {
-
-            if (
-                !incomingIds.has(doc.id)
-            ) {
-
-                batch.delete(doc.ref);
-
-                operationCount++;
-
-            }
-
-        });
-
-
-        data.forEach(function (item) {
-
-            const id =
-                String(item.id);
-
-
-            const ref =
-                collectionRef.doc(id);
-
-
-            batch.set(
-                ref,
-                item,
-                { merge: true }
-            );
-
-
-            operationCount++;
-
-        });
-
-
-        /*
-         Firestore batch limit is 500.
-         We use 450 to leave room.
-        */
-
-        if (operationCount <= 450) {
-
-            await batch.commit();
-
-            return;
-
-        }
-
-
-        /*
-         For larger collections,
-         split the operations.
-        */
-
-        const operations = [];
-
-
-        existingSnapshot.forEach(function (doc) {
-
-            if (
-                !incomingIds.has(doc.id)
-            ) {
-
-                operations.push({
-                    type: "delete",
-                    ref: doc.ref
-                });
-
-            }
-
-        });
-
-
-        data.forEach(function (item) {
-
-            operations.push({
-
-                type: "set",
-
-                ref: collectionRef.doc(
-                    String(item.id)
-                ),
-
-                data: item
-
-            });
-
-        });
-
-
-        for (
-            let i = 0;
-            i < operations.length;
-            i += 450
-        ) {
-
-            const currentBatch =
-                db.batch();
-
-
-            const chunk =
-                operations.slice(
-                    i,
-                    i + 450
-                );
-
-
-            chunk.forEach(function (operation) {
-
-                if (
-                    operation.type === "delete"
-                ) {
-
-                    currentBatch.delete(
-                        operation.ref
-                    );
-
-                } else {
-
-                    currentBatch.set(
-                        operation.ref,
-                        operation.data,
-                        { merge: true }
-                    );
-
                 }
+            );
 
-            });
 
+            render();
 
-            await currentBatch.commit();
+        },
+        function (error) {
+
+            console.error(
+                "Settings listener error:",
+                error
+            );
 
         }
-
-
-    } catch (error) {
-
-        console.error(
-            "Firestore sync error:",
-            error
-        );
-
-
-        showToast(
-            "Could not save changes."
-        );
-
-    }
-
-}
-
-
-async function saveStock() {
-
-    await syncCollection(
-        STOCK_COLLECTION,
-        stockCache
     );
 
 }
 
 
-async function saveProduction() {
-
-    await syncCollection(
-        PRODUCTION_COLLECTION,
-        productionCache
-    );
-
-}
-
 
 /* =========================================================
-   SETTINGS
-========================================================= */
-
-async function setItemRemoved(item) {
-
-    if (
-        !firebaseReady ||
-        !isOwner()
-    ) {
-        throw new Error("Owner authentication required.");
-    }
-
-    const normalizedItem = normalizeKey(item);
-
-    // Update local state immediately so the item disappears after confirmation.
-    removedItems.add(normalizedItem);
-
-    try {
-        await db
-            .collection(SETTINGS_COLLECTION)
-            .doc(
-                "removed_" +
-                normalizedItem
-            )
-            .set({
-
-                type: "removedItem",
-
-                item: item,
-
-                removed: true,
-
-                updatedAt:
-                    firebase.firestore.FieldValue.serverTimestamp()
-
-            });
-    } catch (error) {
-        removedItems.delete(normalizedItem);
-        throw error;
-    }
-}
-
-
-async function clearItemRemoved(item) {
-
-    if (
-        !firebaseReady ||
-        !isOwner()
-    ) {
-
-        return;
-
-    }
-
-
-    await db
-        .collection(SETTINGS_COLLECTION)
-        .doc(
-            "removed_" +
-            normalizeKey(item)
-        )
-        .delete();
-
-}
-
-
-function isItemRemoved(item) {
-
-    return removedItems.has(
-        normalizeKey(item)
-    ) ||
-    removedItems.has(item);
-
-}
-
-
-async function setWarningHidden(item) {
-
-    if (
-        !firebaseReady ||
-        !isOwner()
-    ) {
-
-        return;
-
-    }
-
-
-    await db
-        .collection(SETTINGS_COLLECTION)
-        .doc(
-            "warning_" +
-            normalizeKey(item)
-        )
-        .set({
-
-            type: "hiddenWarning",
-
-            item: item,
-
-            hidden: true,
-
-            updatedAt:
-                firebase.firestore.FieldValue.serverTimestamp()
-
-        });
-
-}
-
-
-async function clearWarningHidden(item) {
-
-    if (
-        !firebaseReady ||
-        !isOwner()
-    ) {
-
-        return;
-
-    }
-
-
-    await db
-        .collection(SETTINGS_COLLECTION)
-        .doc(
-            "warning_" +
-            normalizeKey(item)
-        )
-        .delete();
-
-}
-
-
-function isWarningHidden(item) {
-
-    return hiddenWarnings.has(
-        normalizeKey(item)
-    ) ||
-    hiddenWarnings.has(item);
-
-}
-
-
-/* =========================================================
-   LOCAL DATA MIGRATION
-========================================================= */
-
-async function migrateLocalData() {
-
-    if (
-        !firebaseReady ||
-        !isOwner()
-    ) {
-
-        return;
-
-    }
-
-
-    try {
-
-        const localStock =
-            JSON.parse(
-                localStorage.getItem(
-                    "serene_stock"
-                ) || "[]"
-            );
-
-
-        const localProduction =
-            JSON.parse(
-                localStorage.getItem(
-                    "serene_production"
-                ) || "[]"
-            );
-
-
-        if (
-            Array.isArray(localStock) &&
-            localStock.length > 0
-        ) {
-
-            const snapshot =
-                await db
-                    .collection(STOCK_COLLECTION)
-                    .limit(1)
-                    .get();
-
-
-            if (snapshot.empty) {
-
-                await syncCollection(
-                    STOCK_COLLECTION,
-                    localStock
-                );
-
-            }
-
-        }
-
-
-        if (
-            Array.isArray(localProduction) &&
-            localProduction.length > 0
-        ) {
-
-            const snapshot =
-                await db
-                    .collection(PRODUCTION_COLLECTION)
-                    .limit(1)
-                    .get();
-
-
-            if (snapshot.empty) {
-
-                await syncCollection(
-                    PRODUCTION_COLLECTION,
-                    localProduction
-                );
-
-            }
-
-        }
-
-
-    } catch (error) {
-
-        console.error(
-            "Local data migration error:",
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   STOCK FUNCTIONS
+   ADD STOCK
 ========================================================= */
 
 async function addStock() {
@@ -1924,30 +1997,30 @@ async function addStock() {
 
     const item =
         document
-            .getElementById("stockItem")
-            .value
-            .trim();
+        .getElementById("stockItem")
+        .value
+        .trim();
 
 
     const quantity =
         Number(
             document
-                .getElementById("stockQuantity")
-                .value
+            .getElementById("stockQuantity")
+            .value
         );
 
 
     const unit =
         document
-            .getElementById("stockUnit")
-            .value
-            .trim();
+        .getElementById("stockUnit")
+        .value
+        .trim();
 
 
     const date =
         document
-            .getElementById("stockDate")
-            .value;
+        .getElementById("stockDate")
+        .value;
 
 
     if (
@@ -1966,97 +2039,84 @@ async function addStock() {
     }
 
 
-    const existing =
-        stockCache.find(function (record) {
+    const record = {
 
-            return (
+        id:
+            createID(),
 
-                record.type === "stock-in" &&
+        type:
+            "stock-in",
 
-                normalizeKey(record.item) ===
-                normalizeKey(item) &&
+        item:
+            item,
 
-                record.unit === unit &&
+        quantity:
+            roundNumber(quantity),
 
-                record.date === date
+        unit:
+            unit,
 
-            );
+        date:
+            date,
 
-        });
+        createdAt:
+            new Date().toISOString(),
+
+        createdBy:
+            auth.currentUser.email
+
+    };
 
 
-    if (existing) {
+    try {
 
-        existing.quantity =
-            roundNumber(
-                Number(existing.quantity || 0) +
-                quantity
-            );
+        await db
+            .collection(
+                STOCK_COLLECTION
+            )
+            .doc(record.id)
+            .set(record);
 
-    } else {
 
-        stockCache.push({
+        document
+            .getElementById("stockForm")
+            .reset();
 
-            id: createID(),
 
-            type: "stock-in",
+        document
+            .getElementById("stockDate")
+            .value =
+            getDate();
 
-            item: item,
 
-            quantity: roundNumber(quantity),
+        showToast(
+            "Stock added successfully."
+        );
 
-            unit: unit,
 
-            date: date,
+    } catch (error) {
 
-            createdAt:
-                new Date().toISOString()
+        console.error(
+            "Add stock error:",
+            error
+        );
 
-        });
+
+        showToast(
+            "Could not save stock."
+        );
 
     }
-
-
-    await saveStock();
-
-
-    document
-        .getElementById("stockForm")
-        .reset();
-
-
-    document
-        .getElementById("stockDate")
-        .value = getDate();
-
-
-    showToast(
-        "Stock added successfully."
-    );
-
-
-    render();
 
 }
 
 
-async function increaseStock(id) {
 
-    const record =
-        stockCache.find(function (item) {
+/* =========================================================
+   INCREASE STOCK
+========================================================= */
 
-            return String(item.id) ===
-                String(id);
-
-        });
-
-
-    if (!record) {
-
-        return;
-
-    }
-
+async function increaseStock(item) {
 
     const amount =
         Number(
@@ -2076,44 +2136,96 @@ async function increaseStock(id) {
     }
 
 
-    record.quantity =
-        roundNumber(
-            Number(record.quantity || 0) +
-            amount
+    const existing =
+        getLatestStockRecord(
+            item
         );
 
 
-    await saveStock();
-
-    showToast(
-        "Stock increased."
-    );
-
-}
-
-
-async function decreaseStock(id) {
-
-    const record =
-        stockCache.find(function (item) {
-
-            return String(item.id) ===
-                String(id);
-
-        });
+    let unit =
+        existing
+            ? existing.unit
+            : prompt(
+                "Enter unit, e.g. kg, packets, pieces:"
+            );
 
 
-    if (!record) {
+    if (!unit) {
 
         return;
 
     }
 
 
+    const record = {
+
+        id:
+            createID(),
+
+        type:
+            "stock-in",
+
+        item:
+            item,
+
+        quantity:
+            roundNumber(amount),
+
+        unit:
+            unit,
+
+        date:
+            getDate(),
+
+        createdAt:
+            new Date().toISOString(),
+
+        createdBy:
+            auth.currentUser.email
+
+    };
+
+
+    try {
+
+        await db
+            .collection(
+                STOCK_COLLECTION
+            )
+            .doc(record.id)
+            .set(record);
+
+
+        showToast(
+            "Stock increased."
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        showToast(
+            "Could not increase stock."
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   MANUAL STOCK USE
+========================================================= */
+
+async function decreaseStock(item) {
+
     const amount =
         Number(
             prompt(
-                "Enter quantity to reduce:"
+                "Enter quantity used:"
             )
         );
 
@@ -2128,27 +2240,281 @@ async function decreaseStock(id) {
     }
 
 
-    record.quantity =
-        roundNumber(
-            Math.max(
-                0,
-                Number(record.quantity || 0) -
-                amount
-            )
+    const balance =
+        getBalanceForItem(
+            item,
+            getDate()
         );
 
 
-    await saveStock();
+    if (
+        amount >
+        balance.closingStock
+    ) {
 
-    showToast(
-        "Stock reduced."
+        showToast(
+            "You cannot use more stock than is available."
+        );
+
+        return;
+
+    }
+
+
+    const latest =
+        getLatestStockRecord(
+            item
+        );
+
+
+    const record = {
+
+        id:
+            createID(),
+
+        type:
+            "manual-use",
+
+        item:
+            item,
+
+        quantity:
+            roundNumber(amount),
+
+        unit:
+            latest
+                ? latest.unit
+                : "",
+
+        date:
+            getDate(),
+
+        createdAt:
+            new Date().toISOString(),
+
+        createdBy:
+            auth.currentUser.email
+
+    };
+
+
+    try {
+
+        await db
+            .collection(
+                STOCK_COLLECTION
+            )
+            .doc(record.id)
+            .set(record);
+
+
+        showToast(
+            "Item used recorded."
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        showToast(
+            "Could not record item usage."
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   STOCK USE ROW
+========================================================= */
+
+function addStockUseRow(
+    existingItem = "",
+    existingQuantity = ""
+) {
+
+    const container =
+        document.getElementById(
+            "stockUsageContainer"
+        );
+
+
+    const row =
+        document.createElement(
+            "div"
+        );
+
+
+    row.className =
+        "grid grid-cols-1 md:grid-cols-3 gap-3";
+
+
+    row.innerHTML = `
+
+        <select
+            class="stock-use-item border border-gray-300 p-3 w-full"
+        >
+
+            <option value="">
+                Select stock item
+            </option>
+
+            ${getStockItemOptions(existingItem)}
+
+        </select>
+
+
+        <input
+            type="number"
+            step="0.01"
+            min="0"
+            value="${escapeHTML(existingQuantity)}"
+            placeholder="Quantity used"
+            class="stock-use-quantity border border-gray-300 p-3 w-full"
+        >
+
+
+        <button
+            type="button"
+            class="border border-red-300 text-red-700 px-4 py-3"
+            onclick="this.parentElement.remove()"
+        >
+
+            Remove
+
+        </button>
+
+    `;
+
+
+    container.appendChild(
+        row
     );
 
 }
 
 
+
+function getStockItemOptions(
+    selected
+) {
+
+    const items =
+        getKnownStockItems();
+
+
+    let html = "";
+
+
+    items.forEach(
+        function (item) {
+
+            html += `
+
+                <option
+                    value="${escapeHTML(item)}"
+                    ${
+                        normalizeKey(item) ===
+                        normalizeKey(selected)
+                            ? "selected"
+                            : ""
+                    }
+                >
+
+                    ${escapeHTML(item)}
+
+                </option>
+
+            `;
+
+        }
+    );
+
+
+    return html;
+
+}
+
+
+
+function refreshStockUseSelects() {
+
+    const selects =
+        document.querySelectorAll(
+            ".stock-use-item"
+        );
+
+    selects.forEach(
+        function (select) {
+
+            const currentValue =
+                select.value;
+
+            select.innerHTML =
+                `<option value="">
+                    Select stock item
+                </option>` +
+                getStockItemOptions(currentValue);
+
+            if (currentValue) {
+                const option = Array.from(
+                    select.options
+                ).find(
+                    function (item) {
+                        return normalizeKey(item.value) === normalizeKey(currentValue);
+                    }
+                );
+
+                if (option) {
+                    select.value = option.value;
+                }
+            }
+        }
+    );
+
+}
+
+
+function getKnownStockItems() {
+
+    const map = {};
+
+
+    stockCache.forEach(
+        function (record) {
+
+            if (record.item) {
+
+                map[
+                    normalizeKey(record.item)
+                ] =
+                    record.item;
+
+            }
+
+        }
+    );
+
+
+    return Object.values(map)
+        .sort(
+            function (a, b) {
+
+                return a.localeCompare(b);
+
+            }
+        );
+
+}
+
+
+
 /* =========================================================
-   PRODUCTION
+   ADD PRODUCTION
 ========================================================= */
 
 async function addProduction() {
@@ -2169,23 +2535,29 @@ async function addProduction() {
 
     const product =
         document
-            .getElementById("productionProduct")
-            .value
-            .trim();
+        .getElementById(
+            "productionProduct"
+        )
+        .value
+        .trim();
 
 
     const quantity =
         Number(
             document
-                .getElementById("productionQuantity")
-                .value
+            .getElementById(
+                "productionQuantity"
+            )
+            .value
         );
 
 
     const date =
         document
-            .getElementById("productionDate")
-            .value;
+        .getElementById(
+            "productionDate"
+        )
+        .value;
 
 
     if (
@@ -2195,7 +2567,7 @@ async function addProduction() {
     ) {
 
         showToast(
-            "Please complete all production fields."
+            "Please complete production fields."
         );
 
         return;
@@ -2203,468 +2575,1093 @@ async function addProduction() {
     }
 
 
-    productionCache.push({
-
-        id: createID(),
-
-        type: "production",
-
-        product: product,
-
-        quantity: roundNumber(quantity),
-
-        date: date,
-
-        createdAt:
-            new Date().toISOString()
-
-    });
+    const rows =
+        Array.from(
+            document.querySelectorAll(
+                "#stockUsageContainer > div"
+            )
+        );
 
 
-    await saveProduction();
+    const stockUses = [];
 
 
-    document
-        .getElementById("productionForm")
-        .reset();
+    for (
+        const row of rows
+    ) {
+
+        const item =
+            row
+            .querySelector(
+                ".stock-use-item"
+            )
+            .value
+            .trim();
 
 
-    document
-        .getElementById("productionDate")
-        .value = getDate();
+        const qty =
+            Number(
+                row
+                .querySelector(
+                    ".stock-use-quantity"
+                )
+                .value
+            );
 
 
-    showToast(
-        "Production recorded."
+        if (
+            !item &&
+            !qty
+        ) {
+
+            continue;
+
+        }
+
+
+        if (
+            !item ||
+            !Number.isFinite(qty) ||
+            qty <= 0
+        ) {
+
+            showToast(
+                "Complete every stock usage row."
+            );
+
+            return;
+
+        }
+
+
+        stockUses.push({
+
+            item:
+                item,
+
+            quantity:
+                roundNumber(qty)
+
+        });
+
+    }
+
+
+    /*
+       Combine duplicate stock items.
+    */
+
+    const requested = {};
+
+
+    stockUses.forEach(
+        function (use) {
+
+            const key =
+                normalizeKey(
+                    use.item
+                );
+
+
+            requested[key] =
+                (
+                    requested[key] ||
+                    0
+                ) +
+                Number(
+                    use.quantity || 0
+                );
+
+        }
     );
 
 
-    render();
+    /*
+       Check available raw stock.
+    */
+
+    for (
+        const key of Object.keys(requested)
+    ) {
+
+        const item =
+            requestedItemName(
+                stockUses,
+                key
+            );
+
+
+        const balance =
+            getBalanceForItem(
+                item,
+                date
+            );
+
+
+        if (
+            requested[key] >
+            balance.closingStock
+        ) {
+
+            showToast(
+                `${item}: only ${formatNumber(balance.closingStock)} ${balance.unit} available.`
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    const record = {
+
+        id:
+            createID(),
+
+        type:
+            "production",
+
+        product:
+            product,
+
+        quantity:
+            roundNumber(quantity),
+
+        date:
+            date,
+
+        stockUses:
+            stockUses,
+
+        createdAt:
+            new Date().toISOString(),
+
+        createdBy:
+            auth.currentUser.email
+
+    };
+
+
+    try {
+
+        await db
+            .collection(
+                PRODUCTION_COLLECTION
+            )
+            .doc(record.id)
+            .set(record);
+
+
+        document
+            .getElementById(
+                "productionForm"
+            )
+            .reset();
+
+
+        document
+            .getElementById(
+                "productionDate"
+            )
+            .value =
+            getDate();
+
+
+        document
+            .getElementById(
+                "stockUsageContainer"
+            )
+            .innerHTML =
+            "";
+
+
+        addStockUseRow();
+
+
+        showToast(
+            "Production recorded and stock deducted."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Production error:",
+            error
+        );
+
+
+        showToast(
+            "Could not save production."
+        );
+
+    }
 
 }
 
 
+
+function requestedItemName(
+    stockUses,
+    key
+) {
+
+    const found =
+        stockUses.find(
+            function (use) {
+
+                return (
+                    normalizeKey(
+                        use.item
+                    ) === key
+                );
+
+            }
+        );
+
+
+    return found
+        ? found.item
+        : key;
+
+}
+
+
+
 /* =========================================================
-   DELETE PRODUCTION
+   STOCK BALANCE
 ========================================================= */
 
-function deleteProduction(id) {
+function getBalanceForItem(
+    item,
+    date
+) {
 
-    openConfirmModal(
+    const key =
+        normalizeKey(item);
 
-        "Delete Production",
 
-        "Delete this production record? This action cannot be undone.",
+    const records =
+        stockCache.filter(
+            function (record) {
 
-        async function () {
+                return (
+                    normalizeKey(
+                        record.item
+                    ) === key
+                );
 
-            const record =
-                productionCache.find(
-                    function (item) {
+            }
+        );
 
-                        return String(item.id) ===
-                            String(id);
+
+    let balance =
+        0;
+
+
+    let unit =
+        "";
+
+
+    /*
+       Previous stock movements.
+    */
+
+    records
+        .filter(
+            function (record) {
+
+                return (
+                    String(
+                        record.date || ""
+                    ) < String(date)
+                );
+
+            }
+        )
+        .sort(
+            function (a, b) {
+
+                return String(
+                    a.date || ""
+                ).localeCompare(
+                    String(
+                        b.date || ""
+                    )
+                );
+
+            }
+        )
+        .forEach(
+            function (record) {
+
+                const qty =
+                    Math.abs(
+                        Number(
+                            record.quantity ||
+                            0
+                        )
+                    );
+
+
+                if (record.unit) {
+
+                    unit =
+                        record.unit;
+
+                }
+
+
+                if (
+                    record.type ===
+                    "stock-in"
+                ) {
+
+                    balance +=
+                        qty;
+
+                } else {
+
+                    balance -=
+                        qty;
+
+                }
+
+            }
+        );
+
+
+    /*
+       Previous production usage.
+    */
+
+    productionCache
+        .filter(
+            function (production) {
+
+                return (
+                    String(
+                        production.date || ""
+                    ) < String(date)
+                );
+
+            }
+        )
+        .forEach(
+            function (production) {
+
+                const uses =
+                    Array.isArray(
+                        production.stockUses
+                    )
+                        ? production.stockUses
+                        : [];
+
+
+                uses.forEach(
+                    function (use) {
+
+                        if (
+                            normalizeKey(
+                                use.item
+                            ) === key
+                        ) {
+
+                            balance -=
+                                Math.abs(
+                                    Number(
+                                        use.quantity ||
+                                        0
+                                    )
+                                );
+
+                        }
 
                     }
                 );
 
+            }
+        );
 
-            if (!record) {
+
+    const broughtForward =
+        roundNumber(
+            Math.max(
+                0,
+                balance
+            )
+        );
+
+
+    let stockIn =
+        0;
+
+
+    let itemUsed =
+        0;
+
+
+    /*
+       Today's stock movements.
+    */
+
+    records.forEach(
+        function (record) {
+
+            if (
+                record.date !== date
+            ) {
 
                 return;
 
             }
 
 
-            productionCache =
-                productionCache.filter(
-                    function (item) {
-
-                        return String(item.id) !==
-                            String(id);
-
-                    }
+            const qty =
+                Math.abs(
+                    Number(
+                        record.quantity ||
+                        0
+                    )
                 );
 
 
-            await saveProduction();
+            if (record.unit) {
+
+                unit =
+                    record.unit;
+
+            }
 
 
-            showToast(
-                "Production record deleted."
-            );
+            if (
+                record.type ===
+                "stock-in"
+            ) {
 
+                stockIn +=
+                    qty;
 
-            render();
+            } else {
 
-        }
-
-    );
-
-}
-
-
-/* =========================================================
-   DELETE STOCK
-========================================================= */
-
-function deleteStock(id) {
-
-    openConfirmModal(
-
-        "Delete Stock",
-
-        "Delete this stock record?",
-
-        async function () {
-
-            stockCache =
-                stockCache.filter(
-                    function (item) {
-
-                        return String(item.id) !==
-                            String(id);
-
-                    }
-                );
-
-
-            await saveStock();
-
-
-            showToast(
-                "Stock record deleted."
-            );
-
-
-            render();
-
-        }
-
-    );
-
-}
-
-
-/* =========================================================
-   REMOVE ITEM FROM DISPLAY
-========================================================= */
-
-function removeItem(item) {
-
-    if (!firebaseReady || !isOwner()) {
-        showToast("Please sign in as owner first.");
-        return;
-    }
-
-    openConfirmModal(
-        "Remove Item",
-        "Remove this item from the stock display?",
-        async function () {
-
-            try {
-                await setItemRemoved(item);
-
-                render();
-
-                showToast(
-                    item + " removed from display."
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "Remove item error:",
-                    error
-                );
-
-                render();
-
-                showToast(
-                    "The item could not be removed. Check Firestore permissions."
-                );
+                itemUsed +=
+                    qty;
 
             }
 
         }
     );
 
-}
+
+    /*
+       Today's production usage.
+    */
+
+    productionCache
+        .filter(
+            function (production) {
+
+                return (
+                    production.date === date
+                );
+
+            }
+        )
+        .forEach(
+            function (production) {
+
+                const uses =
+                    Array.isArray(
+                        production.stockUses
+                    )
+                        ? production.stockUses
+                        : [];
 
 
+                uses.forEach(
+                    function (use) {
 
-/* =========================================================
-   RESTORE ITEM
-========================================================= */
+                        if (
+                            normalizeKey(
+                                use.item
+                            ) === key
+                        ) {
 
-async function restoreItem(item) {
+                            itemUsed +=
+                                Math.abs(
+                                    Number(
+                                        use.quantity ||
+                                        0
+                                    )
+                                );
 
-    await clearItemRemoved(item);
+                        }
 
-    showToast(
-        item + " restored."
-    );
+                    }
+                );
 
-    render();
-
-}
-
-
-/* =========================================================
-   HIDE WARNING
-========================================================= */
-
-async function hideWarning(item) {
-
-    await setWarningHidden(item);
-
-    showToast(
-        "Warning hidden."
-    );
-
-    render();
-
-}
-
-
-/* =========================================================
-   RESTORE WARNING
-========================================================= */
-
-async function restoreWarning(item) {
-
-    await clearWarningHidden(item);
-
-    showToast(
-        "Warning restored."
-    );
-
-    render();
-
-}
-
-
-/* =========================================================
-   CALCULATE AVAILABLE STOCK
-========================================================= */
-
-function calculateBalances() {
-
-    const balances = {};
-
-
-    stockCache.forEach(function (record) {
-
-        const item =
-            record.item;
-
-
-        if (!item) {
-
-            return;
-
-        }
-
-
-        const key =
-            normalizeKey(item);
-
-
-        if (!balances[key]) {
-
-            balances[key] = {
-
-                item: item,
-
-                quantity: 0,
-
-                unit: record.unit || "",
-
-                latestDate:
-                    record.date || "",
-
-                records: []
-
-            };
-
-        }
-
-
-        let amount =
-            Number(record.quantity || 0);
-
-
-        /*
-         production-use records reduce
-         available ingredient stock
-        */
-
-        if (
-            record.type ===
-            "production-use"
-        ) {
-
-            amount = -Math.abs(amount);
-
-        }
-
-
-        /*
-         wastage also reduces stock
-        */
-
-        if (
-            record.type === "wastage"
-        ) {
-
-            amount = -Math.abs(amount);
-
-        }
-
-
-        balances[key].quantity +=
-            amount;
-
-
-        balances[key].quantity =
-            roundNumber(
-                balances[key].quantity
-            );
-
-
-        balances[key].records.push(
-            record
+            }
         );
 
 
-        if (
-            record.date &&
-            record.date >
-            balances[key].latestDate
-        ) {
+    stockIn =
+        roundNumber(
+            stockIn
+        );
 
-            balances[key].latestDate =
-                record.date;
+
+    itemUsed =
+        roundNumber(
+            itemUsed
+        );
+
+
+    const closingStock =
+        roundNumber(
+            broughtForward +
+            stockIn -
+            itemUsed
+        );
+
+
+    const latestRecord =
+        records
+        .slice()
+        .sort(
+            function (a, b) {
+
+                return String(
+                    b.date || ""
+                ).localeCompare(
+                    String(
+                        a.date || ""
+                    )
+                );
+
+            }
+        )[0];
+
+
+    if (
+        !unit &&
+        latestRecord
+    ) {
+
+        unit =
+            latestRecord.unit ||
+            "";
+
+    }
+
+
+    return {
+
+        item:
+            item,
+
+        date:
+            date,
+
+        broughtForward:
+            broughtForward,
+
+        stockIn:
+            stockIn,
+
+        itemUsed:
+            itemUsed,
+
+        closingStock:
+            Math.max(
+                0,
+                closingStock
+            ),
+
+        unit:
+            unit
+
+    };
+
+}
+
+
+
+/* =========================================================
+   CURRENT STOCK ITEMS
+========================================================= */
+
+function calculateCurrentBalances() {
+
+    const map = {};
+
+
+    stockCache.forEach(
+        function (record) {
+
+            if (!record.item) {
+
+                return;
+
+            }
+
+
+            map[
+                normalizeKey(
+                    record.item
+                )
+            ] =
+                record.item;
 
         }
+    );
 
-    });
+
+    productionCache.forEach(
+        function (record) {
+
+            const uses =
+                Array.isArray(
+                    record.stockUses
+                )
+                    ? record.stockUses
+                    : [];
 
 
-    return Object.values(
-        balances
+            uses.forEach(
+                function (use) {
+
+                    if (use.item) {
+
+                        map[
+                            normalizeKey(
+                                use.item
+                            )
+                        ] =
+                            use.item;
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    return Object.values(map)
+        .map(
+            function (item) {
+
+                return getBalanceForItem(
+                    item,
+                    getDate()
+                );
+
+            }
+        );
+
+}
+
+
+
+/* =========================================================
+   ORDERS
+========================================================= */
+
+function isPaidOrder(order) {
+
+    return String(
+        order.status || ""
+    ).toLowerCase() === "paid";
+
+}
+
+
+function getOrderDate(order) {
+
+    /*
+       Receipt Dashboard treats the payment/paid timestamp
+       as the actual receipt date when it is available.
+       This keeps Stock/Production sales aligned with Receipts.
+    */
+
+    const paidDateFields = [
+        order.paidAt,
+        order.paidDateTime,
+        order.completedAt
+    ];
+
+
+    for (const value of paidDateFields) {
+
+        if (!value) {
+            continue;
+        }
+
+        const text = String(value);
+
+        if (/^\\d{4}-\\d{2}-\\d{2}/.test(text)) {
+            return text.substring(0, 10);
+        }
+
+        const parsed = new Date(value);
+
+        if (!Number.isNaN(parsed.getTime())) {
+            return parsed.toISOString().substring(0, 10);
+        }
+
+    }
+
+
+    if (order.date) {
+
+        return String(order.date).substring(0, 10);
+
+    }
+
+
+    if (order.createdAt) {
+
+        return String(
+            order.createdAt
+        ).substring(
+            0,
+            10
+        );
+
+    }
+
+
+    return "";
+
+}
+
+
+function getOrderProducts(order) {
+
+    if (
+        Array.isArray(
+            order.items
+        )
+    ) {
+
+        return order.items;
+
+    }
+
+
+    if (
+        Array.isArray(
+            order.products
+        )
+    ) {
+
+        return order.products;
+
+    }
+
+
+    return [];
+
+}
+
+
+function getProductName(product) {
+
+    return (
+        product.productName ||
+        product.product ||
+        product.name ||
+        product.item ||
+        product.title ||
+        ""
     );
 
 }
 
 
+function getProductQuantity(product) {
+
+    return Number(
+        product.quantity ??
+        product.qty ??
+        0
+    );
+
+}
+
+
+/*
+   IMPORTANT:
+   Stock/Production sales come ONLY from PAID orders,
+   exactly like the Receipt Dashboard.
+
+   Pending, rejected, cancelled and other unpaid waiter
+   orders do not count as sales here.
+
+   Paid debt records are intentionally not used because
+   paying an old debt is a payment for an earlier sale,
+   not a new product sale.
+*/
+function getSalesForProductDate(
+    productName,
+    date
+) {
+
+    let total = 0;
+
+
+    ordersCache.forEach(
+        function (order) {
+
+            if (!isPaidOrder(order)) {
+                return;
+            }
+
+
+            if (
+                getOrderDate(order) !== date
+            ) {
+
+                return;
+
+            }
+
+
+            getOrderProducts(order)
+                .forEach(
+                    function (product) {
+
+                        if (
+                            normalizeKey(
+                                getProductName(product)
+                            ) ===
+                            normalizeKey(productName)
+                        ) {
+
+                            total += Math.max(
+                                0,
+                                getProductQuantity(product)
+                            );
+
+                        }
+
+                    }
+                );
+
+        }
+    );
+
+
+    return roundNumber(total);
+
+}
+
+
 /* =========================================================
-   CALCULATE FINISHED PRODUCTS
+   PRODUCTION BOOK
 ========================================================= */
 
-function calculateFinishedProducts() {
+function calculateProductionBook() {
 
     const products = {};
 
 
-    productionCache.forEach(function (record) {
+    /*
+       First collect every product/date that was actually
+       produced. Existing production records remain the
+       source of production quantities.
+    */
+    productionCache.forEach(
+        function (record) {
 
-        if (
-            !record.product
-        ) {
+            if (
+                !record.product ||
+                !record.date
+            ) {
 
-            return;
+                return;
 
-        }
-
-
-        const key =
-            normalizeKey(
-                record.product
-            );
-
-
-        if (!products[key]) {
-
-            products[key] = {
-
-                product: record.product,
-
-                quantity: 0,
-
-                unit: "pieces",
-
-                dates: {}
-
-            };
-
-        }
+            }
 
 
-        const quantity =
-            Number(
-                record.quantity || 0
-            );
+            const key =
+                normalizeKey(record.product);
 
 
-        products[key].quantity +=
-            quantity;
+            if (!products[key]) {
+
+                products[key] = {
+                    product: record.product,
+                    dates: {}
+                };
+
+            }
 
 
-        products[key].quantity =
-            roundNumber(
-                products[key].quantity
-            );
+            if (!products[key].dates[record.date]) {
+
+                products[key].dates[record.date] = {
+                    produced: 0
+                };
+
+            }
 
 
-        const date =
-            record.date ||
-            getDate();
-
-
-        if (!products[key].dates[date]) {
-
-            products[key].dates[date] = 0;
+            products[key].dates[record.date].produced +=
+                Number(record.quantity || 0);
 
         }
-
-
-        products[key].dates[date] +=
-            quantity;
-
-
-        products[key].dates[date] =
-            roundNumber(
-                products[key].dates[date]
-            );
-
-    });
-
-
-    return Object.values(
-        products
     );
+
+
+    /*
+       Also add dates/products from PAID receipts.
+       This is important when a product is sold on a day
+       when no new production was entered: the sale must
+       still reduce the previous day's closing balance.
+    */
+    ordersCache.forEach(
+        function (order) {
+
+            if (!isPaidOrder(order)) {
+                return;
+            }
+
+
+            const date = getOrderDate(order);
+
+            if (!date) {
+                return;
+            }
+
+
+            getOrderProducts(order).forEach(
+                function (product) {
+
+                    const productName =
+                        getProductName(product);
+
+                    if (!productName) {
+                        return;
+                    }
+
+
+                    const key =
+                        normalizeKey(productName);
+
+
+                    if (!products[key]) {
+
+                        products[key] = {
+                            product: productName,
+                            dates: {}
+                        };
+
+                    }
+
+
+                    if (!products[key].dates[date]) {
+
+                        products[key].dates[date] = {
+                            produced: 0
+                        };
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    Object.keys(products)
+        .forEach(
+            function (key) {
+
+                const product = products[key];
+
+
+                const dates = Object.keys(product.dates)
+                    .sort();
+
+
+                let cf = 0;
+
+
+                dates.forEach(
+                    function (date) {
+
+                        const produced = roundNumber(
+                            product.dates[date].produced
+                        );
+
+
+                        const available = roundNumber(
+                            cf + produced
+                        );
+
+
+                        /*
+                           SALES = paid receipts for this
+                           product on this date only.
+                        */
+                        const sales =
+                            getSalesForProductDate(
+                                product.product,
+                                date
+                            );
+
+
+                        const closingCF = Math.max(
+                            0,
+                            roundNumber(
+                                available - sales
+                            )
+                        );
+
+
+                        product.dates[date] = {
+                            cf: roundNumber(cf),
+                            produced: produced,
+                            available: available,
+                            sales: sales,
+                            closingCF: closingCF
+                        };
+
+
+                        cf = closingCF;
+
+                    }
+                );
+
+            }
+        );
+
+
+    return products;
 
 }
 
 
 /* =========================================================
-   RENDER EVERYTHING
+   RENDER
 ========================================================= */
 
 function render() {
 
     const balances =
-        calculateBalances();
+        calculateCurrentBalances();
 
 
-    const finished =
-        calculateFinishedProducts();
+    const productionBook =
+        calculateProductionBook();
 
 
     renderSummary(
-        balances,
-        finished
+        balances
     );
 
 
@@ -2673,19 +3670,25 @@ function render() {
     );
 
 
-    renderProduction();
+    renderProduction(
+        productionBook
+    );
+
 
     renderFinishedProducts(
-        finished
+        productionBook
     );
+
 
     renderWarnings(
         balances
     );
 
+
     renderHistory();
 
 }
+
 
 
 /* =========================================================
@@ -2693,68 +3696,85 @@ function render() {
 ========================================================= */
 
 function renderSummary(
-    balances,
-    finished
+    balances
 ) {
 
-    const visibleStock =
-        balances.filter(function (item) {
+    const visible =
+        balances.filter(
+            function (item) {
 
-            return !isItemRemoved(
-                item.item
-            );
+                return !isItemRemoved(
+                    item.item
+                );
 
-        });
-
-
-    const lowStock =
-        visibleStock.filter(function (item) {
-
-            return (
-                item.quantity > 0 &&
-                item.quantity < 3
-            );
-
-        });
+            }
+        );
 
 
-    const outStock =
-        visibleStock.filter(function (item) {
+    const low =
+        visible.filter(
+            function (item) {
 
-            return item.quantity <= 0;
+                return (
+                    item.closingStock > 0 &&
+                    item.closingStock < 3
+                );
 
-        });
+            }
+        );
+
+
+    const out =
+        visible.filter(
+            function (item) {
+
+                return (
+                    item.closingStock <= 0
+                );
+
+            }
+        );
 
 
     document
-        .getElementById("summaryStockItems")
+        .getElementById(
+            "summaryStockItems"
+        )
         .textContent =
-        visibleStock.length;
+        visible.length;
 
 
     document
-        .getElementById("summaryLowStock")
+        .getElementById(
+            "summaryLowStock"
+        )
         .textContent =
-        lowStock.length;
+        low.length;
 
 
     document
-        .getElementById("summaryOutStock")
+        .getElementById(
+            "summaryOutStock"
+        )
         .textContent =
-        outStock.length;
+        out.length;
 
 
     document
-        .getElementById("summaryRecords")
+        .getElementById(
+            "summaryRecords"
+        )
         .textContent =
         stockCache.length +
-        productionCache.length;
+        productionCache.length +
+        ordersCache.length;
 
 }
 
 
+
 /* =========================================================
-   AVAILABLE STOCK
+   AVAILABLE STOCK RENDER
 ========================================================= */
 
 function renderAvailableStock(
@@ -2768,21 +3788,27 @@ function renderAvailableStock(
 
 
     const visible =
-        balances.filter(function (item) {
+        balances.filter(
+            function (item) {
 
-            return !isItemRemoved(
-                item.item
-            );
+                return !isItemRemoved(
+                    item.item
+                );
 
-        });
+            }
+        );
 
 
     if (!visible.length) {
 
         container.innerHTML = `
+
             <p class="text-sm text-gray-500">
+
                 No stock available.
+
             </p>
+
         `;
 
         return;
@@ -2790,36 +3816,70 @@ function renderAvailableStock(
     }
 
 
-    const groups =
-        groupByDate(
-            visible,
-            function (item) {
+    const dates =
+        getAllStockDates()
+        .sort()
+        .reverse();
 
-                return item.latestDate ||
-                    "No Date";
+
+    let html =
+        "";
+
+
+    dates.forEach(
+        function (date) {
+
+            const rows =
+                visible
+                .map(
+                    function (item) {
+
+                        return getBalanceForItem(
+                            item.item,
+                            date
+                        );
+
+                    }
+                )
+                .filter(
+                    function (item) {
+
+                        return (
+                            item.broughtForward !== 0 ||
+                            item.stockIn !== 0 ||
+                            item.itemUsed !== 0 ||
+                            item.closingStock !== 0
+                        );
+
+                    }
+                );
+
+
+            if (!rows.length) {
+
+                return;
 
             }
-        );
 
-
-    let html = "";
-
-
-    Object.keys(groups)
-        .sort()
-        .reverse()
-        .forEach(function (date) {
 
             html += `
-                <div class="mb-8">
+
+                <div class="mb-10">
 
                     <div class="border-b border-gray-200 pb-2 mb-4">
+
                         <p class="text-sm text-green-900">
+
                             ${escapeHTML(
-                                formatDateLabel(date)
+                                formatDateLabel(
+                                    date
+                                )
                             )}
+
                         </p>
+
                     </div>
+
 
                     <div class="mobile-table">
 
@@ -2834,7 +3894,19 @@ function renderAvailableStock(
                                     </th>
 
                                     <th class="text-left py-3">
-                                        Quantity
+                                        B/F
+                                    </th>
+
+                                    <th class="text-left py-3">
+                                        Stock In
+                                    </th>
+
+                                    <th class="text-left py-3">
+                                        Item Used
+                                    </th>
+
+                                    <th class="text-left py-3">
+                                        Closing Stock
                                     </th>
 
                                     <th class="text-left py-3">
@@ -2853,91 +3925,145 @@ function renderAvailableStock(
 
                             </thead>
 
+
                             <tbody>
+
             `;
 
 
-            groups[date].forEach(function (item) {
+            rows.forEach(
+                function (item) {
 
-                let status =
-                    "Available";
+                    let status =
+                        "Available";
 
 
-                if (
-                    item.quantity <= 0
-                ) {
+                    if (
+                        item.closingStock <= 0
+                    ) {
 
-                    status =
-                        "Out of stock";
+                        status =
+                            "Out of stock";
 
-                } else if (
-                    item.quantity < 3
-                ) {
+                    } else if (
+                        item.closingStock < 3
+                    ) {
 
-                    status =
-                        "Low stock";
+                        status =
+                            "Low stock";
+
+                    }
+
+
+                    html += `
+
+                        <tr class="border-b border-gray-100">
+
+                            <td class="py-3">
+
+                                ${escapeHTML(
+                                    item.item
+                                )}
+
+                            </td>
+
+
+                            <td class="py-3">
+
+                                ${formatNumber(
+                                    item.broughtForward
+                                )}
+
+                            </td>
+
+
+                            <td class="py-3">
+
+                                ${formatNumber(
+                                    item.stockIn
+                                )}
+
+                            </td>
+
+
+                            <td class="py-3">
+
+                                ${formatNumber(
+                                    item.itemUsed
+                                )}
+
+                            </td>
+
+
+                            <td class="py-3">
+
+                                ${formatNumber(
+                                    item.closingStock
+                                )}
+
+                            </td>
+
+
+                            <td class="py-3">
+
+                                ${escapeHTML(
+                                    item.unit
+                                )}
+
+                            </td>
+
+
+                            <td class="py-3">
+
+                                ${status}
+
+                            </td>
+
+
+                            <td class="py-3 text-right">
+
+                                <div class="flex justify-end gap-2">
+
+                                    <button
+                                        onclick="increaseStock('${escapeJS(item.item)}')"
+                                        class="border border-gray-300 px-3 py-1">
+
+                                        +
+
+                                    </button>
+
+
+                                    <button
+                                        onclick="decreaseStock('${escapeJS(item.item)}')"
+                                        class="border border-gray-300 px-3 py-1">
+
+                                        -
+
+                                    </button>
+
+
+                                    <button
+                                        onclick="removeItem('${escapeJS(item.item)}')"
+                                        class="text-red-700 border border-gray-300 px-3 py-1">
+
+                                        Remove
+
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    `;
 
                 }
-
-
-                html += `
-                    <tr class="border-b border-gray-100">
-
-                        <td class="py-3">
-                            ${escapeHTML(
-                                item.item
-                            )}
-                        </td>
-
-                        <td class="py-3">
-                            ${formatNumber(
-                                item.quantity
-                            )}
-                        </td>
-
-                        <td class="py-3">
-                            ${escapeHTML(
-                                item.unit
-                            )}
-                        </td>
-
-                        <td class="py-3">
-                            ${status}
-                        </td>
-
-                        <td class="py-3 text-right">
-
-                            <div class="flex justify-end gap-2">
-
-                                <button
-                                    onclick="increaseStock('${item.records[0]?.id || ""}')"
-                                    class="border border-gray-300 px-3 py-1">
-                                    +
-                                </button>
-
-                                <button
-                                    onclick="decreaseStock('${item.records[0]?.id || ""}')"
-                                    class="border border-gray-300 px-3 py-1">
-                                    -
-                                </button>
-
-                                <button
-                                    onclick="removeItem('${escapeJS(item.item)}')"
-                                    class="text-red-700 border border-gray-300 px-3 py-1">
-                                    Remove
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-                `;
-
-            });
+            );
 
 
             html += `
+
                             </tbody>
 
                         </table>
@@ -2945,9 +4071,26 @@ function renderAvailableStock(
                     </div>
 
                 </div>
+
             `;
 
-        });
+        }
+    );
+
+
+    if (!html) {
+
+        html = `
+
+            <p class="text-sm text-gray-500">
+
+                No stock available.
+
+            </p>
+
+        `;
+
+    }
 
 
     container.innerHTML =
@@ -2956,11 +4099,65 @@ function renderAvailableStock(
 }
 
 
+
+/* =========================================================
+   ALL STOCK DATES
+========================================================= */
+
+function getAllStockDates() {
+
+    const dates =
+        new Set();
+
+
+    stockCache.forEach(
+        function (record) {
+
+            if (record.date) {
+
+                dates.add(
+                    record.date
+                );
+
+            }
+
+        }
+    );
+
+
+    productionCache.forEach(
+        function (record) {
+
+            if (record.date) {
+
+                dates.add(
+                    record.date
+                );
+
+            }
+
+        }
+    );
+
+
+    dates.add(
+        getDate()
+    );
+
+
+    return Array.from(dates);
+
+}
+
+
+
 /* =========================================================
    PRODUCTION RENDER
 ========================================================= */
 
-function renderProduction() {
+function renderProduction(
+    productionBook
+) {
 
     const container =
         document.getElementById(
@@ -2968,12 +4165,68 @@ function renderProduction() {
         );
 
 
-    if (!productionCache.length) {
+    const rows = [];
+
+
+    Object.values(
+        productionBook
+    )
+    .forEach(
+        function (product) {
+
+            Object.keys(
+                product.dates
+            )
+            .forEach(
+                function (date) {
+
+                    rows.push({
+
+                        product:
+                            product.product,
+
+                        date:
+                            date,
+
+                        ...product.dates[
+                            date
+                        ]
+
+                    });
+
+                }
+            );
+
+        }
+    );
+
+
+    rows.sort(
+        function (a, b) {
+
+            return (
+                b.date.localeCompare(
+                    a.date
+                ) ||
+                a.product.localeCompare(
+                    b.product
+                )
+            );
+
+        }
+    );
+
+
+    if (!rows.length) {
 
         container.innerHTML = `
+
             <p class="text-sm text-gray-500">
+
                 No production records.
+
             </p>
+
         `;
 
         return;
@@ -2983,127 +4236,240 @@ function renderProduction() {
 
     const groups =
         groupByDate(
-            productionCache,
-            function (record) {
+            rows,
+            function (row) {
 
-                return record.date ||
-                    "No Date";
+                return row.date;
 
             }
         );
 
 
-    let html = "";
+    let html =
+        "";
 
 
     Object.keys(groups)
         .sort()
         .reverse()
-        .forEach(function (date) {
-
-            html += `
-
-                <div class="mb-8">
-
-                    <div class="border-b border-gray-200 pb-2 mb-4">
-
-                        <p class="text-sm text-green-900">
-                            ${escapeHTML(
-                                formatDateLabel(date)
-                            )}
-                        </p>
-
-                    </div>
-
-
-                    <div class="mobile-table">
-
-                        <table class="w-full text-sm">
-
-                            <thead>
-
-                                <tr class="border-b border-gray-200">
-
-                                    <th class="text-left py-3">
-                                        Product
-                                    </th>
-
-                                    <th class="text-left py-3">
-                                        Quantity
-                                    </th>
-
-                                    <th class="text-left py-3">
-                                        Time
-                                    </th>
-
-                                    <th class="text-right py-3">
-                                        Action
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody>
-            `;
-
-
-            groups[date].forEach(function (record) {
+        .forEach(
+            function (date) {
 
                 html += `
 
-                    <tr class="border-b border-gray-100">
+                    <div class="mb-10">
 
-                        <td class="py-3">
-                            ${escapeHTML(
-                                record.product || ""
-                            )}
-                        </td>
+                        <div class="border-b border-gray-200 pb-2 mb-4">
 
-                        <td class="py-3">
-                            ${formatNumber(
-                                record.quantity
-                            )}
-                        </td>
+                            <p class="text-sm text-green-900">
 
-                        <td class="py-3">
-                            ${escapeHTML(
-                                getTimeFromRecord(record)
-                            )}
-                        </td>
+                                ${escapeHTML(
+                                    formatDateLabel(
+                                        date
+                                    )
+                                )}
 
-                        <td class="py-3 text-right">
+                            </p>
 
-                            <button
-                                onclick="deleteProduction('${escapeJS(record.id)}')"
-                                class="text-red-700 border border-gray-300 px-3 py-1">
+                        </div>
 
-                                Delete
 
-                            </button>
+                        <div class="mobile-table">
 
-                        </td>
+                            <table class="w-full text-sm">
 
-                    </tr>
+                                <thead>
+
+                                    <tr class="border-b border-gray-200">
+
+                                        <th class="text-left py-3">
+                                            Product
+                                        </th>
+
+                                        <th class="text-left py-3">
+                                            CF / B/F
+                                        </th>
+
+                                        <th class="text-left py-3">
+                                            Produced
+                                        </th>
+
+                                        <th class="text-left py-3">
+                                            Available
+                                        </th>
+
+                                        <th class="text-left py-3">
+                                            Sales
+                                        </th>
+
+                                        <th class="text-left py-3">
+                                            Closing CF
+                                        </th>
+
+                                        <th class="text-left py-3">
+                                            Status
+                                        </th>
+
+                                        <th class="text-right py-3">
+                                            Action
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
 
                 `;
 
-            });
+
+                groups[date].forEach(
+                    function (record) {
+
+                        let status =
+                            "Available";
 
 
-            html += `
+                        if (
+                            record.closingCF <= 0
+                        ) {
 
-                            </tbody>
+                            status =
+                                "Finished";
 
-                        </table>
+                        } else if (
+                            record.closingCF < 3
+                        ) {
+
+                            status =
+                                "Low";
+
+                        }
+
+
+                        const deleteIds =
+                            getProductionRecordsForDay(
+                                record.product,
+                                date
+                            );
+
+
+                        html += `
+
+                            <tr class="border-b border-gray-100">
+
+                                <td class="py-3">
+
+                                    ${escapeHTML(
+                                        record.product
+                                    )}
+
+                                </td>
+
+
+                                <td class="py-3">
+
+                                    ${formatNumber(
+                                        record.cf
+                                    )}
+
+                                </td>
+
+
+                                <td class="py-3">
+
+                                    ${formatNumber(
+                                        record.produced
+                                    )}
+
+                                </td>
+
+
+                                <td class="py-3">
+
+                                    ${formatNumber(
+                                        record.available
+                                    )}
+
+                                </td>
+
+
+                                <td class="py-3">
+
+                                    ${formatNumber(
+                                        record.sales
+                                    )}
+
+                                </td>
+
+
+                                <td class="py-3">
+
+                                    ${formatNumber(
+                                        record.closingCF
+                                    )}
+
+                                </td>
+
+
+                                <td class="py-3">
+
+                                    ${status}
+
+                                </td>
+
+
+                                <td class="py-3 text-right">
+
+                                    ${
+                                        deleteIds.length === 1
+                                            ? `
+
+                                                <button
+                                                    onclick="deleteProduction('${escapeJS(deleteIds[0])}')"
+                                                    class="text-red-700 border border-gray-300 px-3 py-1">
+
+                                                    Delete
+
+                                                </button>
+
+                                            `
+                                            : `
+
+                                                <span class="text-xs text-gray-400">
+
+                                                    ${deleteIds.length} records
+
+                                                </span>
+
+                                            `
+                                    }
+
+                                </td>
+
+                            </tr>
+
+                        `;
+
+                    }
+                );
+
+
+                html += `
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
 
                     </div>
 
-                </div>
+                `;
 
-            `;
-
-        });
+            }
+        );
 
 
     container.innerHTML =
@@ -3112,12 +4478,50 @@ function renderProduction() {
 }
 
 
+
+/* =========================================================
+   PRODUCTION RECORD IDS
+========================================================= */
+
+function getProductionRecordsForDay(
+    product,
+    date
+) {
+
+    return productionCache
+        .filter(
+            function (record) {
+
+                return (
+                    normalizeKey(
+                        record.product
+                    ) ===
+                    normalizeKey(
+                        product
+                    ) &&
+                    record.date === date
+                );
+
+            }
+        )
+        .map(
+            function (record) {
+
+                return record.id;
+
+            }
+        );
+
+}
+
+
+
 /* =========================================================
    FINISHED PRODUCTS
 ========================================================= */
 
 function renderFinishedProducts(
-    finished
+    productionBook
 ) {
 
     const container =
@@ -3126,22 +4530,34 @@ function renderFinishedProducts(
         );
 
 
+    const products =
+        Object.values(
+            productionBook
+        );
+
+
     const visible =
-        finished.filter(function (item) {
+        products.filter(
+            function (item) {
 
-            return !isItemRemoved(
-                item.product
-            );
+                return !isItemRemoved(
+                    item.product
+                );
 
-        });
+            }
+        );
 
 
     if (!visible.length) {
 
         container.innerHTML = `
+
             <p class="text-sm text-gray-500">
+
                 No finished products.
+
             </p>
+
         `;
 
         return;
@@ -3149,97 +4565,222 @@ function renderFinishedProducts(
     }
 
 
-    let html = "";
+    let html =
+        "";
 
 
-    visible.forEach(function (item) {
+    visible.forEach(
+        function (item) {
 
-        const dates =
-            Object.keys(item.dates)
+            const dates =
+                Object.keys(
+                    item.dates
+                )
                 .sort()
                 .reverse();
 
 
-        html += `
+            const latestDate =
+                dates[0];
 
-            <div class="border border-gray-200 p-4 mb-4">
 
-                <div class="flex flex-col md:flex-row md:justify-between gap-3">
+            const currentCF =
+                latestDate
+                    ? item
+                        .dates[
+                            latestDate
+                        ]
+                        .closingCF
+                    : 0;
 
-                    <div>
 
-                        <p class="text-lg">
-                            ${escapeHTML(
-                                item.product
-                            )}
-                        </p>
+            html += `
 
-                        <p class="text-sm text-gray-500 mt-1">
-                            Total produced:
-                            ${formatNumber(
-                                item.quantity
-                            )}
-                        </p>
+                <div class="border border-gray-200 p-4 mb-4">
+
+
+                    <div class="flex flex-col md:flex-row md:justify-between gap-3">
+
+
+                        <div>
+
+                            <p class="text-lg">
+
+                                ${escapeHTML(
+                                    item.product
+                                )}
+
+                            </p>
+
+
+                            <p class="text-sm text-gray-500 mt-1">
+
+                                Current CF:
+                                ${formatNumber(
+                                    currentCF
+                                )}
+
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            onclick="removeItem('${escapeJS(item.product)}')"
+                            class="text-red-700 border border-gray-300 px-3 py-2">
+
+                            Remove
+
+                        </button>
 
                     </div>
 
 
-                    <button
-                        onclick="removeItem('${escapeJS(item.product)}')"
-                        class="text-red-700 border border-gray-300 px-3 py-2">
+                    <div class="mt-4">
 
-                        Remove
-
-                    </button>
-
-                </div>
+            `;
 
 
-                <div class="mt-4">
+            dates.forEach(
+                function (date) {
 
-        `;
+                    const day =
+                        item.dates[
+                            date
+                        ];
 
 
-        dates.forEach(function (date) {
+                    html += `
+
+                        <div class="border-t border-gray-100 py-3">
+
+
+                            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
+
+
+                                <div>
+
+                                    <p class="text-xs text-gray-400">
+
+                                        DATE
+
+                                    </p>
+
+                                    <p class="mt-1">
+
+                                        ${escapeHTML(
+                                            formatDateLabel(
+                                                date
+                                            )
+                                        )}
+
+                                    </p>
+
+                                </div>
+
+
+                                <div>
+
+                                    <p class="text-xs text-gray-400">
+
+                                        CF
+
+                                    </p>
+
+                                    <p class="mt-1">
+
+                                        ${formatNumber(
+                                            day.cf
+                                        )}
+
+                                    </p>
+
+                                </div>
+
+
+                                <div>
+
+                                    <p class="text-xs text-gray-400">
+
+                                        PRODUCED
+
+                                    </p>
+
+                                    <p class="mt-1">
+
+                                        ${formatNumber(
+                                            day.produced
+                                        )}
+
+                                    </p>
+
+                                </div>
+
+
+                                <div>
+
+                                    <p class="text-xs text-gray-400">
+
+                                        SALES
+
+                                    </p>
+
+                                    <p class="mt-1">
+
+                                        ${formatNumber(
+                                            day.sales
+                                        )}
+
+                                    </p>
+
+                                </div>
+
+
+                                <div>
+
+                                    <p class="text-xs text-gray-400">
+
+                                        CLOSING CF
+
+                                    </p>
+
+                                    <p class="mt-1">
+
+                                        ${formatNumber(
+                                            day.closingCF
+                                        )}
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            );
+
 
             html += `
 
-                <div class="flex justify-between text-sm border-t border-gray-100 py-3">
-
-                    <span>
-                        ${escapeHTML(
-                            formatDateLabel(date)
-                        )}
-                    </span>
-
-                    <span>
-                        ${formatNumber(
-                            item.dates[date]
-                        )}
-                    </span>
+                    </div>
 
                 </div>
 
             `;
 
-        });
-
-
-        html += `
-
-                </div>
-
-            </div>
-
-        `;
-
-    });
+        }
+    );
 
 
     container.innerHTML =
         html;
 
 }
+
 
 
 /* =========================================================
@@ -3257,15 +4798,21 @@ function renderWarnings(
 
 
     const warnings =
-        balances.filter(function (item) {
+        balances.filter(
+            function (item) {
 
-            return (
-                !isItemRemoved(item.item) &&
-                !isWarningHidden(item.item) &&
-                item.quantity < 3
-            );
+                return (
+                    !isItemRemoved(
+                        item.item
+                    ) &&
+                    !isWarningHidden(
+                        item.item
+                    ) &&
+                    item.closingStock < 3
+                );
 
-        });
+            }
+        );
 
 
     if (!warnings.length) {
@@ -3285,69 +4832,78 @@ function renderWarnings(
     }
 
 
-    let html = "";
+    let html =
+        "";
 
 
-    warnings.forEach(function (item) {
+    warnings.forEach(
+        function (item) {
 
-        const out =
-            item.quantity <= 0;
+            const out =
+                item.closingStock <= 0;
 
 
-        html += `
+            html += `
 
-            <div class="border border-gray-200 p-4 mb-3">
+                <div class="border border-gray-200 p-4 mb-3">
 
-                <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
 
-                    <div>
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
 
-                        <p class="text-lg">
 
-                            ${escapeHTML(
-                                item.item
-                            )}
+                        <div>
 
-                        </p>
+                            <p class="text-lg">
 
-                        <p class="text-sm text-gray-500 mt-1">
+                                ${escapeHTML(
+                                    item.item
+                                )}
 
-                            Quantity:
-                            ${formatNumber(
-                                item.quantity
-                            )}
-                            ${escapeHTML(
-                                item.unit
-                            )}
+                            </p>
 
-                        </p>
 
-                        <p class="text-sm mt-1">
+                            <p class="text-sm text-gray-500 mt-1">
 
-                            ${out
-                                ? "Out of stock"
-                                : "Low stock"}
+                                Closing stock:
+                                ${formatNumber(
+                                    item.closingStock
+                                )}
+                                ${escapeHTML(
+                                    item.unit
+                                )}
 
-                        </p>
+                            </p>
+
+
+                            <p class="text-sm mt-1">
+
+                                ${
+                                    out
+                                        ? "Out of stock"
+                                        : "Low stock"
+                                }
+
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            onclick="hideWarning('${escapeJS(item.item)}')"
+                            class="border border-gray-300 px-3 py-2">
+
+                            Hide Warning
+
+                        </button>
 
                     </div>
 
-
-                    <button
-                        onclick="hideWarning('${escapeJS(item.item)}')"
-                        class="border border-gray-300 px-3 py-2">
-
-                        Hide Warning
-
-                    </button>
-
                 </div>
 
-            </div>
+            `;
 
-        `;
-
-    });
+        }
+    );
 
 
     container.innerHTML =
@@ -3356,8 +4912,9 @@ function renderWarnings(
 }
 
 
+
 /* =========================================================
-   STOCK HISTORY
+   HISTORY
 ========================================================= */
 
 function renderHistory() {
@@ -3390,147 +4947,166 @@ function renderHistory() {
             stockCache,
             function (record) {
 
-                return record.date ||
-                    "No Date";
+                return (
+                    record.date ||
+                    "No Date"
+                );
 
             }
         );
 
 
-    let html = "";
+    let html =
+        "";
 
 
     Object.keys(groups)
         .sort()
         .reverse()
-        .forEach(function (date) {
-
-            html += `
-
-                <div class="mb-8">
-
-                    <div class="border-b border-gray-200 pb-2 mb-4">
-
-                        <p class="text-sm text-green-900">
-
-                            ${escapeHTML(
-                                formatDateLabel(date)
-                            )}
-
-                        </p>
-
-                    </div>
-
-
-                    <div class="mobile-table">
-
-                        <table class="w-full text-sm">
-
-                            <thead>
-
-                                <tr class="border-b border-gray-200">
-
-                                    <th class="text-left py-3">
-                                        Item
-                                    </th>
-
-                                    <th class="text-left py-3">
-                                        Quantity
-                                    </th>
-
-                                    <th class="text-left py-3">
-                                        Type
-                                    </th>
-
-                                    <th class="text-left py-3">
-                                        Unit
-                                    </th>
-
-                                    <th class="text-right py-3">
-                                        Action
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody>
-
-            `;
-
-
-            groups[date].forEach(function (record) {
+        .forEach(
+            function (date) {
 
                 html += `
 
-                    <tr class="border-b border-gray-100">
+                    <div class="mb-10">
 
-                        <td class="py-3">
 
-                            ${escapeHTML(
-                                record.item || ""
-                            )}
+                        <div class="border-b border-gray-200 pb-2 mb-4">
 
-                        </td>
+                            <p class="text-sm text-green-900">
 
-                        <td class="py-3">
+                                ${escapeHTML(
+                                    formatDateLabel(
+                                        date
+                                    )
+                                )}
 
-                            ${formatNumber(
-                                record.quantity
-                            )}
+                            </p>
 
-                        </td>
+                        </div>
 
-                        <td class="py-3">
 
-                            ${escapeHTML(
-                                formatRecordType(
-                                    record.type
-                                )
-                            )}
+                        <div class="mobile-table">
 
-                        </td>
+                            <table class="w-full text-sm">
 
-                        <td class="py-3">
 
-                            ${escapeHTML(
-                                record.unit || ""
-                            )}
+                                <thead>
 
-                        </td>
+                                    <tr class="border-b border-gray-200">
 
-                        <td class="py-3 text-right">
+                                        <th class="text-left py-3">
+                                            Item
+                                        </th>
 
-                            <button
-                                onclick="deleteStock('${escapeJS(record.id)}')"
-                                class="text-red-700 border border-gray-300 px-3 py-1">
+                                        <th class="text-left py-3">
+                                            Quantity
+                                        </th>
 
-                                Delete
+                                        <th class="text-left py-3">
+                                            Type
+                                        </th>
 
-                            </button>
+                                        <th class="text-left py-3">
+                                            Unit
+                                        </th>
 
-                        </td>
+                                        <th class="text-right py-3">
+                                            Action
+                                        </th>
 
-                    </tr>
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
 
                 `;
 
-            });
+
+                groups[date].forEach(
+                    function (record) {
+
+                        html += `
+
+                            <tr class="border-b border-gray-100">
 
 
-            html += `
+                                <td class="py-3">
 
-                            </tbody>
+                                    ${escapeHTML(
+                                        record.item ||
+                                        ""
+                                    )}
 
-                        </table>
+                                </td>
+
+
+                                <td class="py-3">
+
+                                    ${formatNumber(
+                                        record.quantity
+                                    )}
+
+                                </td>
+
+
+                                <td class="py-3">
+
+                                    ${escapeHTML(
+                                        formatRecordType(
+                                            record.type
+                                        )
+                                    )}
+
+                                </td>
+
+
+                                <td class="py-3">
+
+                                    ${escapeHTML(
+                                        record.unit ||
+                                        ""
+                                    )}
+
+                                </td>
+
+
+                                <td class="py-3 text-right">
+
+                                    <button
+                                        onclick="deleteStock('${escapeJS(record.id)}')"
+                                        class="text-red-700 border border-gray-300 px-3 py-1">
+
+                                        Delete
+
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        `;
+
+                    }
+                );
+
+
+                html += `
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
 
                     </div>
 
-                </div>
+                `;
 
-            `;
-
-        });
+            }
+        );
 
 
     container.innerHTML =
@@ -3539,40 +5115,666 @@ function renderHistory() {
 }
 
 
+
 /* =========================================================
-   DATE GROUPING
+   DELETE STOCK
 ========================================================= */
+
+function deleteStock(id) {
+
+    openConfirmModal(
+
+        "Delete Stock Record",
+
+        "Delete this stock movement? The daily stock balance will be recalculated.",
+
+        async function () {
+
+            try {
+
+                await db
+                    .collection(
+                        STOCK_COLLECTION
+                    )
+                    .doc(
+                        String(id)
+                    )
+                    .delete();
+
+
+                showToast(
+                    "Stock record deleted."
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+
+                showToast(
+                    "Could not delete stock record."
+                );
+
+            }
+
+        }
+
+    );
+
+}
+
+
+
+/* =========================================================
+   DELETE PRODUCTION
+========================================================= */
+
+function deleteProduction(
+    id
+) {
+
+    openConfirmModal(
+
+        "Delete Production",
+
+        "Delete this production record? The raw stock used by this production will become available again.",
+
+        async function () {
+
+            try {
+
+                await db
+                    .collection(
+                        PRODUCTION_COLLECTION
+                    )
+                    .doc(
+                        String(id)
+                    )
+                    .delete();
+
+
+                showToast(
+                    "Production record deleted."
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+
+                showToast(
+                    "Could not delete production."
+                );
+
+            }
+
+        }
+
+    );
+
+}
+
+
+
+/* =========================================================
+   START NEW STOCK RECORDING DAY
+========================================================= */
+
+async function deleteCollectionDocuments(
+    collectionName
+) {
+
+    while (true) {
+
+        const snapshot =
+            await db
+            .collection(collectionName)
+            .limit(400)
+            .get();
+
+        if (snapshot.empty) {
+            break;
+        }
+
+        const batch =
+            db.batch();
+
+        snapshot.docs.forEach(
+            function (doc) {
+                batch.delete(doc.ref);
+            }
+        );
+
+        await batch.commit();
+
+        if (snapshot.size < 400) {
+            break;
+        }
+    }
+}
+
+
+function startNewStockRecordingDay() {
+
+    if (
+        !firebaseReady ||
+        !isOwner()
+    ) {
+
+        showToast(
+            "Please sign in as owner."
+        );
+
+        return;
+    }
+
+    openConfirmModal(
+
+        "Start New Stock Day",
+
+        "This will permanently clear ALL stock and production records from Firebase and start a fresh stock book. Orders, expenses, workers, debts, receipts and other collections will NOT be deleted. Continue?",
+
+        async function () {
+
+            const button =
+                document.getElementById(
+                    "newStockDayButton"
+                );
+
+            try {
+
+                if (button) {
+                    button.disabled = true;
+                    button.textContent = "Resetting...";
+                }
+
+                /*
+                   Only the stock and production collections
+                   are deleted. Orders and all other collections
+                   remain untouched.
+                */
+                await deleteCollectionDocuments(
+                    STOCK_COLLECTION
+                );
+
+                await deleteCollectionDocuments(
+                    PRODUCTION_COLLECTION
+                );
+
+                /*
+                   Prevent old browser data from being migrated
+                   back into Firebase after the reset.
+                */
+                localStorage.removeItem(
+                    "serene_stock"
+                );
+
+                localStorage.removeItem(
+                    "serene_production"
+                );
+
+                stockCache = [];
+                productionCache = [];
+
+                render();
+
+                updateFirebaseStatus(
+                    "New stock recording day started"
+                );
+
+                showToast(
+                    "Stock and production have been reset. You can now record today's stock."
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Stock reset error:",
+                    error
+                );
+
+                showToast(
+                    "Could not reset stock. Check Firebase permissions."
+                );
+
+            } finally {
+
+                if (button) {
+                    button.disabled = false;
+                    button.textContent = "Start New Stock Day";
+                }
+
+            }
+
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   REMOVE ITEM
+========================================================= */
+
+function removeItem(
+    item
+) {
+
+    openConfirmModal(
+
+        "Remove Item",
+
+        "Remove this item from the stock display?",
+
+        async function () {
+
+            try {
+
+                await db
+                    .collection(
+                        SETTINGS_COLLECTION
+                    )
+                    .doc(
+                        "removed_" +
+                        normalizeKey(
+                            item
+                        )
+                    )
+                    .set({
+
+                        type:
+                            "removedItem",
+
+                        item:
+                            item,
+
+                        removed:
+                            true,
+
+                        updatedAt:
+                            firebase.firestore
+                            .FieldValue
+                            .serverTimestamp()
+
+                    });
+
+
+                showToast(
+                    item +
+                    " removed from display."
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+
+                showToast(
+                    "Could not remove item."
+                );
+
+            }
+
+        }
+
+    );
+
+}
+
+
+
+function restoreItem(
+    item
+) {
+
+    return db
+        .collection(
+            SETTINGS_COLLECTION
+        )
+        .doc(
+            "removed_" +
+            normalizeKey(item)
+        )
+        .delete();
+
+}
+
+
+
+function isItemRemoved(
+    item
+) {
+
+    return removedItems.has(
+        normalizeKey(item)
+    );
+
+}
+
+
+
+/* =========================================================
+   WARNINGS
+========================================================= */
+
+function hideWarning(
+    item
+) {
+
+    openConfirmModal(
+
+        "Hide Warning",
+
+        "Hide this warning?",
+
+        async function () {
+
+            try {
+
+                await db
+                    .collection(
+                        SETTINGS_COLLECTION
+                    )
+                    .doc(
+                        "warning_" +
+                        normalizeKey(
+                            item
+                        )
+                    )
+                    .set({
+
+                        type:
+                            "hiddenWarning",
+
+                        item:
+                            item,
+
+                        hidden:
+                            true,
+
+                        updatedAt:
+                            firebase.firestore
+                            .FieldValue
+                            .serverTimestamp()
+
+                    });
+
+
+                showToast(
+                    "Warning hidden."
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+
+                showToast(
+                    "Could not hide warning."
+                );
+
+            }
+
+        }
+
+    );
+
+}
+
+
+
+function restoreWarning(
+    item
+) {
+
+    return db
+        .collection(
+            SETTINGS_COLLECTION
+        )
+        .doc(
+            "warning_" +
+            normalizeKey(item)
+        )
+        .delete();
+
+}
+
+
+
+function isWarningHidden(
+    item
+) {
+
+    return hiddenWarnings.has(
+        normalizeKey(item)
+    );
+
+}
+
+
+
+/* =========================================================
+   LOCAL STORAGE MIGRATION
+========================================================= */
+
+async function migrateLocalData() {
+
+    if (
+        !firebaseReady ||
+        !isOwner()
+    ) {
+        return;
+    }
+
+    try {
+
+        const localStock =
+            JSON.parse(
+                localStorage.getItem("serene_stock") ||
+                "[]"
+            );
+
+        const localProduction =
+            JSON.parse(
+                localStorage.getItem("serene_production") ||
+                "[]"
+            );
+
+        const stockSnapshot =
+            await db
+            .collection(STOCK_COLLECTION)
+            .limit(1)
+            .get();
+
+        if (
+            stockSnapshot.empty &&
+            Array.isArray(localStock) &&
+            localStock.length
+        ) {
+
+            const batch = db.batch();
+
+            localStock.forEach(
+                function (record) {
+
+                    const ref =
+                        db
+                        .collection(STOCK_COLLECTION)
+                        .doc(
+                            String(
+                                record.id ||
+                                createID()
+                            )
+                        );
+
+                    batch.set(
+                        ref,
+                        record,
+                        {
+                            merge: true
+                        }
+                    );
+
+                }
+            );
+
+            await batch.commit();
+        }
+
+        const productionSnapshot =
+            await db
+            .collection(PRODUCTION_COLLECTION)
+            .limit(1)
+            .get();
+
+        if (
+            productionSnapshot.empty &&
+            Array.isArray(localProduction) &&
+            localProduction.length
+        ) {
+
+            const batch = db.batch();
+
+            localProduction.forEach(
+                function (record) {
+
+                    const ref =
+                        db
+                        .collection(PRODUCTION_COLLECTION)
+                        .doc(
+                            String(
+                                record.id ||
+                                createID()
+                            )
+                        );
+
+                    batch.set(
+                        ref,
+                        record,
+                        {
+                            merge: true
+                        }
+                    );
+
+                }
+            );
+
+            await batch.commit();
+        }
+
+        /*
+           Firebase is now the source of truth.
+
+           Remove the old browser stock/production cache
+           after migration so deleting Firebase records
+           cannot make old products reappear.
+        */
+        localStorage.removeItem("serene_stock");
+        localStorage.removeItem("serene_production");
+
+    } catch (error) {
+
+        console.error(
+            "Migration error:",
+            error
+        );
+
+    }
+
+}
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function getLatestStockRecord(
+    item
+) {
+
+    return stockCache
+        .filter(
+            function (record) {
+
+                return (
+                    normalizeKey(
+                        record.item
+                    ) ===
+                    normalizeKey(
+                        item
+                    )
+                );
+
+            }
+        )
+        .sort(
+            function (a, b) {
+
+                return String(
+                    b.date || ""
+                ).localeCompare(
+                    String(
+                        a.date || ""
+                    )
+                );
+
+            }
+        )[0] ||
+        null;
+
+}
+
+
 
 function groupByDate(
     array,
     callback
 ) {
 
-    const groups = {};
+    const groups =
+        {};
 
 
-    array.forEach(function (item) {
+    array.forEach(
+        function (item) {
 
-        const date =
-            callback(item) ||
-            "No Date";
+            const date =
+                callback(item) ||
+                "No Date";
 
 
-        if (!groups[date]) {
+            if (!groups[date]) {
 
-            groups[date] = [];
+                groups[date] =
+                    [];
+
+            }
+
+
+            groups[date].push(
+                item
+            );
 
         }
-
-
-        groups[date].push(item);
-
-    });
+    );
 
 
     return groups;
 
 }
+
 
 
 /* =========================================================
@@ -3608,12 +5810,10 @@ function toggleSection(
 }
 
 
+
 /* =========================================================
    CONFIRM MODAL
 ========================================================= */
-
-let confirmAction = null;
-
 
 function openConfirmModal(
     title,
@@ -3622,35 +5822,53 @@ function openConfirmModal(
 ) {
 
     document
-        .getElementById("confirmTitle")
-        .textContent = title;
+        .getElementById(
+            "confirmTitle"
+        )
+        .textContent =
+        title;
 
 
     document
-        .getElementById("confirmMessage")
-        .textContent = message;
+        .getElementById(
+            "confirmMessage"
+        )
+        .textContent =
+        message;
 
 
-    confirmAction = action;
+    confirmAction =
+        action;
 
 
     document
-        .getElementById("confirmModal")
-        .classList.add("active");
+        .getElementById(
+            "confirmModal"
+        )
+        .classList.add(
+            "active"
+        );
 
 }
+
 
 
 function closeConfirmModal() {
 
     document
-        .getElementById("confirmModal")
-        .classList.remove("active");
+        .getElementById(
+            "confirmModal"
+        )
+        .classList.remove(
+            "active"
+        );
 
 
-    confirmAction = null;
+    confirmAction =
+        null;
 
 }
+
 
 
 async function executeConfirmAction() {
@@ -3687,6 +5905,7 @@ async function executeConfirmAction() {
 }
 
 
+
 /* =========================================================
    TOAST
 ========================================================= */
@@ -3694,7 +5913,9 @@ async function executeConfirmAction() {
 let toastTimer;
 
 
-function showToast(message) {
+function showToast(
+    message
+) {
 
     const toast =
         document.getElementById(
@@ -3723,32 +5944,24 @@ function showToast(message) {
 
 
     toastTimer =
-        setTimeout(function () {
+        setTimeout(
+            function () {
 
-            toast.classList.remove(
-                "show"
-            );
+                toast.classList.remove(
+                    "show"
+                );
 
-        }, 3000);
+            },
+            3000
+        );
 
 }
+
 
 
 /* =========================================================
-   HELPERS
+   DATE
 ========================================================= */
-
-function createID() {
-
-    return (
-        Date.now().toString(36) +
-        Math.random()
-            .toString(36)
-            .substring(2, 10)
-    );
-
-}
-
 
 function getDate() {
 
@@ -3756,80 +5969,33 @@ function getDate() {
         new Date();
 
 
-    const year =
-        now.getFullYear();
+    return (
 
-
-    const month =
+        now.getFullYear() +
+        "-" +
         String(
             now.getMonth() + 1
-        ).padStart(2, "0");
-
-
-    const day =
+        ).padStart(
+            2,
+            "0"
+        ) +
+        "-" +
         String(
             now.getDate()
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        )
 
-
-    return (
-        year +
-        "-" +
-        month +
-        "-" +
-        day
     );
 
 }
 
 
-function getTime() {
 
-    return new Date()
-        .toLocaleTimeString(
-            "en-KE",
-            {
-                hour: "2-digit",
-                minute: "2-digit"
-            }
-        );
-
-}
-
-
-function getTimeFromRecord(record) {
-
-    if (
-        record.createdAt
-    ) {
-
-        try {
-
-            return new Date(
-                record.createdAt
-            ).toLocaleTimeString(
-                "en-KE",
-                {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                }
-            );
-
-        } catch (error) {
-
-            return "";
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-function formatDateLabel(date) {
+function formatDateLabel(
+    date
+) {
 
     if (
         !date ||
@@ -3854,47 +6020,72 @@ function formatDateLabel(date) {
     }
 
 
-    const year =
-        Number(parts[0]);
-
-
-    const month =
-        Number(parts[1]) - 1;
-
-
-    const day =
-        Number(parts[2]);
-
-
     const dateObject =
         new Date(
-            year,
-            month,
-            day
+            Number(parts[0]),
+            Number(parts[1]) - 1,
+            Number(parts[2])
         );
 
 
     return dateObject.toLocaleDateString(
         "en-KE",
         {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric"
+
+            weekday:
+                "long",
+
+            year:
+                "numeric",
+
+            month:
+                "long",
+
+            day:
+                "numeric"
+
         }
     );
 
 }
 
 
-function formatNumber(number) {
+
+/* =========================================================
+   NUMBER
+========================================================= */
+
+function roundNumber(
+    number
+) {
 
     const value =
-        Number(number || 0);
+        Number(
+            number || 0
+        );
+
+
+    return Number(
+        value.toFixed(4)
+    );
+
+}
+
+
+
+function formatNumber(
+    number
+) {
+
+    const value =
+        Number(
+            number || 0
+        );
 
 
     if (
-        Math.abs(value) < 0.000001
+        Math.abs(value) <
+        0.000001
     ) {
 
         return "0";
@@ -3909,20 +6100,14 @@ function formatNumber(number) {
 }
 
 
-function roundNumber(number) {
 
-    const value =
-        Number(number || 0);
+/* =========================================================
+   NORMALIZE
+========================================================= */
 
-
-    return Number(
-        value.toFixed(4)
-    );
-
-}
-
-
-function normalizeKey(value) {
+function normalizeKey(
+    value
+) {
 
     return String(
         value || ""
@@ -3933,13 +6118,29 @@ function normalizeKey(value) {
 }
 
 
-function formatRecordType(type) {
+
+/* =========================================================
+   RECORD TYPE
+========================================================= */
+
+function formatRecordType(
+    type
+) {
 
     if (
         type === "stock-in"
     ) {
 
         return "Stock In";
+
+    }
+
+
+    if (
+        type === "manual-use"
+    ) {
+
+        return "Item Used";
 
     }
 
@@ -3962,12 +6163,40 @@ function formatRecordType(type) {
     }
 
 
-    return type || "Record";
+    return (
+        type ||
+        "Record"
+    );
 
 }
 
 
-function escapeHTML(value) {
+
+/* =========================================================
+   ID
+========================================================= */
+
+function createID() {
+
+    return (
+        Date.now().toString() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .substring(2, 9)
+    );
+
+}
+
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(
+    value
+) {
 
     return String(
         value ?? ""
@@ -3996,7 +6225,14 @@ function escapeHTML(value) {
 }
 
 
-function escapeJS(value) {
+
+/* =========================================================
+   ESCAPE JAVASCRIPT
+========================================================= */
+
+function escapeJS(
+    value
+) {
 
     return String(
         value ?? ""
@@ -4025,15 +6261,8 @@ function escapeJS(value) {
 }
 
 
-/* =========================================================
-   PERIODIC UI REFRESH
-========================================================= */
 
-setInterval(function () {
 
-    render();
-
-}, 1500);
 
 </script>
 

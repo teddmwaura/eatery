@@ -1317,6 +1317,50 @@
 
 
         /* =====================================================
+           RECEIPT PRODUCTS
+        ===================================================== */
+
+        function getReceiptProducts(order) {
+
+            const items =
+                Array.isArray(order.items)
+                    ? order.items
+                    : Array.isArray(order.products)
+                        ? order.products
+                        : [];
+
+            return items.map(item => {
+
+                const name =
+                    item.name ||
+                    item.product ||
+                    item.productName ||
+                    "Unknown Product";
+
+                const quantity = Number(
+                    item.quantity ??
+                    item.qty ??
+                    1
+                );
+
+                const price = Number(
+                    item.price ??
+                    item.unitPrice ??
+                    0
+                );
+
+                return {
+                    name: String(name),
+                    quantity: Number.isFinite(quantity) ? quantity : 1,
+                    price: Number.isFinite(price) ? price : 0
+                };
+
+            });
+
+        }
+
+
+        /* =====================================================
            RENDER EVERYTHING
         ===================================================== */
 
@@ -1798,6 +1842,39 @@
                                     </span>
 
                                 </div>
+
+                                ${receipt.type === "order" ? `
+                                    <div class="border-t border-gray-200 mt-4 pt-4">
+
+                                        <p class="text-xs text-gray-500 mb-2">
+                                            Products Sold
+                                        </p>
+
+                                        <div class="space-y-2">
+                                            ${getReceiptProducts(receipt.record).length
+                                                ? getReceiptProducts(receipt.record).map(product => `
+                                                    <div class="flex justify-between gap-3 text-sm">
+                                                        <span>
+                                                            ${escapeHtml(product.name)}
+                                                        </span>
+
+                                                        <span class="text-gray-600 whitespace-nowrap">
+                                                            ${product.quantity} × ${money(product.price)}
+                                                        </span>
+                                                    </div>
+                                                `).join("")
+                                                : `<p class="text-xs text-gray-400">No product details recorded.</p>`
+                                            }
+                                        </div>
+
+                                    </div>
+                                ` : `
+                                    <div class="border-t border-gray-200 mt-4 pt-4">
+                                        <p class="text-xs text-gray-500">
+                                            This receipt records payment of an existing debt.
+                                        </p>
+                                    </div>
+                                `}
 
                             </div>
 
