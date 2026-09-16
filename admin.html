@@ -1,5 +1,7 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
@@ -15,41 +17,494 @@
 <style>
 
 *{
-    font-family:Arial,Helvetica,sans-serif;
-    font-weight:400!important
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    box-sizing:border-box;
 }
 
 html{
-    scroll-behavior:smooth
+    scroll-behavior:smooth;
 }
 
-button,a,input{
-    cursor:pointer
+body{
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(22,101,52,.07),
+            transparent 32%
+        ),
+        #f5f7f6;
+    color:#1f2937;
 }
+
+button,
+a,
+input{
+    cursor:pointer;
+}
+
+input{
+    cursor:text;
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar{
+    width:8px;
+}
+
+::-webkit-scrollbar-track{
+    background:#f1f5f3;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#cbd5d1;
+    border-radius:999px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background:#9ca3af;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.main-header{
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid #e5e7eb;
+    box-shadow:0 2px 15px rgba(0,0,0,.04);
+}
+
+.logo-mark{
+    width:38px;
+    height:38px;
+    border-radius:12px;
+    background:#14532d;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    box-shadow:0 5px 14px rgba(20,83,45,.18);
+}
+
+.nav-link{
+    position:relative;
+    padding:9px 12px;
+    border-radius:9px;
+    color:#6b7280;
+    transition:.2s ease;
+}
+
+.nav-link:hover{
+    background:#f0fdf4;
+    color:#166534;
+}
+
+.nav-link.active{
+    background:#ecfdf5;
+    color:#166534;
+}
+
+/* =========================
+   DASHBOARD HERO
+========================= */
+
+.dashboard-hero{
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #f7faf8 100%
+        );
+    border:1px solid #e5e7eb;
+    border-radius:20px;
+    padding:28px;
+    box-shadow:0 8px 30px rgba(15,23,42,.04);
+}
+
+.live-status{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 10px;
+    border-radius:999px;
+    background:#ecfdf5;
+    color:#166534;
+    font-size:12px;
+}
+
+.live-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#22c55e;
+}
+
+/* =========================
+   DATE SELECTOR
+========================= */
+
+.date-panel{
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 6px 25px rgba(15,23,42,.035);
+}
+
+.date-input{
+    min-height:46px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    padding:0 14px;
+    outline:none;
+    transition:.2s ease;
+}
+
+.date-input:hover{
+    border-color:#9ca3af;
+}
+
+.date-input:focus{
+    border-color:#166534;
+    box-shadow:0 0 0 3px rgba(22,101,52,.10);
+}
+
+/* =========================
+   KPI CARDS
+========================= */
+
+.kpi-card{
+    position:relative;
+    overflow:hidden;
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+    border-radius:16px;
+    padding:19px;
+    min-height:125px;
+    box-shadow:0 5px 20px rgba(15,23,42,.035);
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+}
+
+.kpi-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 28px rgba(15,23,42,.07);
+    border-color:#d1d5db;
+}
+
+.kpi-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:3px;
+    background:#166534;
+    opacity:.8;
+}
+
+.kpi-label{
+    font-size:10px;
+    letter-spacing:.12em;
+    color:#9ca3af;
+}
+
+.kpi-value{
+    margin-top:13px;
+    font-size:20px;
+    color:#111827;
+}
+
+.kpi-green{
+    color:#166534;
+}
+
+/* =========================
+   GENERAL SECTION
+========================= */
+
+.dashboard-section{
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    padding:24px;
+    box-shadow:0 6px 25px rgba(15,23,42,.035);
+}
+
+.section-heading{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.section-icon{
+    width:40px;
+    height:40px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:11px;
+    background:#ecfdf5;
+    color:#166534;
+    font-size:16px;
+}
+
+.section-title{
+    font-size:18px;
+    color:#111827;
+}
+
+.section-description{
+    margin-top:4px;
+    font-size:13px;
+    color:#9ca3af;
+}
+
+/* =========================
+   SMALL DATA CARDS
+========================= */
+
+.data-card{
+    background:#fafafa;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    padding:16px;
+    transition:.2s ease;
+}
+
+.data-card:hover{
+    background:#ffffff;
+    border-color:#d1d5db;
+}
+
+.data-label{
+    font-size:10px;
+    letter-spacing:.08em;
+    color:#9ca3af;
+}
+
+.data-value{
+    margin-top:8px;
+    font-size:18px;
+    color:#111827;
+}
+
+/* =========================
+   LIST CONTAINERS
+========================= */
+
+.list-container{
+    margin-top:18px;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    overflow:hidden;
+    background:#fff;
+}
+
+.list-container > div{
+    padding:15px 16px !important;
+    border-bottom:1px solid #f1f5f3 !important;
+    transition:.2s ease;
+}
+
+.list-container > div:last-child{
+    border-bottom:0 !important;
+}
+
+.list-container > div:hover{
+    background:#fafcfb;
+}
+
+/* =========================
+   PERFORMANCE
+========================= */
+
+.performance-message{
+    border-radius:12px;
+    background:#f7faf8;
+    border:1px solid #dceee3;
+    color:#4b5563;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.empty-state{
+    padding:28px 16px;
+    text-align:center;
+    color:#9ca3af;
+    font-size:13px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+.mobile-section-header{
+    cursor:pointer;
+    user-select:none;
+}
+
+.mobile-section-header:after{
+    content:"⌄";
+    float:right;
+    width:30px;
+    height:30px;
+    border-radius:8px;
+    background:#f3f4f6;
+    color:#6b7280;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:15px;
+    transition:.2s ease;
+}
+
+.mobile-section-header.open:after{
+    content:"⌃";
+    background:#ecfdf5;
+    color:#166534;
+}
+
+.mobile-section-content{
+    display:block;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+button{
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .15s ease,
+        box-shadow .2s ease;
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+.primary-button{
+    background:#14532d;
+    color:white;
+    border-radius:9px;
+    min-height:44px;
+}
+
+.primary-button:hover{
+    background:#166534;
+    box-shadow:0 6px 15px rgba(20,83,45,.16);
+}
+
+.secondary-button{
+    background:#ffffff;
+    color:#374151;
+    border:1px solid #d1d5db;
+    border-radius:9px;
+    min-height:44px;
+}
+
+.secondary-button:hover{
+    background:#f9fafb;
+    border-color:#9ca3af;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+.dashboard-input{
+    width:100%;
+    min-height:44px;
+    border:1px solid #d1d5db;
+    border-radius:9px;
+    padding:0 12px;
+    outline:none;
+    background:#fff;
+    transition:.2s ease;
+}
+
+.dashboard-input:focus{
+    border-color:#166534;
+    box-shadow:0 0 0 3px rgba(22,101,52,.10);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media(max-width:767px){
 
+    body{
+        background:#f5f7f6;
+    }
+
+    .main-header{
+        position:fixed;
+    }
+
+    .dashboard-hero{
+        padding:20px;
+        border-radius:16px;
+    }
+
+    .date-panel{
+        padding:18px;
+        border-radius:16px;
+    }
+
+    .dashboard-section{
+        padding:18px;
+        border-radius:16px;
+    }
+
     .mobile-section-header{
-        cursor:pointer;
-        user-select:none
-    }
-
-    .mobile-section-header:after{
-        content:"＋";
-        float:right;
-        font-size:18px
-    }
-
-    .mobile-section-header.open:after{
-        content:"−"
+        padding-bottom:2px;
     }
 
     .mobile-section-content{
-        display:none
+        display:none;
+        padding-top:18px;
     }
 
     .mobile-section-content.open{
-        display:block
+        display:block;
+    }
+
+    .kpi-card{
+        min-height:112px;
+        padding:16px;
+    }
+
+    .kpi-value{
+        font-size:18px;
+    }
+
+    .section-title{
+        font-size:16px;
+    }
+
+    .section-description{
+        font-size:12px;
     }
 
 }
@@ -58,27 +513,59 @@ button,a,input{
 
 </head>
 
-<body class="bg-gray-100 text-gray-800">
+<body>
 
-<header class="fixed top-0 left-0 w-full bg-white border-b border-gray-200 z-50">
+<!-- =========================
+     HEADER
+========================= -->
 
-<nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+<header class="main-header fixed top-0 left-0 w-full z-50">
 
-<a href="index.html" class="text-xl text-green-900">
-Serene Eatery
+<nav class="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+
+<div class="flex items-center justify-between gap-4">
+
+<a href="index.html"
+   class="flex items-center gap-3 min-w-0">
+
+    <span class="logo-mark">SE</span>
+
+    <span class="min-w-0">
+        <span class="block text-sm text-green-900">
+            Serene Eatery
+        </span>
+
+        <span class="block text-[10px] text-gray-400 tracking-wide">
+            MANAGEMENT SYSTEM
+        </span>
+    </span>
+
 </a>
 
-<div class="hidden md:flex gap-6 text-sm">
 
-<a href="waiter.html">Waiter</a>
+<div class="hidden md:flex items-center gap-1 text-sm">
 
-<a href="cashier.html">Cashier</a>
+<a href="waiter.html" class="nav-link">
+    Waiter
+</a>
 
-<a href="stock.html">Stock</a>
+<a href="cashier.html" class="nav-link">
+    Cashier
+</a>
 
-<a href="receipts.html">Receipts</a>
+<a href="stock.html" class="nav-link">
+    Stock
+</a>
 
-<a href="admin.html" class="text-green-900">Admin</a>
+<a href="receipts.html" class="nav-link">
+    Receipts
+</a>
+
+<a href="admin.html" class="nav-link active">
+    Admin
+</a>
+
+</div>
 
 </div>
 
@@ -87,68 +574,134 @@ Serene Eatery
 </header>
 
 
-<main class="max-w-7xl mx-auto px-6 pt-28 pb-16">
+<!-- =========================
+     MAIN
+========================= -->
 
-<!-- HEADER -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16">
 
-<div class="mb-8">
 
-<p class="text-xs tracking-widest text-green-900">
+<!-- =========================
+     DASHBOARD HEADER
+========================= -->
+
+<section class="dashboard-hero mb-6">
+
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+
+<div>
+
+<div class="flex items-center gap-2 mb-3">
+
+<span class="live-status">
+
+<span class="live-dot"></span>
+
+<span id="firebaseStatus">
+Connecting to Firebase...
+</span>
+
+</span>
+
+</div>
+
+<p class="text-[10px] tracking-[.2em] text-green-800">
 SERENE EATERY
 </p>
 
-<h1 class="text-3xl text-black mt-2">
+<h1 class="text-3xl sm:text-4xl text-gray-900 mt-2">
 Admin Dashboard
 </h1>
 
-<p class="text-gray-500 mt-2">
-Daily business performance and operations.
+<p class="text-sm text-gray-500 mt-2 max-w-xl">
+Monitor sales, cash flow, workers, expenses, stock,
+production and daily business activity from one place.
 </p>
 
-<p class="text-xs text-gray-400 mt-2">
+<p class="text-xs text-gray-400 mt-4">
 <span id="currentDate"></span>
-</p>
-
-<p id="firebaseStatus" class="text-xs text-green-800 mt-2">
-Connecting to Firebase...
 </p>
 
 </div>
 
 
-<!-- DATE FILTER -->
+<div class="hidden sm:flex items-center justify-center">
 
-<section class="bg-white border p-6 mb-6">
+<div class="w-20 h-20 rounded-2xl bg-green-50 border border-green-100 flex items-center justify-center">
+
+<div class="text-center">
+
+<p class="text-[10px] tracking-widest text-green-700">
+ADMIN
+</p>
+
+<p class="text-2xl text-green-900 mt-1">
+SE
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     DATE FILTER
+========================= -->
+
+<section class="date-panel mb-6">
 
 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
 
 <div>
 
-<p class="text-xs tracking-widest text-green-900">
+<div class="flex items-center gap-3">
+
+<div class="section-icon">
+📅
+</div>
+
+<div>
+
+<p class="text-[10px] tracking-[.15em] text-green-800">
 BUSINESS DATE
 </p>
 
-<h2 class="text-xl mt-2">
+<h2 class="text-lg text-gray-900 mt-1">
 Viewing Records For
 </h2>
 
-<p id="selectedDateLabel" class="text-sm text-gray-500 mt-1">
+<p id="selectedDateLabel"
+   class="text-sm text-gray-500 mt-1">
 Today
 </p>
 
 </div>
 
+</div>
 
-<div>
+</div>
 
-<label for="businessDate" class="block text-xs text-gray-400 mb-2">
+
+<div class="w-full md:w-auto">
+
+<label
+for="businessDate"
+class="block text-[10px] tracking-wider text-gray-400 mb-2">
+
 SELECT DATE
+
 </label>
 
 <input
-    id="businessDate"
-    type="date"
-    class="border border-gray-300 px-4 py-3 bg-white w-full md:w-auto"
+id="businessDate"
+type="date"
+class="date-input w-full md:w-56"
 />
 
 </div>
@@ -158,146 +711,177 @@ SELECT DATE
 </section>
 
 
-<!-- SUMMARY -->
+<!-- =========================
+     SUMMARY
+========================= -->
 
-<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
+<section class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
 
-<div class="bg-white border p-5">
 
-<p class="text-xs text-gray-400">
+<div class="kpi-card">
+
+<p class="kpi-label">
 TOTAL SALES
 </p>
 
-<p id="totalSales" class="text-xl mt-3">
+<p id="totalSales"
+   class="kpi-value">
 Ksh 0
 </p>
 
 </div>
 
 
-<div class="bg-white border p-5">
+<div class="kpi-card">
 
-<p class="text-xs text-gray-400">
+<p class="kpi-label">
 CASH SALES
 </p>
 
-<p id="cashSales" class="text-xl mt-3">
+<p id="cashSales"
+   class="kpi-value">
 Ksh 0
 </p>
 
 </div>
 
 
-<div class="bg-white border p-5">
+<div class="kpi-card">
 
-<p class="text-xs text-gray-400">
+<p class="kpi-label">
 POCHI
 </p>
 
-<p id="pochiSales" class="text-xl mt-3">
+<p id="pochiSales"
+   class="kpi-value">
 Ksh 0
 </p>
 
 </div>
 
 
-<div class="bg-white border p-5">
+<div class="kpi-card">
 
-<p class="text-xs text-gray-400">
+<p class="kpi-label">
 EXPENSES
 </p>
 
-<p id="totalExpenses" class="text-xl mt-3">
+<p id="totalExpenses"
+   class="kpi-value">
 Ksh 0
 </p>
 
 </div>
 
 
-<div class="bg-white border p-5">
+<div class="kpi-card">
 
-<p class="text-xs text-gray-400">
+<p class="kpi-label">
 EST. PROFIT
 </p>
 
-<p id="estimatedProfit" class="text-xl text-green-900 mt-3">
+<p id="estimatedProfit"
+   class="kpi-value kpi-green">
 Ksh 0
 </p>
 
 </div>
 
 
-<div class="bg-white border p-5">
+<div class="kpi-card">
 
-<p class="text-xs text-gray-400">
+<p class="kpi-label">
 PROFIT MARGIN
 </p>
 
-<p id="profitMargin" class="text-xl mt-3">
+<p id="profitMargin"
+   class="kpi-value">
 0%
 </p>
 
 </div>
 
 
-<div class="bg-white border p-5">
+<div class="kpi-card">
 
-<p class="text-xs text-gray-400">
+<p class="kpi-label">
 PAID ORDERS
 </p>
 
-<p id="paidOrders" class="text-xl mt-3">
+<p id="paidOrders"
+   class="kpi-value">
 0
 </p>
 
 </div>
 
-</div>
+</section>
 
 
-<!-- DAILY CASH -->
+<!-- =========================
+     DAILY CASH
+========================= -->
 
-<section class="bg-white border p-6 mb-6">
+<section class="dashboard-section mb-6">
 
 <div
-    class="mobile-section-header"
-    data-section="cashContent"
+class="mobile-section-header"
+data-section="cashContent"
 >
 
-<h2 class="text-xl">
+<div class="section-heading">
+
+<div class="flex gap-3">
+
+<div class="section-icon">
+💰
+</div>
+
+<div>
+
+<h2 class="section-title">
 Daily Cash Position
 </h2>
 
-<p class="text-sm text-gray-400 mt-1">
+<p class="section-description">
 Cash received and recorded expenses for the selected date.
 </p>
 
 </div>
 
+</div>
 
-<div id="cashContent" class="mobile-section-content">
+</div>
 
-<div class="grid md:grid-cols-4 gap-4 mt-6">
+</div>
 
 
-<div class="border p-5">
+<div
+id="cashContent"
+class="mobile-section-content"
+>
 
-<p class="text-xs text-gray-400">
+<div class="grid sm:grid-cols-2 md:grid-cols-4 gap-3 mt-5">
+
+
+<div class="data-card">
+
+<p class="data-label">
 OPENING BALANCE
 </p>
 
 <div class="flex gap-2 mt-3">
 
 <input
-    id="openingBalance"
-    type="number"
-    min="0"
-    class="w-full border p-2"
->
+id="openingBalance"
+type="number"
+min="0"
+class="dashboard-input"
+/>
 
 <button
-    onclick="saveOpeningBalance()"
-    class="bg-black text-white px-4"
+onclick="saveOpeningBalance()"
+class="primary-button px-4"
 >
 Save
 </button>
@@ -307,39 +891,42 @@ Save
 </div>
 
 
-<div class="border p-5">
+<div class="data-card">
 
-<p class="text-xs text-gray-400">
+<p class="data-label">
 CASH SALES
 </p>
 
-<p id="cashPosition" class="text-2xl mt-3">
+<p id="cashPosition"
+class="data-value">
 Ksh 0
 </p>
 
 </div>
 
 
-<div class="border p-5">
+<div class="data-card">
 
-<p class="text-xs text-gray-400">
+<p class="data-label">
 CASH EXPENSES
 </p>
 
-<p id="cashExpenses" class="text-2xl mt-3">
+<p id="cashExpenses"
+class="data-value">
 Ksh 0
 </p>
 
 </div>
 
 
-<div class="border p-5">
+<div class="data-card">
 
-<p class="text-xs text-gray-400">
+<p class="data-label">
 EXPECTED CASH
 </p>
 
-<p id="expectedCash" class="text-2xl text-green-900 mt-3">
+<p id="expectedCash"
+class="data-value text-green-800">
 Ksh 0
 </p>
 
@@ -352,35 +939,49 @@ Ksh 0
 </section>
 
 
+<!-- =========================
+     TWO COLUMN SECTIONS
+========================= -->
+
 <div class="grid lg:grid-cols-2 gap-6">
 
 
-<!-- WORKERS -->
+<!-- =========================
+     WORKERS
+========================= -->
 
-<section class="bg-white border p-6">
+<section class="dashboard-section">
 
 <div
-    class="mobile-section-header"
-    data-section="workersContent"
+class="mobile-section-header"
+data-section="workersContent"
 >
 
-<div class="flex justify-between mb-5">
+<div class="section-heading">
+
+<div class="flex gap-3">
+
+<div class="section-icon">
+👥
+</div>
 
 <div>
 
-<h2 class="text-xl">
+<h2 class="section-title">
 Workers
 </h2>
 
-<p class="text-sm text-gray-400 mt-1">
+<p class="section-description">
 Wages and payment status for the selected date.
 </p>
 
 </div>
 
+</div>
+
 <span
-    id="workerCount"
-    class="text-sm text-gray-500"
+id="workerCount"
+class="text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full whitespace-nowrap"
 >
 0 workers
 </span>
@@ -390,31 +991,36 @@ Wages and payment status for the selected date.
 </div>
 
 
-<div id="workersContent" class="mobile-section-content">
+<div
+id="workersContent"
+class="mobile-section-content"
+>
 
-<div class="grid grid-cols-2 gap-3 mb-5">
+<div class="grid grid-cols-2 gap-3 mt-5 mb-4">
 
 
-<div class="border p-4">
+<div class="data-card">
 
-<p class="text-xs text-gray-400">
+<p class="data-label">
 WAGES PAID
 </p>
 
-<p id="wagesPaid" class="text-lg mt-2">
+<p id="wagesPaid"
+class="data-value text-green-800">
 Ksh 0
 </p>
 
 </div>
 
 
-<div class="border p-4">
+<div class="data-card">
 
-<p class="text-xs text-gray-400">
+<p class="data-label">
 WAGES PENDING
 </p>
 
-<p id="wagesPending" class="text-lg mt-2">
+<p id="wagesPending"
+class="data-value">
 Ksh 0
 </p>
 
@@ -423,308 +1029,441 @@ Ksh 0
 </div>
 
 
-<div id="workersList"></div>
-
-</div>
-
-</section>
-
-
-<!-- EXPENSES -->
-
-<section class="bg-white border p-6">
-
 <div
-    class="mobile-section-header"
-    data-section="expensesContent"
->
-
-<h2 class="text-xl mb-2">
-Expenses
-</h2>
-
-<p class="text-sm text-gray-400">
-Expenses recorded for the selected date.
-</p>
-
-</div>
-
-
-<div id="expensesContent" class="mobile-section-content">
-
-<div id="expensesList"></div>
-
-</div>
-
-</section>
-
-
-<!-- CUSTOMER DEBTS -->
-
-<section class="bg-white border p-6">
-
-<div
-    class="mobile-section-header"
-    data-section="debtsContent"
->
-
-<h2 class="text-xl">
-Customer Debts
-</h2>
-
-<p class="text-sm text-gray-400 mt-1">
-Outstanding and paid debts for the selected date.
-</p>
-
-</div>
-
-
-<div id="debtsContent" class="mobile-section-content">
-
-
-<div class="grid grid-cols-2 gap-3 my-5">
-
-
-<div class="border p-4">
-
-<p class="text-xs text-gray-400">
-PENDING
-</p>
-
-<p id="pendingDebt" class="text-lg mt-2">
-Ksh 0
-</p>
-
-</div>
-
-
-<div class="border p-4">
-
-<p class="text-xs text-gray-400">
-PAID
-</p>
-
-<p id="paidDebt" class="text-lg mt-2">
-Ksh 0
-</p>
-
-</div>
-
-</div>
-
-
-<div id="debtsList"></div>
-
-</div>
-
-</section>
-
-
-<!-- PRODUCTION -->
-
-<section class="bg-white border p-6">
-
-<div
-    class="mobile-section-header"
-    data-section="productionContent"
->
-
-<h2 class="text-xl">
-Production
-</h2>
-
-<p class="text-sm text-gray-400 mt-1">
-Food produced on the selected date.
-</p>
-
-</div>
-
-
-<div id="productionContent" class="mobile-section-content">
-
-<div id="productionList"></div>
-
-</div>
-
-</section>
-
-
-<!-- WASTAGE -->
-
-<section class="bg-white border p-6">
-
-<div
-    class="mobile-section-header"
-    data-section="wastageContent"
->
-
-<h2 class="text-xl">
-Wastage
-</h2>
-
-<p class="text-sm text-gray-400 mt-1">
-Wastage recorded for the selected date.
-</p>
-
-</div>
-
-
-<div id="wastageContent" class="mobile-section-content">
-
-<div id="wastageList"></div>
-
-</div>
-
-</section>
-
-
-<!-- STOCK ALERTS -->
-
-<section class="bg-white border p-6">
-
-<div
-    class="mobile-section-header"
-    data-section="stockAlertsContent"
->
-
-<h2 class="text-xl">
-Stock Alerts
-</h2>
-
-<p class="text-sm text-gray-400 mt-1">
-Products that are running low or finished.
-</p>
-
-</div>
-
-
-<div id="stockAlertsContent" class="mobile-section-content">
-
-<div id="stockAlerts"></div>
-
-</div>
-
-</section>
-
-</div>
-
-
-<!-- DAILY PERFORMANCE -->
-
-<section class="bg-white border p-6 mt-6">
-
-<div
-    class="mobile-section-header"
-    data-section="performanceContent"
->
-
-<h2 class="text-xl">
-Daily Performance
-</h2>
-
-<p class="text-sm text-gray-400 mt-1 mb-6">
-Performance for the selected date.
-</p>
-
-</div>
-
-
-<div id="performanceContent" class="mobile-section-content">
-
-
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-
-
-<div class="border p-5">
-
-<p class="text-xs text-gray-400">
-SALES
-</p>
-
-<p id="performanceSales" class="text-xl mt-3">
-Ksh 0
-</p>
-
-</div>
-
-
-<div class="border p-5">
-
-<p class="text-xs text-gray-400">
-EXPENSES
-</p>
-
-<p id="performanceExpenses" class="text-xl mt-3">
-Ksh 0
-</p>
-
-</div>
-
-
-<div class="border p-5">
-
-<p class="text-xs text-gray-400">
-PROFIT
-</p>
-
-<p id="performanceProfit" class="text-xl text-green-900 mt-3">
-Ksh 0
-</p>
-
-</div>
-
-
-<div class="border p-5">
-
-<p class="text-xs text-gray-400">
-MARGIN
-</p>
-
-<p id="performanceMargin" class="text-xl mt-3">
-0%
-</p>
-
-</div>
-
-
-<div class="border p-5">
-
-<p class="text-xs text-gray-400">
-PRODUCTION
-</p>
-
-<p id="performanceProduction" class="text-xl mt-3">
-0
-</p>
-
-</div>
-
-
-<div class="border p-5">
-
-<p class="text-xs text-gray-400">
-WASTAGE
-</p>
-
-<p id="performanceWastage" class="text-xl mt-3">
-0
-</p>
-
-</div>
-
-</div>
-
-
-<div
-    id="performanceMessage"
-    class="border mt-6 p-5 text-sm"
+id="workersList"
+class="list-container"
 ></div>
 
 </div>
 
 </section>
 
+
+<!-- =========================
+     EXPENSES
+========================= -->
+
+<section class="dashboard-section">
+
+<div
+class="mobile-section-header"
+data-section="expensesContent"
+>
+
+<div class="flex gap-3">
+
+<div class="section-icon">
+🧾
+</div>
+
+<div>
+
+<h2 class="section-title">
+Expenses
+</h2>
+
+<p class="section-description">
+Expenses recorded for the selected date.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div
+id="expensesContent"
+class="mobile-section-content"
+>
+
+<div
+id="expensesList"
+class="list-container mt-5"
+></div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     CUSTOMER DEBTS
+========================= -->
+
+<section class="dashboard-section">
+
+<div
+class="mobile-section-header"
+data-section="debtsContent"
+>
+
+<div class="flex gap-3">
+
+<div class="section-icon">
+📋
+</div>
+
+<div>
+
+<h2 class="section-title">
+Customer Debts
+</h2>
+
+<p class="section-description">
+Outstanding and paid debts for the selected date.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div
+id="debtsContent"
+class="mobile-section-content"
+>
+
+<div class="grid grid-cols-2 gap-3 my-5">
+
+
+<div class="data-card">
+
+<p class="data-label">
+PENDING
+</p>
+
+<p id="pendingDebt"
+class="data-value">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="data-card">
+
+<p class="data-label">
+PAID
+</p>
+
+<p id="paidDebt"
+class="data-value text-green-800">
+Ksh 0
+</p>
+
+</div>
+
+</div>
+
+
+<div
+id="debtsList"
+class="list-container"
+></div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     PRODUCTION
+========================= -->
+
+<section class="dashboard-section">
+
+<div
+class="mobile-section-header"
+data-section="productionContent"
+>
+
+<div class="flex gap-3">
+
+<div class="section-icon">
+🍽️
+</div>
+
+<div>
+
+<h2 class="section-title">
+Production
+</h2>
+
+<p class="section-description">
+Food produced on the selected date.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div
+id="productionContent"
+class="mobile-section-content"
+>
+
+<div
+id="productionList"
+class="list-container mt-5"
+></div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     WASTAGE
+========================= -->
+
+<section class="dashboard-section">
+
+<div
+class="mobile-section-header"
+data-section="wastageContent"
+>
+
+<div class="flex gap-3">
+
+<div class="section-icon">
+♻️
+</div>
+
+<div>
+
+<h2 class="section-title">
+Wastage
+</h2>
+
+<p class="section-description">
+Wastage recorded for the selected date.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div
+id="wastageContent"
+class="mobile-section-content"
+>
+
+<div
+id="wastageList"
+class="list-container mt-5"
+></div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     STOCK ALERTS
+========================= -->
+
+<section class="dashboard-section">
+
+<div
+class="mobile-section-header"
+data-section="stockAlertsContent"
+>
+
+<div class="flex gap-3">
+
+<div class="section-icon">
+⚠️
+</div>
+
+<div>
+
+<h2 class="section-title">
+Stock Alerts
+</h2>
+
+<p class="section-description">
+Products that are running low or finished.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div
+id="stockAlertsContent"
+class="mobile-section-content"
+>
+
+<div
+id="stockAlerts"
+class="list-container mt-5"
+></div>
+
+</div>
+
+</section>
+
+
+</div>
+
+
+<!-- =========================
+     DAILY PERFORMANCE
+========================= -->
+
+<section class="dashboard-section mt-6">
+
+<div
+class="mobile-section-header"
+data-section="performanceContent"
+>
+
+<div class="section-heading">
+
+<div class="flex gap-3">
+
+<div class="section-icon">
+📊
+</div>
+
+<div>
+
+<h2 class="section-title">
+Daily Performance
+</h2>
+
+<p class="section-description">
+Performance for the selected date.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div
+id="performanceContent"
+class="mobile-section-content"
+>
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mt-5">
+
+
+<div class="data-card">
+
+<p class="data-label">
+SALES
+</p>
+
+<p id="performanceSales"
+class="data-value">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="data-card">
+
+<p class="data-label">
+EXPENSES
+</p>
+
+<p id="performanceExpenses"
+class="data-value">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="data-card">
+
+<p class="data-label">
+PROFIT
+</p>
+
+<p id="performanceProfit"
+class="data-value text-green-800">
+Ksh 0
+</p>
+
+</div>
+
+
+<div class="data-card">
+
+<p class="data-label">
+MARGIN
+</p>
+
+<p id="performanceMargin"
+class="data-value">
+0%
+</p>
+
+</div>
+
+
+<div class="data-card">
+
+<p class="data-label">
+PRODUCTION
+</p>
+
+<p id="performanceProduction"
+class="data-value">
+0
+</p>
+
+</div>
+
+
+<div class="data-card">
+
+<p class="data-label">
+WASTAGE
+</p>
+
+<p id="performanceWastage"
+class="data-value">
+0
+</p>
+
+</div>
+
+</div>
+
+
+<div
+id="performanceMessage"
+class="performance-message mt-5 p-5 text-sm"
+></div>
+
+</div>
+
+</section>
+
+
 </main>
+
 
 
 <script>

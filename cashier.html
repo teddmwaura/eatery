@@ -1,18 +1,11 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-
     <title>Serene Eatery | Cashier Dashboard</title>
-
-
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -20,6 +13,7 @@
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-auth-compat.js"></script>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAZn1AMnp1jr2VdztRpqRg-nrle2lflt8s",
@@ -30,112 +24,464 @@
             appId: "1:743500466630:web:85e2fdebd776e47d9ccac7",
             measurementId: "G-T94HN3RMZX"
         };
+
         firebase.initializeApp(firebaseConfig);
+
         const db = firebase.firestore();
         const auth = firebase.auth();
+
         const OWNER_EMAIL = "teddmwaura@gmail.com";
     </script>
-
-
 
     <style>
 
         * {
-
             font-family: Arial, Helvetica, sans-serif;
-
             font-weight: 400 !important;
-
+            box-sizing: border-box;
         }
 
-
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
-
-            background: #f3f4f6;
-
-            color: #222;
-
+            margin: 0;
+            background: #f6f8f7;
+            color: #17201b;
         }
-
-
 
         button,
-
         select {
-
             cursor: pointer;
-
         }
-
-
 
         input {
-
             cursor: text;
-
         }
 
+        button:disabled,
+        input:disabled {
+            cursor: not-allowed;
+        }
 
+        ::selection {
+            background: #166534;
+            color: white;
+        }
+
+        /* =====================================================
+           SCROLLBAR
+        ===================================================== */
+
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f2;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #b9c8be;
+            border-radius: 20px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #87988c;
+        }
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .main-header {
+            height: 70px;
+            background: rgba(255,255,255,.96);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #e5e9e6;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: #166534;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+        }
+
+        .nav-link {
+            position: relative;
+            color: #647067;
+            transition: .2s ease;
+        }
+
+        .nav-link:hover {
+            color: #166534;
+        }
+
+        .nav-link.active {
+            color: #166534;
+        }
+
+        .nav-link.active::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -23px;
+            height: 2px;
+            background: #166534;
+            border-radius: 10px;
+        }
+
+        /* =====================================================
+           AUTH BAR
+        ===================================================== */
+
+        .auth-bar {
+            background: #ffffff;
+            border-bottom: 1px solid #e9eeeb;
+        }
+
+        .auth-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            background: #f1f7f3;
+            color: #166534;
+            font-size: 12px;
+        }
+
+        .auth-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .primary-btn {
+            background: #166534;
+            color: white;
+            border-radius: 10px;
+            padding: 11px 16px;
+            transition: .2s ease;
+        }
+
+        .primary-btn:hover {
+            background: #14532d;
+            transform: translateY(-1px);
+        }
+
+        .secondary-btn {
+            background: white;
+            color: #34413a;
+            border: 1px solid #dce3de;
+            border-radius: 10px;
+            padding: 11px 16px;
+            transition: .2s ease;
+        }
+
+        .secondary-btn:hover {
+            background: #f5f8f6;
+            border-color: #c5d0c8;
+        }
+
+        .danger-btn {
+            background: #fff;
+            color: #b42318;
+            border: 1px solid #f0c8c5;
+            border-radius: 10px;
+            padding: 11px 16px;
+            transition: .2s ease;
+        }
+
+        .danger-btn:hover {
+            background: #fff5f4;
+        }
+
+        /* =====================================================
+           DASHBOARD CARDS
+        ===================================================== */
+
+        .dashboard-card {
+            background: white;
+            border: 1px solid #e5ebe7;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(23,32,27,.025);
+        }
+
+        .dashboard-card:hover {
+            border-color: #d7e1da;
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            background: white;
+            border: 1px solid #e5ebe7;
+            border-radius: 16px;
+            transition: .2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(23,32,27,.06);
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: #f0f7f2;
+            color: #166534;
+            font-size: 17px;
+        }
+
+        .stat-value {
+            font-size: 25px;
+            margin-top: 15px;
+            color: #17201b;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            letter-spacing: .08em;
+            color: #8a958d;
+        }
+
+        /* =====================================================
+           INPUTS
+        ===================================================== */
+
+        .modern-input {
+            width: 100%;
+            background: #fafcfb;
+            border: 1px solid #dce4de;
+            border-radius: 10px;
+            padding: 12px 13px;
+            outline: none;
+            transition: .2s ease;
+            color: #17201b;
+        }
+
+        .modern-input:focus {
+            border-color: #4d8b63;
+            box-shadow: 0 0 0 3px rgba(22,101,52,.08);
+            background: white;
+        }
+
+        .modern-input:disabled {
+            background: #f1f3f2;
+            color: #89938d;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 11px;
+            letter-spacing: .06em;
+            color: #69756d;
+            margin-bottom: 7px;
+        }
+
+        /* =====================================================
+           SECTION HEADERS
+        ===================================================== */
+
+        .section-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .section-title {
+            font-size: 19px;
+            color: #17201b;
+        }
+
+        .section-description {
+            color: #89938d;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* =====================================================
+           ORDER CARDS
+        ===================================================== */
+
+        .order-card {
+            background: white;
+            border: 1px solid #e2e9e4;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: .2s ease;
+        }
+
+        .order-card:hover {
+            border-color: #b9cbbb;
+            box-shadow: 0 10px 30px rgba(23,32,27,.055);
+            transform: translateY(-1px);
+        }
+
+        .order-top {
+            background: #fbfcfb;
+            border-bottom: 1px solid #edf1ee;
+            padding: 16px 18px;
+        }
+
+        .order-number {
+            font-size: 13px;
+            color: #17201b;
+        }
+
+        .pending-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 9px;
+            border-radius: 999px;
+            background: #fff8e8;
+            color: #9a6700;
+            font-size: 11px;
+        }
+
+        .pending-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #eab308;
+        }
+
+        .order-meta {
+            color: #7b867e;
+            font-size: 12px;
+        }
+
+        .product-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f3f1;
+            font-size: 13px;
+        }
+
+        .product-row:last-child {
+            border-bottom: none;
+        }
+
+        /* =====================================================
+           MINI LISTS
+        ===================================================== */
+
+        .record-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #edf1ee;
+        }
+
+        .record-row:last-child {
+            border-bottom: none;
+        }
+
+        .status-paid {
+            color: #166534;
+            background: #eff9f1;
+            border-radius: 999px;
+            padding: 6px 9px;
+            font-size: 11px;
+        }
+
+        .status-pending {
+            color: #9a6700;
+            background: #fff8e8;
+            border-radius: 999px;
+            padding: 6px 9px;
+            font-size: 11px;
+        }
+
+        /* =====================================================
+           POPUP
+        ===================================================== */
 
         .popup {
-
             transform: translateY(-20px);
-
             opacity: 0;
-
             pointer-events: none;
-
-            transition: all 0.3s ease;
-
+            transition: all .3s ease;
         }
-
-
 
         .popup.show {
-
             transform: translateY(0);
-
             opacity: 1;
-
             pointer-events: auto;
-
         }
 
+        .popup-inner {
+            border-radius: 14px;
+            box-shadow: 0 18px 45px rgba(0,0,0,.12);
+        }
 
+        /* =====================================================
+           MODALS
+        ===================================================== */
 
         .modal {
-
             display: none;
-
+            backdrop-filter: blur(4px);
         }
-
-
 
         .modal.show {
-
             display: flex;
-
         }
 
-
-
-        .receipt-card {
-
-            transition: all 0.2s ease;
-
+        .modal-panel {
+            border-radius: 18px;
+            box-shadow: 0 25px 70px rgba(0,0,0,.18);
         }
 
-
-
-        .receipt-card:hover {
-
-            transform: translateY(-2px);
-
+        .payment-method {
+            border: 1px solid #dce4de;
+            border-radius: 12px;
+            padding: 15px;
+            transition: .2s ease;
+            background: white;
         }
 
+        .payment-method:hover {
+            border-color: #9eb5a4;
+            background: #f8fbf9;
+        }
 
-        /* ================= MOBILE COLLAPSIBLE SECTIONS ================= */
+        .payment-method.selected {
+            border-color: #166534;
+            background: #eff8f1;
+            color: #166534;
+        }
+
+        /* =====================================================
+           MOBILE COLLAPSIBLE SECTIONS
+        ===================================================== */
+
         .mobile-section-toggle {
             display: none;
         }
@@ -145,9 +491,38 @@
         }
 
         @media (max-width: 767px) {
+
+            .main-header {
+                height: 64px;
+            }
+
+            .header-inner {
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+            }
+
+            .brand-mark {
+                width: 34px;
+                height: 34px;
+                border-radius: 10px;
+            }
+
+            .desktop-nav {
+                gap: 10px !important;
+            }
+
+            .desktop-nav a {
+                font-size: 11px;
+            }
+
+            .nav-link.active::after {
+                bottom: -17px;
+            }
+
             .mobile-collapsible {
                 padding: 0 !important;
                 overflow: hidden;
+                border-radius: 14px;
             }
 
             .mobile-section-toggle {
@@ -156,20 +531,29 @@
                 align-items: center;
                 justify-content: space-between;
                 gap: 1rem;
-                padding: 1rem;
+                padding: 16px;
                 background: white;
                 border: 0;
                 text-align: left;
-                font-size: 1rem;
+                font-size: 14px;
+                color: #17201b;
             }
 
             .mobile-section-toggle:hover {
-                background: #fafafa;
+                background: #fafcfb;
             }
 
             .mobile-section-arrow {
-                font-size: 1rem;
-                transition: transform 0.2s ease;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #f0f5f1;
+                color: #166534;
+                font-size: 11px;
+                transition: transform .2s ease;
             }
 
             .mobile-collapsible.is-open .mobile-section-arrow {
@@ -178,1362 +562,1061 @@
 
             .mobile-section-body {
                 display: none;
-                padding: 0 1rem 1rem;
-                border-top: 1px solid #e5e7eb;
+                padding: 0 15px 15px;
+                border-top: 1px solid #edf1ee;
             }
 
             .mobile-collapsible.is-open .mobile-section-body {
                 display: block;
             }
 
-            /* Keep the financial cards comfortable on narrow screens. */
-            .mobile-collapsible[data-mobile-title="Financial Summary"] .mobile-section-body {
-                padding-top: 1rem;
+            .stat-card {
+                padding: 16px;
             }
 
-            .mobile-collapsible[data-mobile-title="Financial Summary"] .mobile-section-body > div {
-                margin-bottom: 0.75rem;
+            .stat-value {
+                font-size: 21px;
+            }
+
+            .section-heading {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .section-heading button {
+                width: 100%;
+            }
+
+            .order-card {
+                border-radius: 13px;
+            }
+
+            .order-card .order-actions {
+                width: 100%;
+            }
+
+            .order-card .order-actions button {
+                width: 100%;
+            }
+
+            .record-row {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .record-row > div:last-child {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .modal-panel {
+                border-radius: 15px;
+                padding: 18px !important;
             }
         }
 
     </style>
-
 </head>
-
 
 
 <body>
 
-
-
-
-
 <!-- =====================================================
-
      HEADER
-
 ===================================================== -->
 
+<header class="main-header fixed top-0 left-0 w-full z-50">
 
+    <nav class="header-inner max-w-7xl mx-auto h-full px-6 flex justify-between items-center">
 
-<header class="fixed top-0 left-0 w-full bg-white border-b border-gray-200 z-50">
+        <a href="index.html" class="flex items-center gap-3">
 
+            <div class="brand-mark">
+                S
+            </div>
 
+            <div>
+                <p class="text-[15px] text-gray-900">
+                    Serene Eatery
+                </p>
 
-    <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-
-
-        <a href="index.html"
-
-           class="text-xl text-green-900">
-
-            Serene Eatery
+                <p class="text-[10px] text-gray-400 mt-0.5">
+                    Cashier
+                </p>
+            </div>
 
         </a>
 
 
+        <div class="desktop-nav flex items-center gap-6 text-sm">
 
-            <div class="md:flex gap-6 text-sm">
+            <a href="stock.html" class="nav-link">
+                Stock
+            </a>
 
-    <a href="stock.html" class="text-green-900 mr-4">
-        stock
-    </a>
+            <a href="receipts.html" class="nav-link">
+                Receipts
+            </a>
 
-    <a href="receipts.html" class="text-green-900 mr-4">
-        Receipts
-    </a>
-        <a href="admin.html" class="text-green-900">
-        admin
-    </a>
-</div>
+            <a href="admin.html" class="nav-link">
+                Admin
+            </a>
 
-
-
+        </div>
 
     </nav>
 
-
-
 </header>
-
-<div id="authBar" class="fixed top-[73px] left-0 w-full bg-white border-b border-gray-200 z-40">
-    <div class="max-w-7xl mx-auto px-6 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-            <p id="authStatus" class="text-sm text-gray-600">Checking account...</p>
-            <p id="permissionStatus" class="text-xs text-gray-400 mt-1"></p>
-        </div>
-        <div class="flex gap-2">
-            <button id="googleSignInButton" onclick="signInWithGoogle()" class="border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100">Sign in with Google</button>
-            <button id="googleSignOutButton" onclick="signOutUser()" class="hidden border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100">Sign out</button>
-        </div>
-    </div>
-</div>
-
-
-
 
 
 <!-- =====================================================
-
-     POPUP
-
+     AUTH BAR
 ===================================================== -->
 
+<div id="authBar"
+     class="auth-bar fixed top-[70px] left-0 w-full z-40">
 
+    <div class="max-w-7xl mx-auto px-6 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
+        <div class="flex items-center gap-3">
+
+            <div class="auth-pill">
+
+                <span class="auth-dot"></span>
+
+                <span id="authStatus">
+                    Checking account...
+                </span>
+
+            </div>
+
+            <p id="permissionStatus"
+               class="hidden sm:block text-xs text-gray-400">
+            </p>
+
+        </div>
+
+
+        <div class="flex gap-2">
+
+            <button id="googleSignInButton"
+                    onclick="signInWithGoogle()"
+                    class="secondary-btn text-sm">
+
+                Sign in with Google
+
+            </button>
+
+
+            <button id="googleSignOutButton"
+                    onclick="signOutUser()"
+                    class="hidden secondary-btn text-sm">
+
+                Sign out
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     POPUP
+===================================================== -->
 
 <div id="popup"
+     class="popup fixed top-28 right-5 z-[100]">
 
-     class="popup fixed top-24 right-5 z-[100]">
-
-
-
-    <div class="bg-white border border-gray-300 shadow-xl p-5 w-[330px]">
-
-
+    <div class="popup-inner bg-white border border-gray-200 p-4 w-[330px]">
 
         <div class="flex gap-3">
 
-
-
             <div id="popupIcon"
-
-                 class="text-green-900 text-xl">
-
+                 class="w-9 h-9 rounded-full bg-green-50 text-green-700 flex items-center justify-center">
                 ✓
-
             </div>
-
-
 
             <div>
 
-
-
                 <p id="popupTitle"
-
-                   class="text-sm">
-
+                   class="text-sm text-gray-900">
                     Notice
-
                 </p>
-
-
 
                 <p id="popupMessage"
-
-                   class="text-xs text-gray-500 mt-1">
-
+                   class="text-xs text-gray-500 mt-1 leading-relaxed">
                 </p>
-
-
 
             </div>
 
-
-
         </div>
 
-
-
     </div>
-
-
 
 </div>
 
 
-
-
-
 <!-- =====================================================
-
      PAYMENT MODAL
-
 ===================================================== -->
 
-
-
 <div id="paymentModal"
+     class="modal fixed inset-0 bg-black/45 z-[90] items-center justify-center p-4">
 
-     class="modal fixed inset-0 bg-black/40 z-[90] items-center justify-center p-5">
+    <div class="modal-panel bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
 
+        <div class="flex justify-between items-center gap-4">
 
+            <div>
 
-    <div class="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
+                <p class="text-[11px] tracking-wider text-green-700">
+                    PAYMENT
+                </p>
 
+                <h2 class="text-xl text-gray-900 mt-1">
+                    Confirm Customer Payment
+                </h2>
 
-
-        <div class="flex justify-between items-center">
-
-
-
-            <h2 class="text-xl">
-
-                Confirm Customer Payment
-
-            </h2>
-
-
+            </div>
 
             <button onclick="closePaymentModal()"
-
-                    class="text-2xl text-gray-500 hover:text-black">
+                    class="w-9 h-9 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 text-xl">
 
                 ×
 
             </button>
 
-
-
         </div>
-
-
-
 
 
         <div id="paymentPreview"
-
              class="mt-6">
-
         </div>
-
-
-
 
 
         <div class="mt-6">
 
-
-
-            <p class="text-xs text-gray-500 mb-3">
-
+            <p class="text-[11px] tracking-wider text-gray-500 mb-3">
                 SELECT PAYMENT METHOD
-
             </p>
 
-
-
-            <div class="grid grid-cols-2 gap-4">
-
-
+            <div class="grid grid-cols-2 gap-3">
 
                 <button id="cashButton"
-
                         onclick="selectPayment('Cash')"
+                        class="payment-method">
 
-                        class="border border-gray-300 p-4 hover:bg-gray-100 transition">
+                    <div class="text-lg">
+                        💵
+                    </div>
 
-
-
-                    Cash
-
-
+                    <p class="text-sm mt-2">
+                        Cash
+                    </p>
 
                 </button>
-
 
 
                 <button id="pochiButton"
-
                         onclick="selectPayment('Pochi')"
+                        class="payment-method">
 
-                        class="border border-gray-300 p-4 hover:bg-gray-100 transition">
+                    <div class="text-lg">
+                        📱
+                    </div>
 
-
-
-                    Pochi
-
-
+                    <p class="text-sm mt-2">
+                        Pochi
+                    </p>
 
                 </button>
 
-
-
             </div>
-
-
 
         </div>
 
 
-
-
-
-        <div class="border-t border-gray-200 mt-6 pt-5 flex justify-end gap-3">
-
-
+        <div class="border-t border-gray-200 mt-6 pt-5 flex flex-col sm:flex-row justify-end gap-3">
 
             <button onclick="closePaymentModal()"
-
-                    class="border border-gray-300 px-5 py-3 hover:bg-gray-100">
-
-
+                    class="secondary-btn">
 
                 Cancel
 
-
-
             </button>
 
-
-
-            <button data-owner-only onclick="confirmPayment()"
-
-                    class="bg-black text-white px-5 py-3 hover:bg-gray-800">
-
-
+            <button data-owner-only
+                    onclick="confirmPayment()"
+                    class="primary-btn">
 
                 Confirm Payment
 
-
-
             </button>
-
-
 
         </div>
 
-
-
     </div>
-
-
 
 </div>
 
 
-
-
-
 <!-- =====================================================
-
      REMOVE ORDER MODAL
-
 ===================================================== -->
 
-
-
 <div id="removeModal"
+     class="modal fixed inset-0 bg-black/45 z-[90] items-center justify-center p-4">
 
-     class="modal fixed inset-0 bg-black/40 z-[90] items-center justify-center p-5">
+    <div class="modal-panel bg-white w-full max-w-md p-6">
 
+        <div class="w-11 h-11 rounded-full bg-red-50 text-red-600 flex items-center justify-center text-xl">
+            !
+        </div>
 
-
-    <div class="bg-white w-full max-w-md p-6">
-
-
-
-        <h2 class="text-xl">
-
+        <h2 class="text-xl mt-4">
             Remove Order
-
         </h2>
 
-
-
-        <p class="text-sm text-gray-500 mt-3">
-
-
-
+        <p class="text-sm text-gray-500 mt-3 leading-relaxed">
             Are you sure the customer rejected this order?
-
-
-
         </p>
 
-
-
-        <p class="text-sm text-gray-500 mt-2">
-
-
-
+        <p class="text-sm text-gray-500 mt-2 leading-relaxed">
             The order will be removed and all product quantities will be returned to production stock.
-
-
-
         </p>
 
 
-
-
-
-        <div class="flex justify-end gap-3 mt-8">
-
-
+        <div class="flex flex-col sm:flex-row justify-end gap-3 mt-8">
 
             <button onclick="closeRemoveModal()"
-
-                    class="border border-gray-300 px-5 py-3 hover:bg-gray-100">
-
-
+                    class="secondary-btn">
 
                 Keep Order
 
-
-
             </button>
 
-
-
-            <button data-owner-only onclick="confirmRemoveOrder()"
-
-                    class="bg-black text-white px-5 py-3 hover:bg-gray-800">
-
-
+            <button data-owner-only
+                    onclick="confirmRemoveOrder()"
+                    class="danger-btn">
 
                 Remove Order
 
-
-
             </button>
-
-
 
         </div>
 
-
-
     </div>
-
-
 
 </div>
 
 
-
-
-
 <!-- =====================================================
-
      MAIN
-
 ===================================================== -->
 
+<main class="max-w-7xl mx-auto px-4 sm:px-6 pt-36 pb-16">
 
 
-<main class="max-w-7xl mx-auto px-6 pt-36 pb-16">
-
-
-
-
-
-    <!-- TITLE -->
-
-
+    <!-- PAGE TITLE -->
 
     <section class="mb-8">
 
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+
+            <div>
+
+                <div class="flex items-center gap-2 text-xs text-green-700 mb-2">
+
+                    <span class="w-2 h-2 rounded-full bg-green-500"></span>
+
+                    CASHIER DASHBOARD
+
+                </div>
+
+                <h1 class="text-3xl md:text-4xl text-gray-900">
+                    Good day, Cashier
+                </h1>
+
+                <p class="text-sm text-gray-500 mt-2">
+                    Manage payments, daily finances and customer records.
+                </p>
+
+            </div>
 
 
-        <p class="text-xs tracking-widest text-green-900">
+            <div class="bg-white border border-gray-200 rounded-xl px-4 py-3">
 
-            SERENE EATERY
+                <p class="text-[10px] tracking-wider text-gray-400">
+                    TODAY
+                </p>
 
-        </p>
+                <p id="todayDate"
+                   class="text-sm text-gray-700 mt-1">
+                </p>
 
+            </div>
 
-
-        <h1 class="text-3xl mt-2">
-
-            Cashier Dashboard
-
-        </h1>
-
-
-
-        <p id="todayDate"
-
-           class="text-sm text-gray-500 mt-2">
-
-        </p>
-
-
+        </div>
 
     </section>
 
 
+    <!-- =================================================
+         FINANCIAL SUMMARY
+    ================================================== -->
 
+    <section class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-7 mobile-collapsible"
+             data-mobile-title="Financial Summary">
 
+        <div class="stat-card">
 
-    <!-- FINANCIAL SUMMARY -->
+            <div class="stat-icon">
+                K
+            </div>
 
-
-
-    <section class="grid md:grid-cols-4 gap-5 mb-8 mobile-collapsible" data-mobile-title="Financial Summary">
-
-
-
-        <div class="bg-white border border-gray-200 p-5">
-
-
-
-            <p class="text-xs text-gray-400">
-
+            <p class="stat-label mt-4">
                 TOTAL SALES
-
             </p>
-
-
 
             <p id="totalSales"
-
-               class="text-2xl mt-3">
-
+               class="stat-value">
                 Ksh 0
-
             </p>
-
-
 
         </div>
 
 
+        <div class="stat-card">
 
+            <div class="stat-icon">
+                −
+            </div>
 
-
-        <div class="bg-white border border-gray-200 p-5">
-
-
-
-            <p class="text-xs text-gray-400">
-
+            <p class="stat-label mt-4">
                 TOTAL EXPENSES
-
             </p>
-
-
 
             <p id="totalExpenses"
-
-               class="text-2xl mt-3">
-
+               class="stat-value">
                 Ksh 0
-
             </p>
-
-
 
         </div>
 
 
+        <div class="stat-card">
 
+            <div class="stat-icon">
+                +
+            </div>
 
-
-        <div class="bg-white border border-gray-200 p-5">
-
-
-
-            <p class="text-xs text-gray-400">
-
+            <p class="stat-label mt-4">
                 ESTIMATED PROFIT
-
             </p>
-
-
 
             <p id="estimatedProfit"
-
-               class="text-2xl mt-3">
-
+               class="stat-value">
                 Ksh 0
-
             </p>
-
-
 
         </div>
 
 
+        <div class="stat-card">
 
+            <div class="stat-icon">
+                %
+            </div>
 
-
-        <div class="bg-white border border-gray-200 p-5">
-
-
-
-            <p class="text-xs text-gray-400">
-
+            <p class="stat-label mt-4">
                 PROFIT MARGIN
-
             </p>
-
-
 
             <p id="profitMargin"
-
-               class="text-2xl mt-3">
-
+               class="stat-value">
                 0%
-
             </p>
 
-
-
         </div>
-
-
 
     </section>
 
 
+    <!-- =================================================
+         DAILY CASH BALANCE
+    ================================================== -->
 
+    <section class="dashboard-card p-5 md:p-6 mb-7 mobile-collapsible"
+             data-mobile-title="Daily Cash Balance">
 
-
-    <!-- DAILY CASH BALANCE -->
-
-
-
-    <section class="bg-white border border-gray-200 p-6 mb-8 mobile-collapsible" data-mobile-title="Daily Cash Balance">
-
-
-
-        <h2 class="text-xl">
-
-            Daily Cash Balance
-
-        </h2>
-
-
-
-        <p class="text-sm text-gray-400 mt-1">
-
-            Opening balance, cash sales and business balance.
-
-        </p>
-
-
-
-
-
-        <div class="grid md:grid-cols-3 gap-5 mt-6">
-
-
+        <div class="section-heading">
 
             <div>
 
+                <p class="text-[11px] tracking-wider text-green-700">
+                    CASH POSITION
+                </p>
 
+                <h2 class="section-title mt-1">
+                    Daily Cash Balance
+                </h2>
 
-                <label class="text-xs text-gray-500">
-
-                    OPENING BALANCE
-
-                </label>
-
-
-
-                <input id="openingBalance"
-
-                       type="number"
-
-                       min="0"
-
-                       placeholder="Ksh 0"
-
-                       class="w-full border border-gray-300 p-3 mt-2">
-
-
+                <p class="section-description">
+                    Opening balance, cash sales and expected business balance.
+                </p>
 
             </div>
-
-
-
-
-
-            <div>
-
-
-
-                <p class="text-xs text-gray-500">
-
-                    CASH SALES
-
-                </p>
-
-
-
-                <p id="cashSales"
-
-                   class="text-xl mt-3">
-
-                    Ksh 0
-
-                </p>
-
-
-
-            </div>
-
-
-
-
-
-            <div>
-
-
-
-                <p class="text-xs text-gray-500">
-
-                    POCHI SALES
-
-                </p>
-
-
-
-                <p id="pochiSales"
-
-                   class="text-xl mt-3">
-
-                    Ksh 0
-
-                </p>
-
-
-
-            </div>
-
-
 
         </div>
 
 
+        <div class="grid md:grid-cols-3 gap-4 mt-6">
+
+            <div>
+
+                <label class="field-label">
+                    OPENING BALANCE
+                </label>
+
+                <input id="openingBalance"
+                       type="number"
+                       min="0"
+                       placeholder="Ksh 0"
+                       class="modern-input">
+
+            </div>
 
 
+            <div class="bg-gray-50 rounded-xl p-4">
 
-        <button data-owner-only onclick="saveOpeningBalance()"
+                <p class="text-[11px] tracking-wider text-gray-400">
+                    CASH SALES
+                </p>
 
-                class="border border-gray-300 px-5 py-3 mt-5 hover:bg-gray-100">
+                <p id="cashSales"
+                   class="text-xl text-gray-900 mt-3">
+                    Ksh 0
+                </p>
+
+            </div>
 
 
+            <div class="bg-gray-50 rounded-xl p-4">
+
+                <p class="text-[11px] tracking-wider text-gray-400">
+                    POCHI SALES
+                </p>
+
+                <p id="pochiSales"
+                   class="text-xl text-gray-900 mt-3">
+                    Ksh 0
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button data-owner-only
+                onclick="saveOpeningBalance()"
+                class="primary-btn mt-5">
 
             Save Opening Balance
-
-
 
         </button>
 
 
+        <div class="grid md:grid-cols-2 gap-4 mt-7 pt-6 border-t border-gray-200">
 
+            <div class="bg-green-50 rounded-xl p-5">
 
-
-        <div class="grid md:grid-cols-2 gap-5 mt-8 pt-6 border-t border-gray-200">
-
-
-
-            <div>
-
-
-
-                <p class="text-xs text-gray-500">
-
+                <p class="text-[11px] tracking-wider text-green-700">
                     EXPECTED CASH AT HAND
-
                 </p>
-
-
 
                 <p id="expectedCash"
-
-                   class="text-2xl mt-2">
-
+                   class="text-2xl text-green-900 mt-2">
                     Ksh 0
-
                 </p>
-
-
 
             </div>
 
 
+            <div class="bg-gray-50 rounded-xl p-5">
 
-
-
-            <div>
-
-
-
-                <p class="text-xs text-gray-500">
-
+                <p class="text-[11px] tracking-wider text-gray-500">
                     CLOSING BALANCE
-
                 </p>
-
-
 
                 <p id="closingBalance"
-
-                   class="text-2xl mt-2">
-
+                   class="text-2xl text-gray-900 mt-2">
                     Ksh 0
-
                 </p>
-
-
 
             </div>
 
-
-
         </div>
-
-
 
     </section>
 
 
+    <!-- =================================================
+         PENDING ORDERS
+    ================================================== -->
 
+    <section class="dashboard-card p-5 md:p-6 mb-7 mobile-collapsible"
+             data-mobile-title="Orders Awaiting Payment">
 
-
-    <!-- PENDING ORDERS -->
-
-
-
-    <section class="bg-white border border-gray-200 p-6 mb-8 mobile-collapsible" data-mobile-title="Orders Awaiting Payment">
-
-
-
-        <div class="flex justify-between items-center">
-
-
+        <div class="section-heading">
 
             <div>
 
+                <div class="flex items-center gap-2">
 
+                    <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
 
-                <h2 class="text-xl">
+                    <p class="text-[11px] tracking-wider text-yellow-700">
+                        ACTION REQUIRED
+                    </p>
 
+                </div>
+
+                <h2 class="section-title mt-2">
                     Orders Awaiting Payment
-
                 </h2>
 
-
-
-                <p class="text-sm text-gray-400 mt-1">
-
+                <p class="section-description">
                     Customer orders sent from the waiter dashboard.
-
                 </p>
 
-
-
             </div>
-
 
 
             <button onclick="renderAll()"
+                    class="secondary-btn text-sm">
 
-                    class="border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100">
-
-
-
-                Refresh
-
-
+                ↻ Refresh
 
             </button>
 
-
-
         </div>
-
-
-
 
 
         <div id="pendingOrders"
-
              class="mt-6">
-
         </div>
-
-
 
     </section>
 
 
+    <!-- =================================================
+         EXPENSES
+    ================================================== -->
 
+    <section class="dashboard-card p-5 md:p-6 mb-7 mobile-collapsible"
+             data-mobile-title="Expenses">
 
+        <div>
 
-    <!-- EXPENSES -->
+            <p class="text-[11px] tracking-wider text-green-700">
+                BUSINESS COSTS
+            </p>
 
+            <h2 class="section-title mt-1">
+                Record Expense
+            </h2>
 
-
-    <section class="bg-white border border-gray-200 p-6 mb-8 mobile-collapsible" data-mobile-title="Expenses">
-
-
-
-        <h2 class="text-xl">
-
-            Record Expense
-
-        </h2>
-
-
-
-
-
-        <div class="grid md:grid-cols-3 gap-5 mt-6">
-
-
-
-            <div>
-
-
-
-                <label class="text-xs text-gray-500">
-
-                    EXPENSE DESCRIPTION
-
-                </label>
-
-
-
-                <input id="expenseDescription"
-
-                       type="text"
-
-                       placeholder="Example: Transport"
-
-                       class="w-full border border-gray-300 p-3 mt-2">
-
-
-
-            </div>
-
-
-
-
-
-            <div>
-
-
-
-                <label class="text-xs text-gray-500">
-
-                    AMOUNT
-
-                </label>
-
-
-
-                <input id="expenseAmount"
-
-                       type="number"
-
-                       min="1"
-
-                       placeholder="Ksh"
-
-                       class="w-full border border-gray-300 p-3 mt-2">
-
-
-
-            </div>
-
-
-
-
-
-            <div class="flex items-end">
-
-
-
-                <button data-owner-only onclick="addExpense()"
-
-                        class="w-full bg-black text-white p-3 hover:bg-gray-800">
-
-
-
-                    Add Expense
-
-
-
-                </button>
-
-
-
-            </div>
-
-
+            <p class="section-description">
+                Keep today's operating expenses together with the sales record.
+            </p>
 
         </div>
 
 
+        <div class="grid md:grid-cols-3 gap-4 mt-6">
 
+            <div>
+
+                <label class="field-label">
+                    EXPENSE DESCRIPTION
+                </label>
+
+                <input id="expenseDescription"
+                       type="text"
+                       placeholder="Example: Transport"
+                       class="modern-input">
+
+            </div>
+
+
+            <div>
+
+                <label class="field-label">
+                    AMOUNT
+                </label>
+
+                <input id="expenseAmount"
+                       type="number"
+                       min="1"
+                       placeholder="Ksh"
+                       class="modern-input">
+
+            </div>
+
+
+            <div class="flex items-end">
+
+                <button data-owner-only
+                        onclick="addExpense()"
+                        class="primary-btn w-full">
+
+                    + Add Expense
+
+                </button>
+
+            </div>
+
+        </div>
 
 
         <div id="expensesContainer"
-
-             class="mt-8">
-
+             class="mt-7">
         </div>
-
-
 
     </section>
 
 
+    <!-- =================================================
+         WORKERS
+    ================================================== -->
 
+    <section class="dashboard-card p-5 md:p-6 mb-7 mobile-collapsible"
+             data-mobile-title="Workers">
 
+        <div>
 
-    <!-- WORKERS -->
+            <p class="text-[11px] tracking-wider text-green-700">
+                STAFF
+            </p>
 
+            <h2 class="section-title mt-1">
+                Workers for Today
+            </h2>
 
-
-    <section class="bg-white border border-gray-200 p-6 mb-8 mobile-collapsible" data-mobile-title="Workers">
-
-
-
-        <h2 class="text-xl">
-
-            Workers for Today
-
-        </h2>
-
-
-
-
-
-        <div class="grid md:grid-cols-3 gap-5 mt-6">
-
-
-
-            <div>
-
-
-
-                <label class="text-xs text-gray-500">
-
-                    WORKER NAME
-
-                </label>
-
-
-
-                <input id="workerName"
-
-                       type="text"
-
-                       placeholder="Worker name"
-
-                       class="w-full border border-gray-300 p-3 mt-2">
-
-
-
-            </div>
-
-
-
-
-
-            <div>
-
-
-
-                <label class="text-xs text-gray-500">
-
-                    DAILY WAGE
-
-                </label>
-
-
-
-                <input id="workerWage"
-
-                       type="number"
-
-                       min="0"
-
-                       placeholder="Ksh"
-
-                       class="w-full border border-gray-300 p-3 mt-2">
-
-
-
-            </div>
-
-
-
-
-
-            <div class="flex items-end">
-
-
-
-                <button data-owner-only onclick="addWorker()"
-
-                        class="w-full bg-black text-white p-3 hover:bg-gray-800">
-
-
-
-                    Add Worker
-
-
-
-                </button>
-
-
-
-            </div>
-
-
+            <p class="section-description">
+                Record daily workers and track their payment status.
+            </p>
 
         </div>
 
 
+        <div class="grid md:grid-cols-3 gap-4 mt-6">
 
+            <div>
+
+                <label class="field-label">
+                    WORKER NAME
+                </label>
+
+                <input id="workerName"
+                       type="text"
+                       placeholder="Worker name"
+                       class="modern-input">
+
+            </div>
+
+
+            <div>
+
+                <label class="field-label">
+                    DAILY WAGE
+                </label>
+
+                <input id="workerWage"
+                       type="number"
+                       min="0"
+                       placeholder="Ksh"
+                       class="modern-input">
+
+            </div>
+
+
+            <div class="flex items-end">
+
+                <button data-owner-only
+                        onclick="addWorker()"
+                        class="primary-btn w-full">
+
+                    + Add Worker
+
+                </button>
+
+            </div>
+
+        </div>
 
 
         <div id="workersContainer"
-
-             class="mt-8">
-
+             class="mt-7">
         </div>
-
-
 
     </section>
 
 
+    <!-- =================================================
+         DEBTS
+    ================================================== -->
+
+    <section class="dashboard-card p-5 md:p-6 mobile-collapsible"
+             data-mobile-title="Debts & Credit">
+
+        <div>
+
+            <p class="text-[11px] tracking-wider text-green-700">
+                CREDIT
+            </p>
+
+            <h2 class="section-title mt-1">
+                Debts & Credit
+            </h2>
+
+            <p class="section-description">
+                Record customer credit and track when it has been settled.
+            </p>
+
+        </div>
 
 
-
-    <!-- DEBTS -->
-
-
-
-    <section class="bg-white border border-gray-200 p-6 mobile-collapsible" data-mobile-title="Debts & Credit">
-
-
-
-        <h2 class="text-xl">
-
-            Debts & Credit
-
-        </h2>
-
-
-
-
-
-        <div class="grid md:grid-cols-3 gap-5 mt-6">
-
-
+        <div class="grid md:grid-cols-3 gap-4 mt-6">
 
             <div>
 
-
-
-                <label class="text-xs text-gray-500">
-
+                <label class="field-label">
                     CUSTOMER / DESCRIPTION
-
                 </label>
-
-
 
                 <input id="debtName"
-
                        type="text"
-
                        placeholder="Customer name"
-
-                       class="w-full border border-gray-300 p-3 mt-2">
-
-
+                       class="modern-input">
 
             </div>
-
-
-
 
 
             <div>
 
-
-
-                <label class="text-xs text-gray-500">
-
+                <label class="field-label">
                     DEBT AMOUNT
-
                 </label>
 
-
-
                 <input id="debtAmount"
-
                        type="number"
-
                        min="1"
-
                        placeholder="Ksh"
-
-                       class="w-full border border-gray-300 p-3 mt-2">
-
-
+                       class="modern-input">
 
             </div>
-
-
-
 
 
             <div class="flex items-end">
 
+                <button data-owner-only
+                        onclick="addDebt()"
+                        class="primary-btn w-full">
 
-
-                <button data-owner-only onclick="addDebt()"
-
-                        class="w-full bg-black text-white p-3 hover:bg-gray-800">
-
-
-
-                    Add Debt
-
-
+                    + Add Debt
 
                 </button>
 
-
-
             </div>
 
-
-
         </div>
-
-
-
 
 
         <div id="debtsContainer"
-
-             class="mt-8">
-
+             class="mt-7">
         </div>
 
-
-
     </section>
-
-
 
 </main>
 
 
-
-
-
 <script>
 
-
-
-
-
 /* =====================================================
-
    STORAGE KEYS
-
 ===================================================== */
 
-
-
 const ORDER_KEY = "serene_orders";
-
 const EXPENSE_KEY = "serene_expenses";
-
 const WORKER_KEY = "serene_workers";
-
 const DEBT_KEY = "serene_debts";
-
 const BALANCE_KEY = "serene_daily_balances";
-
 const PRODUCTION_KEY = "serene_production";
 
 
-
-
-
 let selectedOrderId = null;
-
 let selectedPaymentMethod = null;
-
 let orderToRemove = null;
-
 let popupTimer;
 
 
-
-
-
 /* =====================================================
-
    OWNER AUTHENTICATION
-
 ===================================================== */
 
 let currentUser = null;
 let firebaseStarted = false;
 
+
 function isOwner() {
-    return !!currentUser && String(currentUser.email || "").toLowerCase() === OWNER_EMAIL.toLowerCase();
+    return !!currentUser &&
+        String(currentUser.email || "").toLowerCase() === OWNER_EMAIL.toLowerCase();
 }
 
+
 function requireOwner(action) {
+
     if (isOwner()) return true;
-    showPopup("Owner access required", currentUser ? "Only the owner can " + action + "." : "Please sign in with the owner Google account first.", true);
+
+    showPopup(
+        "Owner access required",
+        currentUser
+            ? "Only the owner can " + action + "."
+            : "Please sign in with the owner Google account first.",
+        true
+    );
+
     return false;
 }
 
+
 function updateAuthUI() {
+
     const status = document.getElementById("authStatus");
     const permission = document.getElementById("permissionStatus");
     const signIn = document.getElementById("googleSignInButton");
     const signOut = document.getElementById("googleSignOutButton");
+
     if (!currentUser) {
+
         status.textContent = "Not signed in";
-        permission.textContent = "Sign in with Google to access Firebase data.";
+
+        permission.textContent =
+            "Sign in with Google to access Firebase data.";
+
         signIn.classList.remove("hidden");
         signOut.classList.add("hidden");
+
         return;
     }
-    status.textContent = "Signed in as " + currentUser.email;
-    permission.textContent = isOwner() ? "OWNER • Full cashier control" : "STAFF • View only • Owner approval required for changes";
+
+    status.textContent =
+        currentUser.email;
+
+    permission.textContent =
+        isOwner()
+            ? "OWNER • Full cashier control"
+            : "STAFF • View only • Owner approval required for changes";
+
     signIn.classList.add("hidden");
     signOut.classList.remove("hidden");
 }
 
+
 async function signInWithGoogle() {
-    try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
-    catch (error) { console.error(error); showPopup("Sign-in failed", "Google sign-in could not be completed. Please try again.", true); }
+
+    try {
+
+        await auth.signInWithPopup(
+            new firebase.auth.GoogleAuthProvider()
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        showPopup(
+            "Sign-in failed",
+            "Google sign-in could not be completed. Please try again.",
+            true
+        );
+    }
 }
+
 
 async function signOutUser() {
-    try { await auth.signOut(); }
-    catch (error) { console.error(error); showPopup("Sign-out failed", "Please try again.", true); }
+
+    try {
+
+        await auth.signOut();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showPopup(
+            "Sign-out failed",
+            "Please try again.",
+            true
+        );
+    }
 }
+
 
 function protectOwnerControls() {
-    const ids = ["openingBalance", "expenseDescription", "expenseAmount", "workerName", "workerWage", "debtName", "debtAmount"];
+
+    const ids = [
+        "openingBalance",
+        "expenseDescription",
+        "expenseAmount",
+        "workerName",
+        "workerWage",
+        "debtName",
+        "debtAmount"
+    ];
+
     ids.forEach(function(id) {
+
         const el = document.getElementById(id);
-        if (el) el.disabled = !isOwner();
+
+        if (el) {
+            el.disabled = !isOwner();
+        }
+
     });
-    document.querySelectorAll("button[data-owner-only]").forEach(function(button) {
-        button.disabled = !isOwner();
-        button.title = isOwner() ? "Owner control" : "Owner only";
-        button.classList.toggle("opacity-50", !isOwner());
-        button.classList.toggle("cursor-not-allowed", !isOwner());
-    });
+
+
+    document.querySelectorAll("button[data-owner-only]")
+        .forEach(function(button) {
+
+            button.disabled = !isOwner();
+
+            button.title =
+                isOwner()
+                    ? "Owner control"
+                    : "Owner only";
+
+            button.classList.toggle(
+                "opacity-50",
+                !isOwner()
+            );
+
+            button.classList.toggle(
+                "cursor-not-allowed",
+                !isOwner()
+            );
+
+        });
 }
 
+
 /* =====================================================
-
-   STORAGE FUNCTIONS
-
-   Shared data (orders + production) uses Firebase.
-   LocalStorage remains as a local backup.
-
+   STORAGE
 ===================================================== */
 
 let ordersCache = [];
@@ -1541,4546 +1624,3056 @@ let productionCache = [];
 let expensesCache = [];
 let workersCache = [];
 let debtsCache = [];
+
 let ordersMigrationStarted = false;
 let productionMigrationStarted = false;
 let expensesMigrationStarted = false;
 let workersMigrationStarted = false;
 let debtsMigrationStarted = false;
 
+
 function getLocalData(key) {
+
     try {
-        return JSON.parse(localStorage.getItem(key)) || [];
+
+        return JSON.parse(
+            localStorage.getItem(key)
+        ) || [];
+
     } catch (error) {
+
         return [];
+
     }
 }
 
+
 function saveLocalData(key, data) {
-    localStorage.setItem(key, JSON.stringify(data));
+
+    localStorage.setItem(
+        key,
+        JSON.stringify(data)
+    );
 }
 
+
 function getData(key) {
-    if (key === ORDER_KEY) return ordersCache;
-    if (key === PRODUCTION_KEY) return productionCache;
-    if (key === EXPENSE_KEY) return expensesCache;
-    if (key === WORKER_KEY) return workersCache;
-    if (key === DEBT_KEY) return debtsCache;
+
+    if (key === ORDER_KEY)
+        return ordersCache;
+
+    if (key === PRODUCTION_KEY)
+        return productionCache;
+
+    if (key === EXPENSE_KEY)
+        return expensesCache;
+
+    if (key === WORKER_KEY)
+        return workersCache;
+
+    if (key === DEBT_KEY)
+        return debtsCache;
+
     return getLocalData(key);
 }
 
+
 function saveData(key, data) {
+
     if (key === ORDER_KEY) {
-        ordersCache = Array.isArray(data) ? data : [];
-        saveLocalData(key, ordersCache);
+
+        ordersCache =
+            Array.isArray(data) ? data : [];
+
+        saveLocalData(
+            key,
+            ordersCache
+        );
+
         saveOrdersToFirebase();
+
         return;
     }
+
 
     if (key === PRODUCTION_KEY) {
-        productionCache = Array.isArray(data) ? data : [];
-        saveLocalData(key, productionCache);
+
+        productionCache =
+            Array.isArray(data) ? data : [];
+
+        saveLocalData(
+            key,
+            productionCache
+        );
+
         saveProductionToFirebase();
+
         return;
     }
+
 
     if (key === EXPENSE_KEY) {
-        expensesCache = Array.isArray(data) ? data : [];
-        saveLocalData(key, expensesCache);
-        saveRecordsToFirebase("expenses", expensesCache);
+
+        expensesCache =
+            Array.isArray(data) ? data : [];
+
+        saveLocalData(
+            key,
+            expensesCache
+        );
+
+        saveRecordsToFirebase(
+            "expenses",
+            expensesCache
+        );
+
         return;
     }
+
 
     if (key === WORKER_KEY) {
-        workersCache = Array.isArray(data) ? data : [];
-        saveLocalData(key, workersCache);
-        saveRecordsToFirebase("workers", workersCache);
+
+        workersCache =
+            Array.isArray(data) ? data : [];
+
+        saveLocalData(
+            key,
+            workersCache
+        );
+
+        saveRecordsToFirebase(
+            "workers",
+            workersCache
+        );
+
         return;
     }
+
 
     if (key === DEBT_KEY) {
-        debtsCache = Array.isArray(data) ? data : [];
-        saveLocalData(key, debtsCache);
-        saveRecordsToFirebase("debts", debtsCache);
+
+        debtsCache =
+            Array.isArray(data) ? data : [];
+
+        saveLocalData(
+            key,
+            debtsCache
+        );
+
+        saveRecordsToFirebase(
+            "debts",
+            debtsCache
+        );
+
         return;
     }
 
-    saveLocalData(key, data);
+
+    saveLocalData(
+        key,
+        data
+    );
 }
 
+
 function normalizeSnapshot(snapshot) {
+
     return snapshot.docs.map(function(doc) {
-        return { ...doc.data(), id: doc.id };
+
+        return {
+            ...doc.data(),
+            id: doc.id
+        };
+
     });
 }
 
-async function writeCollection(collectionName, records) {
-    const snapshot = await db.collection(collectionName).get();
-    const existingIds = new Set(snapshot.docs.map(function(doc) { return doc.id; }));
-    const currentIds = new Set();
+
+async function writeCollection(
+    collectionName,
+    records
+) {
+
+    const snapshot =
+        await db.collection(collectionName).get();
+
+    const existingIds =
+        new Set(
+            snapshot.docs.map(
+                function(doc) {
+                    return doc.id;
+                }
+            )
+        );
+
+    const currentIds =
+        new Set();
+
     let batch = db.batch();
     let operations = 0;
+
     const batches = [];
 
+
     function addOperation(operation) {
+
         operation();
+
         operations++;
+
         if (operations >= 450) {
+
             batches.push(batch);
+
             batch = db.batch();
+
             operations = 0;
         }
     }
 
+
     records.forEach(function(record) {
-        if (!record || !record.id) return;
+
+        if (!record || !record.id)
+            return;
+
         const id = String(record.id);
+
         currentIds.add(id);
+
         addOperation(function() {
-            batch.set(db.collection(collectionName).doc(id), record);
+
+            batch.set(
+                db.collection(collectionName).doc(id),
+                record
+            );
+
         });
+
     });
+
 
     existingIds.forEach(function(id) {
+
         if (!currentIds.has(id)) {
+
             addOperation(function() {
-                batch.delete(db.collection(collectionName).doc(id));
+
+                batch.delete(
+                    db.collection(collectionName).doc(id)
+                );
+
             });
+
         }
+
     });
 
-    if (operations) batches.push(batch);
-    for (const currentBatch of batches) await currentBatch.commit();
+
+    if (operations)
+        batches.push(batch);
+
+
+    for (
+        const currentBatch of batches
+    ) {
+
+        await currentBatch.commit();
+
+    }
 }
 
 
-async function saveRecordsToFirebase(collectionName, records) {
-    try {
-        const validRecords = (Array.isArray(records) ? records : []).filter(function(record) {
-            return record && record.id;
-        });
+async function saveRecordsToFirebase(
+    collectionName,
+    records
+) {
 
-        // Only upsert records. We intentionally do not replace/delete the whole
-        // collection, so another device can never lose a newer record because
-        // of an older local cache.
+    try {
+
+        const validRecords =
+            (Array.isArray(records)
+                ? records
+                : []
+            ).filter(function(record) {
+
+                return record && record.id;
+
+            });
+
+
         const batches = [];
+
         let batch = db.batch();
         let operations = 0;
 
+
         validRecords.forEach(function(record) {
-            const id = String(record.id);
-            batch.set(db.collection(collectionName).doc(id), record, { merge: true });
+
+            const id =
+                String(record.id);
+
+            batch.set(
+                db.collection(collectionName).doc(id),
+                record,
+                { merge: true }
+            );
+
             operations++;
+
+
             if (operations >= 450) {
+
                 batches.push(batch);
+
                 batch = db.batch();
+
                 operations = 0;
+
             }
+
         });
 
-        if (operations) batches.push(batch);
-        for (const currentBatch of batches) await currentBatch.commit();
+
+        if (operations)
+            batches.push(batch);
+
+
+        for (
+            const currentBatch of batches
+        ) {
+
+            await currentBatch.commit();
+
+        }
+
     } catch (error) {
-        console.error(collectionName + " Firebase save error:", error);
-        showPopup("Firebase error", "The " + collectionName + " record could not be saved to Firebase.", true);
+
+        console.error(
+            collectionName +
+            " Firebase save error:",
+            error
+        );
+
+        showPopup(
+            "Firebase error",
+            "The " +
+            collectionName +
+            " record could not be saved to Firebase.",
+            true
+        );
     }
 }
+
 
 async function saveOrdersToFirebase() {
+
     try {
-        await writeCollection("orders", ordersCache);
+
+        await writeCollection(
+            "orders",
+            ordersCache
+        );
+
     } catch (error) {
-        console.error("Orders Firebase save error:", error);
-        showPopup("Firebase error", "The order could not be saved to Firebase.", true);
+
+        console.error(
+            "Orders Firebase save error:",
+            error
+        );
+
+        showPopup(
+            "Firebase error",
+            "The order could not be saved to Firebase.",
+            true
+        );
     }
 }
+
 
 async function saveProductionToFirebase() {
+
     try {
-        await writeCollection("production", productionCache);
+
+        await writeCollection(
+            "production",
+            productionCache
+        );
+
     } catch (error) {
-        console.error("Production Firebase save error:", error);
-        showPopup("Firebase error", "Production stock could not be updated in Firebase.", true);
+
+        console.error(
+            "Production Firebase save error:",
+            error
+        );
+
+        showPopup(
+            "Firebase error",
+            "Production stock could not be updated in Firebase.",
+            true
+        );
     }
 }
 
-async function migrateLocalCollectionIfEmpty(collectionName, key, label) {
-    if (!isOwner()) return;
+
+async function migrateLocalCollectionIfEmpty(
+    collectionName,
+    key,
+    label
+) {
+
+    if (!isOwner())
+        return;
+
     try {
-        const snapshot = await db.collection(collectionName).limit(1).get();
-        if (!snapshot.empty) return;
-        const localData = getLocalData(key).filter(function(item) { return item && item.id; });
-        if (!localData.length) return;
-        await writeCollection(collectionName, localData);
-        console.log(label + " local data migrated to Firebase.");
+
+        const snapshot =
+            await db.collection(
+                collectionName
+            ).limit(1).get();
+
+        if (!snapshot.empty)
+            return;
+
+
+        const localData =
+            getLocalData(key)
+                .filter(function(item) {
+
+                    return item && item.id;
+
+                });
+
+
+        if (!localData.length)
+            return;
+
+
+        await writeCollection(
+            collectionName,
+            localData
+        );
+
+        console.log(
+            label +
+            " local data migrated to Firebase."
+        );
+
     } catch (error) {
-        console.error(label + " migration error:", error);
+
+        console.error(
+            label +
+            " migration error:",
+            error
+        );
+
     }
 }
+
 
 function startFirebaseListeners() {
+
     db.collection("orders").onSnapshot(
+
         function(snapshot) {
-            ordersCache = normalizeSnapshot(snapshot);
-            saveLocalData(ORDER_KEY, ordersCache);
+
+            ordersCache =
+                normalizeSnapshot(snapshot);
+
+            saveLocalData(
+                ORDER_KEY,
+                ordersCache
+            );
+
             renderAll();
+
         },
+
         function(error) {
-            console.error("Orders Firebase listener error:", error);
-            ordersCache = getLocalData(ORDER_KEY);
+
+            console.error(
+                "Orders Firebase listener error:",
+                error
+            );
+
+            ordersCache =
+                getLocalData(ORDER_KEY);
+
             renderAll();
+
         }
     );
+
 
     db.collection("production").onSnapshot(
+
         function(snapshot) {
-            productionCache = normalizeSnapshot(snapshot);
-            saveLocalData(PRODUCTION_KEY, productionCache);
+
+            productionCache =
+                normalizeSnapshot(snapshot);
+
+            saveLocalData(
+                PRODUCTION_KEY,
+                productionCache
+            );
+
             renderAll();
+
         },
+
         function(error) {
-            console.error("Production Firebase listener error:", error);
-            productionCache = getLocalData(PRODUCTION_KEY);
+
+            console.error(
+                "Production Firebase listener error:",
+                error
+            );
+
+            productionCache =
+                getLocalData(PRODUCTION_KEY);
+
             renderAll();
+
         }
     );
+
 
     db.collection("expenses").onSnapshot(
+
         function(snapshot) {
-            expensesCache = normalizeSnapshot(snapshot);
-            saveLocalData(EXPENSE_KEY, expensesCache);
+
+            expensesCache =
+                normalizeSnapshot(snapshot);
+
+            saveLocalData(
+                EXPENSE_KEY,
+                expensesCache
+            );
+
             renderAll();
+
         },
+
         function(error) {
-            console.error("Expenses Firebase listener error:", error);
-            expensesCache = getLocalData(EXPENSE_KEY);
+
+            console.error(
+                "Expenses Firebase listener error:",
+                error
+            );
+
+            expensesCache =
+                getLocalData(EXPENSE_KEY);
+
             renderAll();
+
         }
     );
+
 
     db.collection("workers").onSnapshot(
+
         function(snapshot) {
-            workersCache = normalizeSnapshot(snapshot);
-            saveLocalData(WORKER_KEY, workersCache);
+
+            workersCache =
+                normalizeSnapshot(snapshot);
+
+            saveLocalData(
+                WORKER_KEY,
+                workersCache
+            );
+
             renderAll();
+
         },
+
         function(error) {
-            console.error("Workers Firebase listener error:", error);
-            workersCache = getLocalData(WORKER_KEY);
+
+            console.error(
+                "Workers Firebase listener error:",
+                error
+            );
+
+            workersCache =
+                getLocalData(WORKER_KEY);
+
             renderAll();
+
         }
     );
+
 
     db.collection("debts").onSnapshot(
+
         function(snapshot) {
-            debtsCache = normalizeSnapshot(snapshot);
-            saveLocalData(DEBT_KEY, debtsCache);
+
+            debtsCache =
+                normalizeSnapshot(snapshot);
+
+            saveLocalData(
+                DEBT_KEY,
+                debtsCache
+            );
+
             renderAll();
+
         },
+
         function(error) {
-            console.error("Debts Firebase listener error:", error);
-            debtsCache = getLocalData(DEBT_KEY);
+
+            console.error(
+                "Debts Firebase listener error:",
+                error
+            );
+
+            debtsCache =
+                getLocalData(DEBT_KEY);
+
             renderAll();
+
         }
     );
 
+
     if (!ordersMigrationStarted) {
+
         ordersMigrationStarted = true;
-        migrateLocalCollectionIfEmpty("orders", ORDER_KEY, "Orders");
+
+        migrateLocalCollectionIfEmpty(
+            "orders",
+            ORDER_KEY,
+            "Orders"
+        );
     }
+
 
     if (!productionMigrationStarted) {
+
         productionMigrationStarted = true;
-        migrateLocalCollectionIfEmpty("production", PRODUCTION_KEY, "Production");
+
+        migrateLocalCollectionIfEmpty(
+            "production",
+            PRODUCTION_KEY,
+            "Production"
+        );
     }
+
 
     if (!expensesMigrationStarted) {
+
         expensesMigrationStarted = true;
-        migrateLocalCollectionIfEmpty("expenses", EXPENSE_KEY, "Expenses");
+
+        migrateLocalCollectionIfEmpty(
+            "expenses",
+            EXPENSE_KEY,
+            "Expenses"
+        );
     }
+
 
     if (!workersMigrationStarted) {
+
         workersMigrationStarted = true;
-        migrateLocalCollectionIfEmpty("workers", WORKER_KEY, "Workers");
+
+        migrateLocalCollectionIfEmpty(
+            "workers",
+            WORKER_KEY,
+            "Workers"
+        );
     }
 
+
     if (!debtsMigrationStarted) {
+
         debtsMigrationStarted = true;
-        migrateLocalCollectionIfEmpty("debts", DEBT_KEY, "Debts");
+
+        migrateLocalCollectionIfEmpty(
+            "debts",
+            DEBT_KEY,
+            "Debts"
+        );
     }
 }
 
+
 /* =====================================================
-
    DATE FUNCTIONS
-
 ===================================================== */
-
-
 
 function nowDate() {
 
-
-
     return new Date()
-
         .toLocaleDateString();
 
-
-
 }
-
-
-
 
 
 function nowTime() {
 
-
-
     return new Date()
-
         .toLocaleTimeString(
-
             [],
-
             {
-
                 hour: "2-digit",
-
                 minute: "2-digit"
-
             }
-
         );
 
-
-
 }
-
-
-
 
 
 function getTodayKey() {
 
-
-
     const date = new Date();
 
+    const year =
+        date.getFullYear();
 
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
 
-    const year = date.getFullYear();
-
-
-
-    const month = String(
-
-        date.getMonth() + 1
-
-    ).padStart(2, "0");
-
-
-
-    const day = String(
-
-        date.getDate()
-
-    ).padStart(2, "0");
-
-
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
 
-
-
 }
-
-
-
 
 
 function isToday(item) {
 
-
-
     return item.date === nowDate();
 
-
-
 }
-
-
-
 
 
 /* =====================================================
-
    HELPERS
-
 ===================================================== */
-
-
 
 function money(amount) {
 
-
-
     return "Ksh " +
-
         Number(
-
             amount || 0
-
         ).toLocaleString();
 
-
-
 }
-
-
-
 
 
 function generateID() {
 
-
-
     return (
-
         Date.now() +
-
         "-" +
-
         Math.random()
-
             .toString(36)
-
             .substring(2, 9)
-
     );
 
-
-
 }
-
-
-
 
 
 function escapeHTML(value) {
 
-
-
     const div =
-
         document.createElement("div");
 
-
-
     div.textContent =
-
         value ?? "";
-
-
 
     return div.innerHTML;
 
-
-
 }
 
 
-
-
-
 /* =====================================================
-
    POPUP
-
 ===================================================== */
 
-
-
 function showPopup(
-
     title,
-
     message,
-
     error = false
-
 ) {
 
-
-
     const popup =
-
         document.getElementById("popup");
 
-
-
     document.getElementById(
-
         "popupTitle"
-
     ).textContent = title;
 
-
-
     document.getElementById(
-
         "popupMessage"
-
     ).textContent = message;
 
+    const icon =
+        document.getElementById("popupIcon");
 
-
-    document.getElementById(
-
-        "popupIcon"
-
-    ).textContent =
-
+    icon.textContent =
         error ? "×" : "✓";
 
-
-
-
+    icon.className =
+        error
+            ? "w-9 h-9 rounded-full bg-red-50 text-red-600 flex items-center justify-center"
+            : "w-9 h-9 rounded-full bg-green-50 text-green-700 flex items-center justify-center";
 
     popup.classList.add("show");
 
-
-
-
-
     clearTimeout(popupTimer);
 
-
-
-
-
     popupTimer =
-
         setTimeout(
-
             function() {
-
-
 
                 popup.classList.remove("show");
 
-
-
             },
-
             3500
-
         );
 
-
-
 }
-
-
-
 
 
 /* =====================================================
-
    PENDING ORDERS
-
 ===================================================== */
-
-
 
 function getPendingOrders() {
 
-
-
     return getData(ORDER_KEY)
-
         .filter(function(order) {
 
-
-
             return (
-
                 order.paymentStatus === "pending" ||
-
                 !order.paymentStatus
-
             );
-
-
 
         });
 
-
-
 }
-
-
-
 
 
 function renderPendingOrders() {
 
-
-
     const container =
-
         document.getElementById(
-
             "pendingOrders"
-
         );
 
-
-
     const orders =
-
         getPendingOrders();
-
-
-
-
 
     container.innerHTML = "";
 
 
-
-
-
     if (!orders.length) {
-
-
 
         container.innerHTML = `
 
+            <div class="bg-gray-50 rounded-xl text-center py-12 px-5">
 
+                <div class="w-12 h-12 mx-auto rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400">
+                    ✓
+                </div>
 
-            <div class="text-center py-10">
-
-
-
-                <p class="text-gray-400">
-
-
-
+                <p class="text-sm text-gray-500 mt-4">
                     No customer orders are awaiting payment.
-
-
-
                 </p>
 
-
+                <p class="text-xs text-gray-400 mt-1">
+                    New waiter orders will appear here automatically.
+                </p>
 
             </div>
 
-
-
         `;
 
-
-
         return;
-
-
 
     }
 
 
-
-
-
     orders
-
         .slice()
-
         .reverse()
-
         .forEach(function(order) {
-
-
 
             let productsHTML = "";
 
-
-
             const items =
-
                 order.products ||
-
                 order.items ||
-
                 [];
-
-
-
 
 
             items.forEach(function(item) {
 
-
-
                 productsHTML += `
 
+                    <div class="product-row">
 
-
-                    <div class="flex justify-between border-b border-gray-100 py-2 text-sm">
-
-
-
-                        <span>
-
-
+                        <span class="text-gray-700">
 
                             ${escapeHTML(
-
                                 item.product ||
-
                                 item.name ||
-
                                 ""
-
                             )}
 
-
-
-                            ×
-
-
+                            <span class="text-gray-400">
+                                ×
+                            </span>
 
                             ${Number(
-
                                 item.quantity || 0
-
                             )}
-
-
 
                         </span>
 
-
-
-                        <span>
-
-
+                        <span class="text-gray-700">
 
                             ${money(
-
                                 item.total
-
                             )}
 
-
-
                         </span>
-
-
 
                     </div>
 
-
-
                 `;
-
-
 
             });
 
 
-
-
-
             container.innerHTML += `
 
+                <div class="order-card mt-4">
 
+                    <div class="order-top">
 
-                <div class="receipt-card border border-gray-200 p-5 mt-4">
-
-
-
-                    <div class="flex flex-col md:flex-row md:justify-between gap-5">
-
-
-
-                        <div class="flex-1">
-
-
-
-                            <div class="flex justify-between">
-
-
-
-                                <div>
-
-
-
-                                    <p class="text-xs text-gray-400">
-
-                                        ORDER NUMBER
-
-                                    </p>
-
-
-
-                                    <p class="mt-1">
-
-
-
-                                        ${escapeHTML(
-
-                                            order.orderNumber ||
-
-                                            order.id
-
-                                        )}
-
-
-
-                                    </p>
-
-
-
-                                </div>
-
-
-
-
-
-                                <p class="text-sm text-gray-500">
-
-
-
-                                    Payment Pending
-
-
-
-                                </p>
-
-
-
-                            </div>
-
-
-
-
-
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5">
-
-
-
-                                <div>
-
-
-
-                                    <p class="text-xs text-gray-400">
-
-                                        TABLE
-
-                                    </p>
-
-
-
-                                    <p class="mt-1">
-
-
-
-                                        Table ${escapeHTML(
-
-                                            order.table || "-"
-
-                                        )}
-
-
-
-                                    </p>
-
-
-
-                                </div>
-
-
-
-
-
-                                <div>
-
-
-
-                                    <p class="text-xs text-gray-400">
-
-                                        WAITER
-
-                                    </p>
-
-
-
-                                    <p class="mt-1">
-
-
-
-                                        ${escapeHTML(
-
-                                            order.waiter || "-"
-
-                                        )}
-
-
-
-                                    </p>
-
-
-
-                                </div>
-
-
-
-
-
-                                <div>
-
-
-
-                                    <p class="text-xs text-gray-400">
-
-                                        DATE
-
-                                    </p>
-
-
-
-                                    <p class="mt-1">
-
-
-
-                                        ${escapeHTML(
-
-                                            order.date || "-"
-
-                                        )}
-
-
-
-                                    </p>
-
-
-
-                                </div>
-
-
-
-
-
-                                <div>
-
-
-
-                                    <p class="text-xs text-gray-400">
-
-                                        TIME
-
-                                    </p>
-
-
-
-                                    <p class="mt-1">
-
-
-
-                                        ${escapeHTML(
-
-                                            order.time || "-"
-
-                                        )}
-
-
-
-                                    </p>
-
-
-
-                                </div>
-
-
-
-                            </div>
-
-
-
-
-
-                            <div class="mt-5">
-
-
-
-                                ${productsHTML}
-
-
-
-                            </div>
-
-
-
-                        </div>
-
-
-
-
-
-                        <div class="md:w-52 flex flex-col justify-between">
-
-
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
                             <div>
 
-
-
-                                <p class="text-xs text-gray-400">
-
-                                    TOTAL AMOUNT
-
+                                <p class="text-[10px] tracking-wider text-gray-400">
+                                    ORDER NUMBER
                                 </p>
 
-
-
-                                <p class="text-2xl mt-2">
-
-
-
-                                    ${money(
-
-                                        order.total
-
+                                <p class="order-number mt-1">
+                                    ${escapeHTML(
+                                        order.orderNumber ||
+                                        order.id
                                     )}
-
-
-
                                 </p>
 
-
-
                             </div>
 
-
-
-
-
-                            <div class="flex flex-col gap-3 mt-5">
-
-
-
-                                <button
-
-                                    onclick="openPaymentModal('${order.id}')"
-
-                                    class="bg-black text-white p-3 hover:bg-gray-800 transition">
-
-
-
-                                    Confirm Payment
-
-
-
-                                </button>
-
-
-
-
-
-                                <button
-
-                                    onclick="openRemoveModal('${order.id}')"
-
-                                    class="border border-gray-300 p-3 hover:bg-gray-100 transition">
-
-
-
-                                    Remove Order
-
-
-
-                                </button>
-
-
-
-                            </div>
-
-
+                            <span class="pending-badge">
+                                Payment Pending
+                            </span>
 
                         </div>
-
-
 
                     </div>
 
 
+                    <div class="p-5">
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+                            <div>
+
+                                <p class="text-[10px] tracking-wider text-gray-400">
+                                    TABLE
+                                </p>
+
+                                <p class="order-meta mt-1">
+                                    Table ${escapeHTML(
+                                        order.table || "-"
+                                    )}
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <p class="text-[10px] tracking-wider text-gray-400">
+                                    WAITER
+                                </p>
+
+                                <p class="order-meta mt-1">
+                                    ${escapeHTML(
+                                        order.waiter || "-"
+                                    )}
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <p class="text-[10px] tracking-wider text-gray-400">
+                                    DATE
+                                </p>
+
+                                <p class="order-meta mt-1">
+                                    ${escapeHTML(
+                                        order.date || "-"
+                                    )}
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <p class="text-[10px] tracking-wider text-gray-400">
+                                    TIME
+                                </p>
+
+                                <p class="order-meta mt-1">
+                                    ${escapeHTML(
+                                        order.time || "-"
+                                    )}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="mt-5">
+
+                            ${productsHTML}
+
+                        </div>
+
+
+                        <div class="border-t border-gray-200 mt-5 pt-5 flex flex-col md:flex-row md:items-end md:justify-between gap-5">
+
+                            <div>
+
+                                <p class="text-[10px] tracking-wider text-gray-400">
+                                    TOTAL AMOUNT
+                                </p>
+
+                                <p class="text-2xl text-gray-900 mt-1">
+                                    ${money(
+                                        order.total
+                                    )}
+                                </p>
+
+                            </div>
+
+
+                            <div class="order-actions flex flex-col sm:flex-row gap-2">
+
+                                <button
+                                    onclick="openPaymentModal('${order.id}')"
+                                    class="primary-btn">
+
+                                    Confirm Payment
+
+                                </button>
+
+
+                                <button
+                                    onclick="openRemoveModal('${order.id}')"
+                                    class="danger-btn">
+
+                                    Remove Order
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
-
-
             `;
 
-
-
         });
-
-
 
 }
 
 
-
-
-
 /* =====================================================
-
    PAYMENT
-
 ===================================================== */
-
-
 
 function openPaymentModal(orderId) {
 
-
-
     const orders =
-
         getData(ORDER_KEY);
 
-
-
     const order =
-
         orders.find(
-
             order => order.id === orderId
-
         );
-
-
-
 
 
     if (!order) {
 
-
-
         showPopup(
-
             "Order not found",
-
             "This order could not be found.",
-
             true
-
         );
 
-
-
         return;
-
-
 
     }
 
 
-
-
-
     selectedOrderId =
-
         orderId;
 
-
-
     selectedPaymentMethod =
-
         null;
 
 
-
-
-
     document.getElementById(
-
         "cashButton"
-
     ).className =
-
-        "border border-gray-300 p-4 hover:bg-gray-100 transition";
-
-
-
+        "payment-method";
 
 
     document.getElementById(
-
         "pochiButton"
-
     ).className =
-
-        "border border-gray-300 p-4 hover:bg-gray-100 transition";
-
-
-
+        "payment-method";
 
 
     let productsHTML = "";
 
 
-
-
-
     (
-
         order.products ||
-
         order.items ||
-
         []
-
     ).forEach(function(item) {
-
-
 
         productsHTML += `
 
-
-
-            <div class="flex justify-between py-2 border-b border-gray-100">
-
-
+            <div class="product-row">
 
                 <span>
 
-
-
                     ${escapeHTML(
-
                         item.product ||
-
                         item.name ||
-
                         ""
-
                     )}
-
-
 
                     ×
 
-
-
                     ${Number(
-
                         item.quantity || 0
-
                     )}
 
-
-
                 </span>
-
-
 
                 <span>
 
-
-
                     ${money(
-
                         item.total
-
                     )}
-
-
 
                 </span>
 
-
-
             </div>
 
-
-
         `;
-
-
 
     });
 
 
-
-
-
     document.getElementById(
-
         "paymentPreview"
-
     ).innerHTML = `
 
-
-
-        <div class="border border-gray-200 p-5">
-
-
+        <div class="bg-gray-50 rounded-xl p-5">
 
             <div class="grid grid-cols-2 gap-5">
 
-
-
                 <div>
 
-
-
-                    <p class="text-xs text-gray-400">
-
+                    <p class="text-[10px] tracking-wider text-gray-400">
                         ORDER
-
                     </p>
 
-
-
-                    <p class="mt-1">
-
-
-
+                    <p class="text-sm mt-1">
                         ${escapeHTML(
-
                             order.orderNumber ||
-
                             order.id
-
                         )}
-
-
-
                     </p>
-
-
 
                 </div>
-
-
-
 
 
                 <div>
 
-
-
-                    <p class="text-xs text-gray-400">
-
+                    <p class="text-[10px] tracking-wider text-gray-400">
                         TABLE
-
                     </p>
 
-
-
-                    <p class="mt-1">
-
-
-
+                    <p class="text-sm mt-1">
                         Table ${escapeHTML(
-
-                            order.table
-
+                            order.table || "-"
                         )}
-
-
-
                     </p>
-
-
 
                 </div>
-
-
 
             </div>
-
-
-
 
 
             <div class="mt-5">
 
-
-
                 ${productsHTML}
 
-
-
             </div>
 
 
+            <div class="border-t border-gray-200 mt-5 pt-5 flex justify-between items-center">
 
-
-
-            <div class="border-t border-gray-200 mt-5 pt-5 flex justify-between">
-
-
-
-                <span>
-
+                <span class="text-sm text-gray-500">
                     TOTAL
-
                 </span>
 
-
-
-                <span class="text-2xl">
-
-
+                <span class="text-2xl text-gray-900">
 
                     ${money(
-
                         order.total
-
                     )}
-
-
 
                 </span>
 
-
-
             </div>
 
-
-
         </div>
-
-
 
     `;
 
 
-
-
-
     document.getElementById(
-
         "paymentModal"
-
     ).classList.add("show");
 
-
-
 }
-
-
-
 
 
 function closePaymentModal() {
 
-
-
     document.getElementById(
-
         "paymentModal"
-
     ).classList.remove("show");
 
-
-
-
-
     selectedOrderId = null;
-
     selectedPaymentMethod = null;
 
-
-
 }
-
-
-
 
 
 function selectPayment(method) {
 
-
-
     selectedPaymentMethod =
-
         method;
 
 
-
-
-
     const cashButton =
-
         document.getElementById(
-
             "cashButton"
-
         );
-
-
 
     const pochiButton =
-
         document.getElementById(
-
             "pochiButton"
-
         );
-
-
-
 
 
     cashButton.className =
-
-        "border border-gray-300 p-4 hover:bg-gray-100 transition";
-
-
-
-
+        "payment-method";
 
     pochiButton.className =
-
-        "border border-gray-300 p-4 hover:bg-gray-100 transition";
-
-
-
+        "payment-method";
 
 
     if (method === "Cash") {
 
-
-
         cashButton.className =
-
-            "border border-black bg-gray-100 p-4";
-
-
+            "payment-method selected";
 
     }
-
-
-
 
 
     if (method === "Pochi") {
 
-
-
         pochiButton.className =
-
-            "border border-black bg-gray-100 p-4";
-
-
+            "payment-method selected";
 
     }
-
-
 
 }
 
 
-
-
-
 async function confirmPayment() {
-    if (!requireOwner("confirm customer payments")) return;
 
+    if (!requireOwner("confirm customer payments"))
+        return;
 
 
     if (!selectedOrderId) {
 
-
-
         showPopup(
-
             "No order selected",
-
             "Please select an order.",
-
             true
-
         );
-
-
 
         return;
 
-
-
     }
-
-
-
 
 
     if (!selectedPaymentMethod) {
 
-
-
         showPopup(
-
             "Payment method required",
-
             "Please select Cash or Pochi.",
-
             true
-
         );
 
-
-
         return;
-
-
 
     }
 
 
-
-
-
     const orders =
-
         getData(ORDER_KEY);
 
 
-
     const index =
-
         orders.findIndex(
-
             order =>
-
                 order.id ===
-
                 selectedOrderId
-
         );
-
-
-
 
 
     if (index === -1) {
 
-
-
         showPopup(
-
             "Order not found",
-
             "Unable to confirm the order.",
-
             true
-
         );
-
-
 
         return;
 
-
-
     }
-
-
-
 
 
     orders[index].paymentStatus =
-
         "paid";
-
-
 
     orders[index].status =
-
         "paid";
 
-
-
     orders[index].paymentMethod =
-
         selectedPaymentMethod;
 
-
-
     orders[index].paidDate =
-
         nowDate();
 
-
-
     orders[index].paidTime =
-
         nowTime();
 
-
-
     orders[index].paidAt =
-
         new Date().toISOString();
 
 
-
-
-
-    // Update only this order in Firestore.
-    // Rewriting the entire orders collection can delete a newer waiter order
-    // that this cashier tab has not received in its local cache yet.
     try {
-        await db.collection("orders").doc(String(orders[index].id)).set(orders[index]);
+
+        await db
+            .collection("orders")
+            .doc(String(orders[index].id))
+            .set(orders[index]);
+
     } catch (error) {
-        console.error("Order payment update error:", error);
-        showPopup("Firebase error", "Payment could not be saved. Please try again.", true);
+
+        console.error(
+            "Order payment update error:",
+            error
+        );
+
+        showPopup(
+            "Firebase error",
+            "Payment could not be saved. Please try again.",
+            true
+        );
+
         return;
     }
 
-    ordersCache = orders;
-    saveLocalData(ORDER_KEY, ordersCache);
+
+    ordersCache =
+        orders;
+
+    saveLocalData(
+        ORDER_KEY,
+        ordersCache
+    );
+
 
     const amount =
-
         orders[index].total;
-
-
-
 
 
     closePaymentModal();
 
-
-
     renderAll();
 
 
-
-
-
     showPopup(
-
         "Payment confirmed",
-
         `${money(amount)} received through ${selectedPaymentMethod}.`
-
     );
-
-
 
 }
 
 
-
-
-
 /* =====================================================
-
    REMOVE ORDER
-
 ===================================================== */
-
-
 
 function openRemoveModal(orderId) {
 
-
-
     const orders =
-
         getData(ORDER_KEY);
 
-
-
     const order =
-
         orders.find(
-
-            order =>
-
-                order.id === orderId
-
+            order => order.id === orderId
         );
-
-
-
 
 
     if (!order) {
 
-
-
         showPopup(
-
             "Order not found",
-
             "This order could not be found.",
-
             true
-
         );
-
-
 
         return;
 
-
-
     }
-
-
-
 
 
     if (
-
         order.paymentStatus ===
-
         "paid"
-
     ) {
 
-
-
         showPopup(
-
             "Cannot remove",
-
             "A paid receipt cannot be removed from pending orders.",
-
             true
-
         );
 
-
-
         return;
-
-
 
     }
 
 
-
-
-
     orderToRemove =
-
         orderId;
 
 
-
-
-
     document.getElementById(
-
         "removeModal"
-
     ).classList.add("show");
 
-
-
 }
-
-
-
 
 
 function closeRemoveModal() {
 
-
-
     document.getElementById(
-
         "removeModal"
-
     ).classList.remove("show");
 
-
-
-    orderToRemove =
-
-        null;
-
-
+    orderToRemove = null;
 
 }
 
 
-
-
-
 async function confirmRemoveOrder() {
-    if (!requireOwner("remove or reject orders")) return;
 
+    if (!requireOwner("remove or reject orders"))
+        return;
 
 
     if (!orderToRemove) {
 
-
-
         showPopup(
-
             "No order selected",
-
             "Please select an order first.",
-
             true
-
         );
 
-
-
         return;
-
-
 
     }
 
 
-
-
-
     let orders =
-
         getData(ORDER_KEY);
 
 
-
     const orderIndex =
-
         orders.findIndex(
-
             order =>
-
                 order.id ===
-
                 orderToRemove
-
         );
-
-
-
 
 
     if (orderIndex === -1) {
 
-
-
         closeRemoveModal();
 
-
-
         showPopup(
-
             "Order not found",
-
             "The order no longer exists.",
-
             true
-
         );
-
-
 
         return;
 
-
-
     }
-
-
-
 
 
     const order =
-
         orders[orderIndex];
 
 
-
-
-
-    /*
-
-       SAFETY CHECK:
-
-       PAID ORDERS CANNOT BE REMOVED
-
-    */
-
-
-
     if (
-
         order.paymentStatus ===
-
         "paid"
-
     ) {
-
-
 
         closeRemoveModal();
 
-
-
         showPopup(
-
             "Cannot remove",
-
             "This receipt has already been paid.",
-
             true
-
         );
 
-
-
         return;
-
-
 
     }
 
 
-
-
-
-    /*
-
-       GET PRODUCTION STOCK
-
-    */
-
-
-
     let production =
-
         getData(PRODUCTION_KEY);
 
 
-
-
-
     const orderItems =
-
         order.products ||
-
         order.items ||
-
         [];
-
-
-
-
-
-    /*
-
-       RETURN PRODUCTS
-
-       TO PRODUCTION STOCK
-
-    */
-
 
 
     orderItems.forEach(function(item) {
 
-
-
         const itemName =
-
             String(
-
                 item.product ||
-
                 item.name ||
-
                 ""
-
             )
-
             .trim()
-
             .toLowerCase();
-
-
-
 
 
         const itemCategory =
-
             String(
-
                 item.category ||
-
                 ""
-
             )
-
             .trim()
-
             .toLowerCase();
 
 
-
-
-
         const quantity =
-
             Number(
-
                 item.quantity || 0
-
             );
 
 
-
-
-
         const productionIndex =
+            production.findIndex(
+                function(product) {
 
-            production.findIndex(function(product) {
-
-
-
-                const productionName =
-
-                    String(
-
-                        product.product ||
-
-                        product.name ||
-
-                        ""
-
-                    )
-
-                    .trim()
-
-                    .toLowerCase();
+                    const productionName =
+                        String(
+                            product.product ||
+                            product.name ||
+                            ""
+                        )
+                        .trim()
+                        .toLowerCase();
 
 
+                    const productionCategory =
+                        String(
+                            product.category ||
+                            ""
+                        )
+                        .trim()
+                        .toLowerCase();
 
 
+                    return (
+                        productionName ===
+                        itemName
+                        &&
+                        (
+                            !itemCategory ||
+                            !productionCategory ||
+                            productionCategory ===
+                            itemCategory
+                        )
+                    );
 
-                const productionCategory =
-
-                    String(
-
-                        product.category ||
-
-                        ""
-
-                    )
-
-                    .trim()
-
-                    .toLowerCase();
-
-
-
-
-
-                return (
-
-
-
-                    productionName ===
-
-                    itemName
-
-
-
-                    &&
-
-
-
-                    (
-
-                        !itemCategory ||
-
-                        !productionCategory ||
-
-                        productionCategory ===
-
-                        itemCategory
-
-                    )
-
-
-
-                );
-
-
-
-            });
-
-
-
-
-
-        /*
-
-           IF PRODUCT EXISTS,
-
-           RETURN QUANTITY
-
-        */
-
+                }
+            );
 
 
         if (
-
             productionIndex !== -1
-
         ) {
 
-
-
             const quantityField =
-
                 production[
-
                     productionIndex
-
                 ].quantity !== undefined
-
                     ? "quantity"
-
-                    : (
-
+                    :
+                    (
                         production[
-
                             productionIndex
-
                         ].available !== undefined
-
                             ? "available"
-
                             : "quantity"
-
                     );
 
 
-
-
-
             production[
-
                 productionIndex
-
             ][quantityField] =
 
-
-
                 Number(
-
                     production[
-
                         productionIndex
-
                     ][quantityField] || 0
-
                 )
-
-
-
                 +
-
-
-
                 quantity;
 
-
-
         }
-
-
 
     });
 
 
-
-
-
-    /*
-
-       SAVE RETURNED STOCK
-
-    */
-
-
-
     saveData(
-
         PRODUCTION_KEY,
-
         production
-
     );
-
-
-
-
-
-    /*
-
-       DELETE THE ORDER
-
-    */
-
 
 
     orders.splice(
-
         orderIndex,
-
         1
-
     );
 
 
-
-
-
-    // Delete only this rejected order from Firestore.
-    // This prevents this cashier tab from deleting other waiter orders
-    // that arrived after its local cache was last refreshed.
     try {
-        await db.collection("orders").doc(String(order.id)).delete();
+
+        await db
+            .collection("orders")
+            .doc(String(order.id))
+            .delete();
+
     } catch (error) {
-        console.error("Order delete error:", error);
-        showPopup("Firebase error", "The order could not be removed. Please try again.", true);
+
+        console.error(
+            "Order delete error:",
+            error
+        );
+
+        showPopup(
+            "Firebase error",
+            "The order could not be removed. Please try again.",
+            true
+        );
+
         return;
     }
 
-    ordersCache = orders;
-    saveLocalData(ORDER_KEY, ordersCache);
+
+    ordersCache =
+        orders;
+
+    saveLocalData(
+        ORDER_KEY,
+        ordersCache
+    );
+
 
     closeRemoveModal();
-
-
 
     renderAll();
 
 
-
-
-
     showPopup(
-
         "Order removed",
-
         "The rejected order was removed and the quantities were returned to production stock."
-
     );
 
-
-
 }
-
-
-
 
 
 /* =====================================================
-
    OPENING BALANCE
-
 ===================================================== */
-
-
 
 function getOpeningBalance() {
 
-
-
     const balances =
-
         getData(BALANCE_KEY);
 
-
-
     const today =
-
         getTodayKey();
 
 
-
-
-
     const record =
-
         balances.find(
-
             item =>
-
-                item.date ===
-
-                today
-
+                item.date === today
         );
 
 
-
-
-
     return record
-
         ? Number(
-
             record.openingBalance || 0
-
         )
-
         : 0;
-
-
 
 }
 
 
-
-
-
 function saveOpeningBalance() {
-    if (!requireOwner("change the opening balance")) return;
 
-
-
-    const amount =
-
-        Number(
-
-            document.getElementById(
-
-                "openingBalance"
-
-            ).value
-
-        );
-
-
-
-
-
-    if (
-
-        isNaN(amount) ||
-
-        amount < 0
-
-    ) {
-
-
-
-        showPopup(
-
-            "Invalid balance",
-
-            "Please enter a valid opening balance.",
-
-            true
-
-        );
-
-
-
+    if (!requireOwner("change the opening balance"))
         return;
 
 
+    const amount =
+        Number(
+            document.getElementById(
+                "openingBalance"
+            ).value
+        );
+
+
+    if (
+        isNaN(amount) ||
+        amount < 0
+    ) {
+
+        showPopup(
+            "Invalid balance",
+            "Please enter a valid opening balance.",
+            true
+        );
+
+        return;
 
     }
 
 
-
-
-
     const balances =
-
         getData(BALANCE_KEY);
 
-
-
     const today =
-
         getTodayKey();
 
 
-
-
-
     const index =
-
         balances.findIndex(
-
             item =>
-
-                item.date ===
-
-                today
-
+                item.date === today
         );
-
-
-
 
 
     const record = {
 
-
-
         date: today,
 
-
-
         openingBalance:
-
             amount,
 
-
-
         updatedAt:
-
             new Date()
-
                 .toISOString()
-
-
 
     };
 
 
-
-
-
     if (index >= 0) {
 
-
-
         balances[index] =
-
             record;
-
-
 
     } else {
 
-
-
         balances.push(
-
             record
-
         );
-
-
 
     }
 
 
-
-
-
     saveData(
-
         BALANCE_KEY,
-
         balances
-
     );
-
-
-
 
 
     renderFinancialSummary();
 
 
-
-
-
     showPopup(
-
         "Saved",
-
         "Opening balance has been saved."
-
     );
-
-
 
 }
 
 
-
-
-
 /* =====================================================
-
    EXPENSES
-
 ===================================================== */
 
-
-
 function addExpense() {
-    if (!requireOwner("add expenses")) return;
 
+    if (!requireOwner("add expenses"))
+        return;
 
 
     const description =
-
         document.getElementById(
-
             "expenseDescription"
-
         ).value.trim();
 
 
-
-
-
     const amount =
-
         Number(
-
             document.getElementById(
-
                 "expenseAmount"
-
             ).value
-
         );
-
-
-
 
 
     if (!description) {
 
-
-
         showPopup(
-
             "Description missing",
-
             "Please enter an expense description.",
-
             true
-
         );
-
-
 
         return;
 
-
-
     }
-
-
-
 
 
     if (
-
         isNaN(amount) ||
-
         amount <= 0
-
     ) {
 
-
-
         showPopup(
-
             "Invalid amount",
-
             "Please enter a valid amount.",
-
             true
-
         );
 
-
-
         return;
-
-
 
     }
 
 
-
-
-
     const expenses =
-
         getData(EXPENSE_KEY);
-
-
-
 
 
     expenses.push({
 
-
-
         id:
-
             generateID(),
 
-
-
         description:
-
             description,
 
-
-
         amount:
-
             amount,
 
-
-
         date:
-
             nowDate(),
 
-
-
         time:
-
             nowTime(),
 
-
-
         createdAt:
-
             new Date()
-
                 .toISOString()
-
-
 
     });
 
 
-
-
-
     saveData(
-
         EXPENSE_KEY,
-
         expenses
-
     );
 
 
-
-
-
     document.getElementById(
-
         "expenseDescription"
-
     ).value = "";
-
-
-
 
 
     document.getElementById(
-
         "expenseAmount"
-
     ).value = "";
-
-
-
 
 
     renderAll();
 
 
-
-
-
     showPopup(
-
         "Expense added",
-
         `${money(amount)} was recorded.`
-
     );
 
-
-
 }
-
-
-
 
 
 function renderExpenses() {
 
-
-
     const container =
-
         document.getElementById(
-
             "expensesContainer"
-
         );
 
 
-
-
-
     const expenses =
-
         getData(EXPENSE_KEY)
-
             .filter(isToday);
 
 
-
-
-
     container.innerHTML = "";
-
-
-
 
 
     if (!expenses.length) {
 
-
-
         container.innerHTML = `
 
+            <div class="bg-gray-50 rounded-xl px-4 py-5">
 
+                <p class="text-gray-400 text-sm">
+                    No expenses recorded today.
+                </p>
 
-            <p class="text-gray-400 text-sm py-4">
-
-
-
-                No expenses recorded today.
-
-
-
-            </p>
-
-
+            </div>
 
         `;
 
-
-
         return;
-
-
 
     }
 
 
-
-
-
     expenses
-
         .slice()
-
         .reverse()
-
         .forEach(function(expense) {
-
-
 
             container.innerHTML += `
 
-
-
-                <div class="flex justify-between items-center border-b border-gray-100 py-4">
-
-
+                <div class="record-row">
 
                     <div>
 
-
-
-                        <p>
-
-
+                        <p class="text-sm text-gray-800">
 
                             ${escapeHTML(
-
                                 expense.description
-
                             )}
 
-
-
                         </p>
-
-
 
                         <p class="text-xs text-gray-400 mt-1">
 
-
-
                             ${expense.date}
-
                             ·
-
                             ${expense.time}
 
-
-
                         </p>
-
-
 
                     </div>
 
 
-
-
-
-                    <p>
-
-
+                    <p class="text-sm text-gray-900">
 
                         ${money(
-
                             expense.amount
-
                         )}
-
-
 
                     </p>
 
-
-
                 </div>
-
-
 
             `;
 
-
-
         });
-
-
 
 }
 
 
-
-
-
 /* =====================================================
-
    WORKERS
-
 ===================================================== */
 
-
-
 function addWorker() {
-    if (!requireOwner("add workers")) return;
 
+    if (!requireOwner("add workers"))
+        return;
 
 
     const name =
-
         document.getElementById(
-
             "workerName"
-
         ).value.trim();
 
 
-
-
-
     const wage =
-
         Number(
-
             document.getElementById(
-
                 "workerWage"
-
             ).value
-
         );
-
-
-
 
 
     if (!name) {
 
-
-
         showPopup(
-
             "Worker missing",
-
             "Please enter the worker name.",
-
             true
-
         );
-
-
 
         return;
 
-
-
     }
-
-
-
 
 
     if (
-
         isNaN(wage) ||
-
         wage < 0
-
     ) {
 
-
-
         showPopup(
-
             "Invalid wage",
-
             "Please enter a valid wage.",
-
             true
-
         );
 
-
-
         return;
-
-
 
     }
 
 
-
-
-
     const workers =
-
         getData(WORKER_KEY);
-
-
-
 
 
     workers.push({
 
-
-
         id:
-
             generateID(),
 
-
-
         name:
-
             name,
 
-
-
         wage:
-
             wage,
 
-
-
         status:
-
             "pending",
 
-
-
         date:
-
             nowDate(),
 
-
-
         createdAt:
-
             new Date()
-
                 .toISOString()
-
-
 
     });
 
 
-
-
-
     saveData(
-
         WORKER_KEY,
-
         workers
-
     );
 
 
-
-
-
     document.getElementById(
-
         "workerName"
-
     ).value = "";
-
-
-
 
 
     document.getElementById(
-
         "workerWage"
-
     ).value = "";
-
-
-
 
 
     renderAll();
 
 
-
-
-
     showPopup(
-
         "Worker added",
-
         `${name} was added to today's workers.`
-
     );
 
-
-
 }
-
-
-
 
 
 function toggleWorkerPayment(id) {
-    if (!requireOwner("change worker payment status")) return;
 
+    if (!requireOwner("change worker payment status"))
+        return;
 
 
     const workers =
-
         getData(WORKER_KEY);
 
 
-
-
-
     const index =
-
         workers.findIndex(
-
             worker =>
-
                 worker.id === id
-
         );
 
 
-
-
-
-    if (index === -1) {
-
+    if (index === -1)
         return;
-
-    }
-
-
-
 
 
     workers[index].status =
-
         workers[index].status === "paid"
-
             ? "pending"
-
             : "paid";
 
 
-
-
-
     workers[index].paidAt =
-
         workers[index].status === "paid"
-
             ? new Date().toISOString()
-
             : null;
 
 
-
-
-
     saveData(
-
         WORKER_KEY,
-
         workers
-
     );
-
-
-
 
 
     renderAll();
 
 
-
-
-
     showPopup(
-
         "Worker updated",
-
         `Wage is now ${workers[index].status}.`
-
     );
 
-
-
 }
-
-
-
 
 
 function renderWorkers() {
 
-
-
     const container =
-
         document.getElementById(
-
             "workersContainer"
-
         );
 
 
-
-
-
     const workers =
-
         getData(WORKER_KEY)
-
             .filter(isToday);
 
 
-
-
-
     container.innerHTML = "";
-
-
-
 
 
     if (!workers.length) {
 
-
-
         container.innerHTML = `
 
+            <div class="bg-gray-50 rounded-xl px-4 py-5">
 
+                <p class="text-gray-400 text-sm">
+                    No workers added today.
+                </p>
 
-            <p class="text-gray-400 text-sm py-4">
-
-
-
-                No workers added today.
-
-
-
-            </p>
-
-
+            </div>
 
         `;
 
-
-
         return;
 
-
-
     }
-
-
-
 
 
     workers.forEach(function(worker) {
 
-
-
         const paid =
-
             worker.status === "paid";
-
-
-
 
 
         container.innerHTML += `
 
-
-
-            <div class="flex justify-between items-center border-b border-gray-100 py-4">
-
-
+            <div class="record-row">
 
                 <div>
 
-
-
-                    <p>
-
-
+                    <p class="text-sm text-gray-800">
 
                         ${escapeHTML(
-
                             worker.name
-
                         )}
-
-
 
                     </p>
 
+                    <p class="text-xs text-gray-400 mt-1">
 
-
-                    <p class="text-sm text-gray-400 mt-1">
-
-
-
-                        Wage:
-
-
-
+                        Daily wage:
                         ${money(
-
                             worker.wage
-
                         )}
 
-
-
                     </p>
-
-
 
                 </div>
 
 
+                <div class="flex items-center gap-3">
 
+                    <span class="${paid
+                        ? "status-paid"
+                        : "status-pending"
+                    }">
 
-
-                <div class="flex items-center gap-5">
-
-
-
-                    <p class="text-sm">
-
-
-
-                        ${
-
-                            paid
-
-                                ? "Paid"
-
-                                : "Pending"
-
+                        ${paid
+                            ? "Paid"
+                            : "Pending"
                         }
 
-
-
-                    </p>
-
-
-
+                    </span>
 
 
                     <button
+                        data-owner-only
+                        onclick="toggleWorkerPayment('${worker.id}')"
+                        class="secondary-btn text-xs">
 
-                        data-owner-only onclick="toggleWorkerPayment('${worker.id}')"
-
-                        class="border border-gray-300 px-4 py-2 hover:bg-gray-100">
-
-
-
-                        ${
-
-                            paid
-
-                                ? "Mark Pending"
-
-                                : "Mark Paid"
-
+                        ${paid
+                            ? "Mark Pending"
+                            : "Mark Paid"
                         }
-
-
 
                     </button>
 
-
-
                 </div>
-
-
 
             </div>
 
-
-
         `;
 
-
-
     });
-
-
 
 }
 
 
-
-
-
 /* =====================================================
-
    DEBTS
-
 ===================================================== */
 
-
-
 function addDebt() {
-    if (!requireOwner("add customer debts")) return;
 
+    if (!requireOwner("add customer debts"))
+        return;
 
 
     const name =
-
         document.getElementById(
-
             "debtName"
-
         ).value.trim();
 
 
-
-
-
     const amount =
-
         Number(
-
             document.getElementById(
-
                 "debtAmount"
-
             ).value
-
         );
-
-
-
 
 
     if (!name) {
 
-
-
         showPopup(
-
             "Name missing",
-
             "Please enter a customer or description.",
-
             true
-
         );
-
-
 
         return;
 
-
-
     }
-
-
-
 
 
     if (
-
         isNaN(amount) ||
-
         amount <= 0
-
     ) {
 
-
-
         showPopup(
-
             "Invalid amount",
-
             "Please enter a valid debt amount.",
-
             true
-
         );
 
-
-
         return;
-
-
 
     }
 
 
-
-
-
     const debts =
-
         getData(DEBT_KEY);
-
-
-
 
 
     debts.push({
 
-
-
         id:
-
             generateID(),
 
-
-
         name:
-
             name,
 
-
-
         amount:
-
             amount,
 
-
-
         status:
-
             "pending",
 
-
-
         date:
-
             nowDate(),
 
-
-
         createdAt:
-
             new Date()
-
                 .toISOString()
-
-
 
     });
 
 
-
-
-
     saveData(
-
         DEBT_KEY,
-
         debts
-
     );
 
 
-
-
-
     document.getElementById(
-
         "debtName"
-
     ).value = "";
-
-
-
 
 
     document.getElementById(
-
         "debtAmount"
-
     ).value = "";
-
-
-
 
 
     renderAll();
 
 
-
-
-
     showPopup(
-
         "Debt added",
-
         `${name}'s debt was recorded.`
-
     );
 
-
-
 }
-
-
-
 
 
 function toggleDebtPayment(id) {
-    if (!requireOwner("change debt payment status")) return;
 
+    if (!requireOwner("change debt payment status"))
+        return;
 
 
     const debts =
-
         getData(DEBT_KEY);
 
 
-
-
-
     const index =
-
         debts.findIndex(
-
             debt =>
-
                 debt.id === id
-
         );
 
 
-
-
-
-    if (index === -1) {
-
+    if (index === -1)
         return;
-
-    }
-
-
-
 
 
     debts[index].status =
-
         debts[index].status === "paid"
-
             ? "pending"
-
             : "paid";
 
 
-
-
-
     debts[index].paidAt =
-
         debts[index].status === "paid"
-
             ? new Date().toISOString()
-
             : null;
 
 
-
-
-
     saveData(
-
         DEBT_KEY,
-
         debts
-
     );
-
-
-
 
 
     renderAll();
 
 
-
-
-
     showPopup(
-
         "Debt updated",
-
         `Debt is now ${debts[index].status}.`
-
     );
 
-
-
 }
-
-
-
 
 
 function renderDebts() {
 
-
-
     const container =
-
         document.getElementById(
-
             "debtsContainer"
-
         );
 
 
-
-
-
     const debts =
-
         getData(DEBT_KEY);
-
-
-
 
 
     container.innerHTML = "";
 
 
-
-
-
     if (!debts.length) {
-
-
 
         container.innerHTML = `
 
+            <div class="bg-gray-50 rounded-xl px-4 py-5">
 
+                <p class="text-gray-400 text-sm">
+                    No debts recorded.
+                </p>
 
-            <p class="text-gray-400 text-sm py-4">
-
-
-
-                No debts recorded.
-
-
-
-            </p>
-
-
+            </div>
 
         `;
 
-
-
         return;
-
-
 
     }
 
 
-
-
-
     debts
-
         .slice()
-
         .reverse()
-
         .forEach(function(debt) {
 
-
-
             const paid =
-
                 debt.status === "paid";
-
-
-
 
 
             container.innerHTML += `
 
-
-
-                <div class="flex justify-between items-center border-b border-gray-100 py-4">
-
-
+                <div class="record-row">
 
                     <div>
 
-
-
-                        <p>
-
-
+                        <p class="text-sm text-gray-800">
 
                             ${escapeHTML(
-
                                 debt.name
-
                             )}
 
-
-
                         </p>
-
-
 
                         <p class="text-xs text-gray-400 mt-1">
 
-
-
                             ${debt.date}
 
-
-
                         </p>
-
-
 
                     </div>
 
 
+                    <div class="flex items-center gap-3">
 
-
-
-                    <div class="flex items-center gap-5">
-
-
-
-                        <p>
-
-
+                        <p class="text-sm text-gray-900">
 
                             ${money(
-
                                 debt.amount
-
                             )}
 
-
-
                         </p>
 
 
+                        <span class="${paid
+                            ? "status-paid"
+                            : "status-pending"
+                        }">
 
-
-
-                        <p class="text-sm">
-
-
-
-                            ${
-
-                                paid
-
-                                    ? "Paid"
-
-                                    : "Pending"
-
+                            ${paid
+                                ? "Paid"
+                                : "Pending"
                             }
 
-
-
-                        </p>
-
-
-
+                        </span>
 
 
                         <button
+                            data-owner-only
+                            onclick="toggleDebtPayment('${debt.id}')"
+                            class="secondary-btn text-xs">
 
-                            data-owner-only onclick="toggleDebtPayment('${debt.id}')"
-
-                            class="border border-gray-300 px-4 py-2 hover:bg-gray-100">
-
-
-
-                            ${
-
-                                paid
-
-                                    ? "Mark Pending"
-
-                                    : "Mark Paid"
-
+                            ${paid
+                                ? "Mark Pending"
+                                : "Mark Paid"
                             }
-
-
 
                         </button>
 
-
-
                     </div>
-
-
 
                 </div>
 
-
-
             `;
 
-
-
         });
-
-
 
 }
 
 
-
-
-
 /* =====================================================
-
    FINANCIAL SUMMARY
-
 ===================================================== */
-
-
 
 function renderFinancialSummary() {
 
-
-
     const orders =
-
         getData(ORDER_KEY)
-
             .filter(function(order) {
 
-
-
                 return (
-
                     order.paymentStatus === "paid"
-
                     &&
-
                     (
-
                         order.paidDate === nowDate()
-
                         ||
-
                         order.date === nowDate()
-
                     )
-
                 );
-
-
 
             });
 
 
-
-
-
     const expenses =
-
         getData(EXPENSE_KEY)
-
             .filter(isToday);
 
 
-
-
-
     const totalSales =
-
         orders.reduce(
-
             (total, order) =>
-
-
-
                 total +
-
                 Number(
-
                     order.total || 0
-
                 ),
-
-
-
             0
-
         );
-
-
-
 
 
     const cashSales =
-
         orders
-
             .filter(
-
                 order =>
-
                     order.paymentMethod === "Cash"
-
             )
-
             .reduce(
-
                 (total, order) =>
-
-
-
                     total +
-
                     Number(
-
                         order.total || 0
-
                     ),
-
-
-
                 0
-
             );
-
-
-
 
 
     const pochiSales =
-
         orders
-
             .filter(
-
                 order =>
-
                     order.paymentMethod === "Pochi"
-
             )
-
             .reduce(
-
                 (total, order) =>
-
-
-
                     total +
-
                     Number(
-
                         order.total || 0
-
                     ),
-
-
-
                 0
-
             );
 
 
-
-
-
     const totalExpenses =
-
         expenses.reduce(
-
             (total, expense) =>
-
-
-
                 total +
-
                 Number(
-
                     expense.amount || 0
-
                 ),
-
-
-
             0
-
         );
-
-
-
 
 
     const profit =
-
         totalSales -
-
         totalExpenses;
-
-
-
 
 
     const margin =
-
         totalSales > 0
-
             ? (
-
                 profit /
-
                 totalSales
-
             ) * 100
-
             : 0;
 
 
-
-
-
     const openingBalance =
-
         getOpeningBalance();
 
 
-
-
-
     const expectedCash =
-
         openingBalance +
-
         cashSales -
-
         totalExpenses;
-
-
-
 
 
     const closingBalance =
-
         openingBalance +
-
         totalSales -
-
         totalExpenses;
 
 
-
-
-
     document.getElementById(
-
         "totalSales"
-
     ).textContent =
-
         money(totalSales);
 
 
-
-
-
     document.getElementById(
-
         "totalExpenses"
-
     ).textContent =
-
         money(totalExpenses);
 
 
-
-
-
     document.getElementById(
-
         "estimatedProfit"
-
     ).textContent =
-
         money(profit);
 
 
-
-
-
     document.getElementById(
-
         "profitMargin"
-
     ).textContent =
-
         margin.toFixed(1) + "%";
 
 
-
-
-
     document.getElementById(
-
         "cashSales"
-
     ).textContent =
-
         money(cashSales);
 
 
-
-
-
     document.getElementById(
-
         "pochiSales"
-
     ).textContent =
-
         money(pochiSales);
 
 
-
-
-
     document.getElementById(
-
         "expectedCash"
-
     ).textContent =
-
         money(expectedCash);
 
 
-
-
-
     document.getElementById(
-
         "closingBalance"
-
     ).textContent =
-
         money(closingBalance);
-
-
 
 }
 
 
-
-
-
 /* =====================================================
-
    RENDER EVERYTHING
-
 ===================================================== */
 
-
-
 function renderAll() {
+
     protectOwnerControls();
-
-
 
     renderFinancialSummary();
 
-
-
     renderPendingOrders();
-
-
 
     renderExpenses();
 
-
-
     renderWorkers();
-
-
 
     renderDebts();
 
-
-
 }
 
 
-
-
-
 /* =====================================================
-
    AUTO REFRESH BETWEEN TABS
-
 ===================================================== */
 
-
-
 window.addEventListener(
-
     "storage",
-
     function(event) {
 
-
-
         if (
-
-
-
             event.key === ORDER_KEY
-
             ||
-
             event.key === PRODUCTION_KEY
-
             ||
-
             event.key === EXPENSE_KEY
-
             ||
-
             event.key === WORKER_KEY
-
             ||
-
             event.key === DEBT_KEY
-
-
-
         ) {
-
-
 
             renderAll();
 
-
-
         }
 
-
-
     }
-
 );
 
 
-
-
-
 /* =====================================================
-
    START APPLICATION
-
 ===================================================== */
 
-
-
 document.getElementById(
-
     "todayDate"
-
 ).textContent =
-
     new Date()
-
         .toLocaleDateString(
-
             undefined,
-
             {
-
                 weekday: "long",
-
                 year: "numeric",
-
                 month: "long",
-
                 day: "numeric"
-
             }
-
         );
 
 
-
-
-
 document.getElementById(
-
     "openingBalance"
-
 ).value =
-
     getOpeningBalance();
 
 
+ordersCache =
+    getLocalData(ORDER_KEY);
 
+productionCache =
+    getLocalData(PRODUCTION_KEY);
 
-
-ordersCache = getLocalData(ORDER_KEY);
-productionCache = getLocalData(PRODUCTION_KEY);
 
 renderAll();
 
-// Firebase data is only loaded after Google authentication.
-// The owner account gets full cashier control; other signed-in users are read-only.
-auth.onAuthStateChanged(function(user) {
-    currentUser = user;
-    updateAuthUI();
-    protectOwnerControls();
 
-    if (!user) {
-        firebaseStarted = false;
-        return;
-    }
+auth.onAuthStateChanged(
+    function(user) {
 
-    if (!firebaseStarted) {
-        firebaseStarted = true;
-        startFirebaseListeners();
-    }
+        currentUser =
+            user;
 
-    renderAll();
-});
+        updateAuthUI();
+
+        protectOwnerControls();
 
 
+        if (!user) {
 
+            firebaseStarted = false;
 
-/* ========================================================
-   MOBILE COLLAPSIBLE DASHBOARD SECTIONS
-   Desktop keeps the existing open layout.
-   Phones get tap-to-open sections to reduce scrolling.
-======================================================== */
-function setupMobileCollapsibles() {
-    document.querySelectorAll(".mobile-collapsible").forEach(function(section) {
-        if (section.querySelector(":scope > .mobile-section-toggle")) return;
+            return;
 
-        const title = section.dataset.mobileTitle || "Section";
-        const body = document.createElement("div");
-        body.className = "mobile-section-body";
-
-        while (section.firstChild) {
-            body.appendChild(section.firstChild);
         }
 
-        const toggle = document.createElement("button");
-        toggle.type = "button";
-        toggle.className = "mobile-section-toggle";
-        toggle.setAttribute("aria-expanded", "false");
-        toggle.innerHTML = `
-            <span>${escapeHTML(title)}</span>
-            <span class="mobile-section-arrow" aria-hidden="true">▼</span>
-        `;
 
-        toggle.addEventListener("click", function() {
-            const open = section.classList.toggle("is-open");
-            toggle.setAttribute("aria-expanded", String(open));
+        if (!firebaseStarted) {
+
+            firebaseStarted = true;
+
+            startFirebaseListeners();
+
+        }
+
+
+        renderAll();
+
+    }
+);
+
+
+/* =====================================================
+   MOBILE COLLAPSIBLE DASHBOARD SECTIONS
+===================================================== */
+
+function setupMobileCollapsibles() {
+
+    document
+        .querySelectorAll(".mobile-collapsible")
+        .forEach(function(section) {
+
+            if (
+                section.querySelector(
+                    ":scope > .mobile-section-toggle"
+                )
+            ) {
+                return;
+            }
+
+
+            const title =
+                section.dataset.mobileTitle ||
+                "Section";
+
+
+            const body =
+                document.createElement("div");
+
+            body.className =
+                "mobile-section-body";
+
+
+            while (section.firstChild) {
+
+                body.appendChild(
+                    section.firstChild
+                );
+
+            }
+
+
+            const toggle =
+                document.createElement("button");
+
+            toggle.type =
+                "button";
+
+            toggle.className =
+                "mobile-section-toggle";
+
+            toggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+
+            toggle.innerHTML = `
+
+                <span>
+                    ${escapeHTML(title)}
+                </span>
+
+                <span
+                    class="mobile-section-arrow"
+                    aria-hidden="true">
+
+                    ▼
+
+                </span>
+
+            `;
+
+
+            toggle.addEventListener(
+                "click",
+                function() {
+
+                    const open =
+                        section.classList.toggle(
+                            "is-open"
+                        );
+
+
+                    toggle.setAttribute(
+                        "aria-expanded",
+                        String(open)
+                    );
+
+                }
+            );
+
+
+            section.appendChild(
+                toggle
+            );
+
+            section.appendChild(
+                body
+            );
+
         });
 
-        section.appendChild(toggle);
-        section.appendChild(body);
-    });
 }
 
+
 setupMobileCollapsibles();
+
+
+/* =====================================================
+   CLOSE MODALS WHEN CLICKING OUTSIDE
+===================================================== */
+
+document.getElementById(
+    "paymentModal"
+).addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target === this
+        ) {
+
+            closePaymentModal();
+
+        }
+
+    }
+);
+
+
+document.getElementById(
+    "removeModal"
+).addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target === this
+        ) {
+
+            closeRemoveModal();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   ESCAPE KEY CLOSES MODALS
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key !== "Escape")
+            return;
+
+
+        const paymentModal =
+            document.getElementById(
+                "paymentModal"
+            );
+
+        const removeModal =
+            document.getElementById(
+                "removeModal"
+            );
+
+
+        if (
+            paymentModal.classList.contains(
+                "show"
+            )
+        ) {
+
+            closePaymentModal();
+
+        }
+
+
+        if (
+            removeModal.classList.contains(
+                "show"
+            )
+        ) {
+
+            closeRemoveModal();
+
+        }
+
+    }
+);
+
 </script>
 
-
-
 </body>
-
-</html> 
+</html>

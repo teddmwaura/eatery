@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Serene Eatery</title>
+  <title>Serene Eatery | Restaurant Management</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -12,6 +12,7 @@
     * {
       font-family: Arial, Helvetica, sans-serif;
       font-weight: 400 !important;
+      box-sizing: border-box;
     }
 
     html {
@@ -19,476 +20,578 @@
     }
 
     body {
-      background: #ffffff;
+      background: #f8faf9;
+      color: #26332d;
+      overflow-x: hidden;
     }
 
-    a,
-    button {
+    a, button {
       cursor: pointer;
+    }
+
+    ::selection {
+      background: #dcefe4;
+      color: #163c2b;
+    }
+
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .hero-overlay {
+      background:
+        linear-gradient(90deg, rgba(9, 25, 18, .92) 0%, rgba(9, 25, 18, .70) 48%, rgba(9, 25, 18, .22) 100%);
+    }
+
+    .soft-shadow {
+      box-shadow: 0 18px 50px rgba(24, 53, 39, .08);
+    }
+
+    .card-shadow {
+      box-shadow: 0 10px 30px rgba(24, 53, 39, .06);
+    }
+
+    .dashboard-card {
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 45px rgba(24, 53, 39, .11);
+      border-color: #8bb59b;
+    }
+
+    .icon-box {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #edf7f0;
+      color: #17633b;
+    }
+
+    .step-line {
+      position: absolute;
+      top: 24px;
+      left: calc(50% + 30px);
+      width: calc(100% - 60px);
+      height: 1px;
+      background: #d9e5de;
+    }
+
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease, padding .3s ease;
+    }
+
+    .mobile-menu.open {
+      max-height: 500px;
+      padding-bottom: 18px;
+    }
+
+    .reveal {
+      animation: reveal .7s ease both;
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .floating-card {
+      animation: floatCard 4s ease-in-out infinite;
+    }
+
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    @media (max-width: 767px) {
+      .hero-overlay {
+        background: linear-gradient(180deg, rgba(9,25,18,.82), rgba(9,25,18,.92));
+      }
+
+      .step-line {
+        display: none;
+      }
     }
   </style>
 </head>
 
-<body class="bg-white text-gray-700">
+<body>
 
-  <!-- FIXED NAVIGATION -->
-  <header class="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur border-b border-gray-200">
+  <!-- NAVIGATION -->
+  <header class="fixed top-0 left-0 w-full z-50 glass-nav border-b border-gray-200/80">
+    <nav class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+      <div class="h-[76px] flex items-center justify-between">
 
-    <nav class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-
-      <!-- Logo -->
-      <a
-        href="index.html"
-        class="text-xl tracking-wide text-green-900 cursor-pointer hover:text-green-700 transition duration-300"
-      >
-        Serene Eatery
-      </a>
-
-
-      <!-- Desktop Navigation -->
-      <div class="hidden lg:flex items-center gap-6 text-sm text-gray-600">
-
-        <a
-          href="waiter.html"
-          class="hover:text-green-800 transition duration-300 cursor-pointer"
-        >
-          Waiter
+        <a href="index.html" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl bg-green-900 text-white grid place-items-center shadow-sm">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M7 3v7a3 3 0 0 0 6 0V3"/>
+              <path d="M10 3v18"/>
+              <path d="M17 3v18"/>
+              <path d="M17 3c2 1.5 3 3.5 3 6h-3"/>
+            </svg>
+          </div>
+          <div>
+            <div class="text-[15px] text-gray-950 tracking-wide">Serene Eatery</div>
+            <div class="text-[10px] text-gray-500 tracking-[.18em] uppercase">Management System</div>
+          </div>
         </a>
 
-        <a
-          href="cashier.html"
-          class="hover:text-green-800 transition duration-300 cursor-pointer"
-        >
-          Cashier
-        </a>
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="#about" class="px-3 py-2 text-sm text-gray-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition">About</a>
+          <a href="#dashboards" class="px-3 py-2 text-sm text-gray-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition">System</a>
+          <a href="#how-it-works" class="px-3 py-2 text-sm text-gray-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition">How it works</a>
+          <a href="contact.html" class="ml-3 px-5 py-2.5 rounded-lg bg-green-900 text-white text-sm hover:bg-green-800 transition shadow-sm">Contact</a>
+        </div>
 
-        <a
-          href="kitchen.html"
-          class="hover:text-green-800 transition duration-300 cursor-pointer"
-        >
-          Kitchen
-        </a>
-
-        <a
-          href="receipt.html"
-          class="hover:text-green-800 transition duration-300 cursor-pointer"
-        >
-          Receipt
-        </a>
-         <a
-          href="admin.html"
-          class="hover:text-green-800 transition duration-300 cursor-pointer"
-        >
-          admin
-        </a>
-        <a
-          href="stock.html"
-          class="hover:text-green-800 transition duration-300 cursor-pointer"
-        >
-          Stock
-        </a>
-
-    
-
-        <a
-          href="contact.html"
-          class="border border-gray-300 px-4 py-2 text-black hover:bg-green-900 hover:text-white hover:border-green-900 transition duration-300 cursor-pointer"
-        >
-          Contact
-        </a>
-
+        <button id="menuBtn" class="lg:hidden w-11 h-11 rounded-xl border border-gray-200 bg-white grid place-items-center text-gray-700" aria-label="Open menu">
+          <svg id="menuIcon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
       </div>
 
+      <div id="mobileMenu" class="mobile-menu lg:hidden">
+        <div class="border-t border-gray-100 pt-3 flex flex-col gap-1">
+          <a href="#about" class="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50 hover:text-green-900">About</a>
+          <a href="#dashboards" class="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50 hover:text-green-900">System</a>
+          <a href="#how-it-works" class="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50 hover:text-green-900">How it works</a>
+          <a href="waiter.html" class="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50 hover:text-green-900">Waiter</a>
+          <a href="cashier.html" class="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50 hover:text-green-900">Cashier</a>
+          <a href="kitchen.html" class="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50 hover:text-green-900">Kitchen</a>
+          <a href="receipt.html" class="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50 hover:text-green-900">Receipts</a>
+          <a href="stock.html" class="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50 hover:text-green-900">Stock</a>
+          <a href="admin.html" class="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50 hover:text-green-900">Admin</a>
+          <a href="contact.html" class="mt-1 px-4 py-3 rounded-xl bg-green-900 text-white text-sm text-center">Contact</a>
+        </div>
+      </div>
     </nav>
-
   </header>
 
 
   <!-- HERO -->
-  <section
-    class="min-h-screen flex items-center pt-24 bg-cover bg-center relative"
-    style="
-      background-image:
-      linear-gradient(
-        to right,
-        rgba(255,255,255,0.97),
-        rgba(255,255,255,0.80),
-        rgba(255,255,255,0.45)
-      ),
-      url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=85');
-    "
-  >
+  <main>
+    <section
+      class="relative min-h-[720px] md:min-h-screen flex items-center pt-[76px] bg-cover bg-center"
+      style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=85');"
+    >
+      <div class="absolute inset-0 hero-overlay"></div>
 
-    <div class="max-w-7xl mx-auto px-6 py-20 w-full">
+      <div class="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-20 w-full">
+        <div class="max-w-3xl reveal">
 
-      <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur text-white/90 text-xs tracking-[.16em] uppercase mb-7">
+            <span class="w-2 h-2 rounded-full bg-green-300"></span>
+            Restaurant management made simple
+          </div>
 
-        <p class="text-sm tracking-[0.25em] text-green-900 mb-6">
-          WELCOME TO SERENE EATERY
-        </p>
+          <h1 class="text-5xl sm:text-6xl lg:text-7xl leading-[1.02] text-white tracking-tight">
+            Good food.
+            <span class="block text-green-200">Better organization.</span>
+          </h1>
 
-        <h1 class="text-5xl md:text-7xl leading-tight text-black">
-          Good food.
-          Better organization.
-        </h1>
-
-        <p class="mt-8 text-lg md:text-xl leading-relaxed text-gray-700 max-w-2xl">
-          Serene Eatery brings food service, orders, payments,
-          kitchen operations and stock management together in
-          one organized system.
-        </p>
-
-        <div class="mt-10 flex flex-wrap gap-4">
-
-          <a
-            href="#dashboards"
-            class="bg-green-900 text-white px-7 py-3.5 text-sm hover:bg-green-700 hover:-translate-y-1 transition duration-300 cursor-pointer"
-          >
-            Explore Our System
-          </a>
-
-          <a
-            href="contact.html"
-            class="bg-white/90 border border-gray-300 px-7 py-3.5 text-sm text-black hover:border-green-900 hover:text-green-900 hover:-translate-y-1 transition duration-300 cursor-pointer"
-          >
-            Contact Us
-          </a>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- ABOUT -->
-  <section id="about" class="py-24 bg-white">
-
-    <div class="max-w-7xl mx-auto px-6">
-
-      <div class="grid md:grid-cols-2 gap-16">
-
-        <div>
-
-          <p class="text-sm tracking-[0.2em] text-green-900 mb-5">
-            ABOUT US
+          <p class="mt-7 max-w-2xl text-base sm:text-lg leading-8 text-white/75">
+            Serene Eatery connects orders, payments, kitchen operations,
+            stock and daily business records in one organized system.
           </p>
 
-          <h2 class="text-3xl md:text-5xl text-black leading-tight">
-            A simpler way to manage daily restaurant operations.
+          <div class="mt-9 flex flex-col sm:flex-row gap-3">
+            <a href="#dashboards" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white text-green-950 text-sm hover:bg-green-50 transition shadow-lg">
+              Explore the system
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </a>
+
+            <a href="contact.html" class="inline-flex items-center justify-center px-6 py-3.5 rounded-xl border border-white/30 bg-white/10 backdrop-blur text-white text-sm hover:bg-white/15 transition">
+              Contact us
+            </a>
+          </div>
+
+          <div class="mt-12 flex flex-wrap gap-x-7 gap-y-3 text-xs text-white/60">
+            <span class="flex items-center gap-2">
+              <span class="text-green-300">✓</span> Connected operations
+            </span>
+            <span class="flex items-center gap-2">
+              <span class="text-green-300">✓</span> Daily records
+            </span>
+            <span class="flex items-center gap-2">
+              <span class="text-green-300">✓</span> Mobile friendly
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating preview -->
+      <div class="hidden xl:block absolute right-[7%] bottom-20 w-72 floating-card">
+        <div class="bg-white/95 backdrop-blur rounded-2xl p-5 soft-shadow border border-white/70">
+          <div class="flex items-center justify-between mb-5">
+            <div>
+              <p class="text-[10px] uppercase tracking-wider text-gray-500">Today's overview</p>
+              <p class="text-sm text-gray-900 mt-1">Serene Eatery</p>
+            </div>
+            <div class="w-9 h-9 rounded-lg bg-green-50 text-green-800 grid place-items-center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M3 12h18M12 3v18"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-xl bg-gray-50 p-3">
+              <p class="text-[10px] text-gray-500">Orders</p>
+              <p class="text-xl text-gray-900 mt-1">—</p>
+            </div>
+            <div class="rounded-xl bg-green-50 p-3">
+              <p class="text-[10px] text-green-700">Sales</p>
+              <p class="text-xl text-green-900 mt-1">KES —</p>
+            </div>
+          </div>
+
+          <div class="mt-3 h-2 rounded-full bg-gray-100 overflow-hidden">
+            <div class="h-full w-[72%] bg-green-700 rounded-full"></div>
+          </div>
+          <p class="text-[10px] text-gray-500 mt-2">Your operations, connected.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- TRUST STRIP -->
+    <section class="bg-white border-b border-gray-100">
+      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-green-50 text-green-800 grid place-items-center text-sm">01</div>
+            <div class="text-xs text-gray-600">Orders</div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-green-50 text-green-800 grid place-items-center text-sm">02</div>
+            <div class="text-xs text-gray-600">Payments</div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-green-50 text-green-800 grid place-items-center text-sm">03</div>
+            <div class="text-xs text-gray-600">Stock</div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-green-50 text-green-800 grid place-items-center text-sm">04</div>
+            <div class="text-xs text-gray-600">Reports</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ABOUT -->
+    <section id="about" class="py-24 md:py-28 bg-white">
+      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-[.9fr_1.1fr] gap-14 lg:gap-24 items-start">
+
+          <div>
+            <div class="inline-flex items-center gap-2 text-xs uppercase tracking-[.18em] text-green-800">
+              <span class="w-7 h-px bg-green-700"></span>
+              About Serene
+            </div>
+
+            <h2 class="mt-5 text-3xl sm:text-4xl lg:text-5xl leading-tight text-gray-950 tracking-tight">
+              A clearer way to run the day-to-day.
+            </h2>
+          </div>
+
+          <div>
+            <p class="text-gray-600 leading-8">
+              Serene Eatery brings different parts of restaurant operations
+              together through one organized management system.
+            </p>
+
+            <p class="mt-5 text-gray-600 leading-8">
+              From a waiter creating an order to the cashier confirming payment,
+              kitchen activity and stock information remain connected.
+            </p>
+
+            <div class="mt-8 grid sm:grid-cols-2 gap-4">
+              <div class="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                <div class="text-green-800 mb-3">✓</div>
+                <p class="text-sm text-gray-900">Less manual confusion</p>
+                <p class="text-xs text-gray-500 mt-2 leading-5">Keep important daily operations in one place.</p>
+              </div>
+
+              <div class="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                <div class="text-green-800 mb-3">✓</div>
+                <p class="text-sm text-gray-900">Better accountability</p>
+                <p class="text-xs text-gray-500 mt-2 leading-5">Make business activity easier to follow.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- DASHBOARDS -->
+    <section id="dashboards" class="py-24 md:py-28 bg-[#f4f7f5]">
+      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 text-xs uppercase tracking-[.18em] text-green-800">
+            <span class="w-7 h-px bg-green-700"></span>
+            The workspace
+          </div>
+
+          <h2 class="mt-5 text-3xl sm:text-4xl lg:text-5xl text-gray-950 tracking-tight">
+            Every department has a place.
           </h2>
 
+          <p class="mt-5 text-gray-600 leading-7 max-w-2xl">
+            Six connected workspaces give each part of the eatery the tools
+            it needs while keeping the wider operation organized.
+          </p>
         </div>
 
-        <div class="text-gray-600 leading-relaxed space-y-6">
 
-          <p>
-            Serene Eatery brings different parts of the restaurant
-            together through one organized management system.
-          </p>
+        <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
-          <p>
-            From the moment a waiter creates an order to the time
-            payment is received, food is prepared and stock is
-            updated, every department remains connected.
-          </p>
+          <!-- WAITER -->
+          <a href="waiter.html" class="dashboard-card group rounded-2xl bg-white border border-gray-200 p-6 sm:p-7">
+            <div class="flex items-start justify-between">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M6 3v7a3 3 0 0 0 6 0V3M9 3v18"/>
+                  <path d="M16 3v18M16 3c3 1 4 3 4 6h-4"/>
+                </svg>
+              </div>
+              <span class="text-xs text-gray-400">01</span>
+            </div>
+            <h3 class="mt-7 text-lg text-gray-950">Waiter</h3>
+            <p class="mt-3 text-sm text-gray-600 leading-6">Create customer orders, select products and quantities, review items and send them for processing.</p>
+            <div class="mt-6 text-xs text-green-800 group-hover:translate-x-1 transition">Open workspace →</div>
+          </a>
 
-          <p>
-            Our goal is to reduce manual errors, improve accountability
-            and give the business a clearer understanding of its
-            daily performance.
-          </p>
+          <!-- CASHIER -->
+          <a href="cashier.html" class="dashboard-card group rounded-2xl bg-white border border-gray-200 p-6 sm:p-7">
+            <div class="flex items-start justify-between">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <rect x="3" y="5" width="18" height="14" rx="2"/>
+                  <path d="M7 9h10M7 13h2M11 13h2M15 13h2"/>
+                </svg>
+              </div>
+              <span class="text-xs text-gray-400">02</span>
+            </div>
+            <h3 class="mt-7 text-lg text-gray-950">Cashier</h3>
+            <p class="mt-3 text-sm text-gray-600 leading-6">Receive waiter orders, confirm payments and manage cash or Pochi transactions.</p>
+            <div class="mt-6 text-xs text-green-800 group-hover:translate-x-1 transition">Open workspace →</div>
+          </a>
+
+          <!-- KITCHEN -->
+          <a href="kitchen.html" class="dashboard-card group rounded-2xl bg-white border border-gray-200 p-6 sm:p-7">
+            <div class="flex items-start justify-between">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M4 10h16M6 10v9M18 10v9M5 19h14"/>
+                  <path d="M8 10V5M12 10V3M16 10V5"/>
+                </svg>
+              </div>
+              <span class="text-xs text-gray-400">03</span>
+            </div>
+            <h3 class="mt-7 text-lg text-gray-950">Kitchen</h3>
+            <p class="mt-3 text-sm text-gray-600 leading-6">Keep food preparation and production information organized alongside incoming orders.</p>
+            <div class="mt-6 text-xs text-green-800 group-hover:translate-x-1 transition">Open workspace →</div>
+          </a>
+
+          <!-- RECEIPTS -->
+          <a href="receipt.html" class="dashboard-card group rounded-2xl bg-white border border-gray-200 p-6 sm:p-7">
+            <div class="flex items-start justify-between">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z"/>
+                  <path d="M9 7h6M9 11h6M9 15h4"/>
+                </svg>
+              </div>
+              <span class="text-xs text-gray-400">04</span>
+            </div>
+            <h3 class="mt-7 text-lg text-gray-950">Receipts</h3>
+            <p class="mt-3 text-sm text-gray-600 leading-6">Store completed transactions with receipt numbers, payment methods, dates and times.</p>
+            <div class="mt-6 text-xs text-green-800 group-hover:translate-x-1 transition">Open workspace →</div>
+          </a>
+
+          <!-- STOCK -->
+          <a href="stock.html" class="dashboard-card group rounded-2xl bg-white border border-gray-200 p-6 sm:p-7">
+            <div class="flex items-start justify-between">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M4 7h16v13H4z"/>
+                  <path d="M8 7V4h8v3M8 11h8M8 15h5"/>
+                </svg>
+              </div>
+              <span class="text-xs text-gray-400">05</span>
+            </div>
+            <h3 class="mt-7 text-lg text-gray-950">Stock</h3>
+            <p class="mt-3 text-sm text-gray-600 leading-6">Monitor ingredients, finished food, purchases, usage and items that are running low.</p>
+            <div class="mt-6 text-xs text-green-800 group-hover:translate-x-1 transition">Open workspace →</div>
+          </a>
+
+          <!-- ADMIN -->
+          <a href="admin.html" class="dashboard-card group rounded-2xl bg-white border border-gray-200 p-6 sm:p-7">
+            <div class="flex items-start justify-between">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M12 3v18M3 12h18"/>
+                  <circle cx="12" cy="12" r="8"/>
+                  <path d="M8 16l8-8"/>
+                </svg>
+              </div>
+              <span class="text-xs text-gray-400">06</span>
+            </div>
+            <h3 class="mt-7 text-lg text-gray-950">Admin</h3>
+            <p class="mt-3 text-sm text-gray-600 leading-6">View sales, expenses, workers, payments, wastage and daily business information.</p>
+            <div class="mt-6 text-xs text-green-800 group-hover:translate-x-1 transition">Open workspace →</div>
+          </a>
 
         </div>
-
       </div>
-
-    </div>
-
-  </section>
+    </section>
 
 
-  <!-- DASHBOARDS -->
-  <section id="dashboards" class="bg-gray-100 py-24">
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works" class="py-24 md:py-28 bg-white">
+      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
 
-    <div class="max-w-7xl mx-auto px-6">
-
-      <div class="max-w-2xl mb-14">
-
-        <p class="text-sm tracking-[0.2em] text-green-900 mb-5">
-          OUR SYSTEM
-        </p>
-
-        <h2 class="text-3xl md:text-5xl text-black">
-          One system. Six connected dashboards.
-        </h2>
-
-        <p class="mt-5 text-gray-600 leading-relaxed">
-          Every department has its own workspace while important
-          information stays connected across the business.
-        </p>
-
-      </div>
-
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-
-        <!-- WAITER -->
-        <a
-          href="waiter.html"
-          class="group bg-white border border-gray-200 p-8 hover:border-green-900 hover:-translate-y-2 hover:shadow-lg transition duration-300 cursor-pointer"
-        >
-
-          <div class="text-green-900 text-sm mb-8">
-            01
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 text-xs uppercase tracking-[.18em] text-green-800">
+            <span class="w-7 h-px bg-green-700"></span>
+            Workflow
           </div>
 
-          <h3 class="text-xl text-black group-hover:text-green-900 transition duration-300">
-            Waiter
-          </h3>
+          <h2 class="mt-5 text-3xl sm:text-4xl lg:text-5xl text-gray-950 tracking-tight">
+            From order to business record.
+          </h2>
+        </div>
 
-          <p class="mt-4 text-gray-600 leading-relaxed">
-            Create customer orders, select products and quantities,
-            review items and send orders for processing.
-          </p>
+        <div class="mt-14 grid md:grid-cols-4 gap-8 md:gap-5">
 
-          <p class="mt-8 text-sm text-green-900">
-            Open dashboard →
-          </p>
-
-        </a>
-
-
-        <!-- CASHIER -->
-        <a
-          href="cashier.html"
-          class="group bg-white border border-gray-200 p-8 hover:border-green-900 hover:-translate-y-2 hover:shadow-lg transition duration-300 cursor-pointer"
-        >
-
-          <div class="text-green-900 text-sm mb-8">
-            02
+          <div class="relative">
+            <div class="w-12 h-12 rounded-2xl bg-green-900 text-white grid place-items-center text-sm relative z-10">01</div>
+            <div class="step-line"></div>
+            <h3 class="mt-6 text-base text-gray-950">Order</h3>
+            <p class="mt-2 text-sm text-gray-600 leading-6">A waiter creates a customer order.</p>
           </div>
 
-          <h3 class="text-xl text-black group-hover:text-green-900 transition duration-300">
-            Cashier
-          </h3>
-
-          <p class="mt-4 text-gray-600 leading-relaxed">
-            Receive waiter orders, confirm payments and manage
-            cash or Pochi transactions.
-          </p>
-
-          <p class="mt-8 text-sm text-green-900">
-            Open dashboard →
-          </p>
-
-        </a>
-
-        <!-- RECEIPT -->
-        <a
-          href="receipt.html"
-          class="group bg-white border border-gray-200 p-8 hover:border-green-900 hover:-translate-y-2 hover:shadow-lg transition duration-300 cursor-pointer"
-        >
-
-          <div class="text-green-900 text-sm mb-8">
-            04
+          <div class="relative">
+            <div class="w-12 h-12 rounded-2xl bg-green-50 text-green-900 border border-green-100 grid place-items-center text-sm relative z-10">02</div>
+            <div class="step-line"></div>
+            <h3 class="mt-6 text-base text-gray-950">Payment</h3>
+            <p class="mt-2 text-sm text-gray-600 leading-6">The cashier confirms cash or Pochi payment.</p>
           </div>
 
-          <h3 class="text-xl text-black group-hover:text-green-900 transition duration-300">
-            Receipt
-          </h3>
-
-          <p class="mt-4 text-gray-600 leading-relaxed">
-            Store completed transactions with receipt number,
-            payment method, date and time.
-          </p>
-
-          <p class="mt-8 text-sm text-green-900">
-            Open dashboard →
-          </p>
-
-        </a>
-
-
-        <!-- STOCK -->
-        <a
-          href="stock.html"
-          class="group bg-white border border-gray-200 p-8 hover:border-green-900 hover:-translate-y-2 hover:shadow-lg transition duration-300 cursor-pointer"
-        >
-
-          <div class="text-green-900 text-sm mb-8">
-            05
+          <div class="relative">
+            <div class="w-12 h-12 rounded-2xl bg-green-50 text-green-900 border border-green-100 grid place-items-center text-sm relative z-10">03</div>
+            <div class="step-line"></div>
+            <h3 class="mt-6 text-base text-gray-950">Operations</h3>
+            <p class="mt-2 text-sm text-gray-600 leading-6">Kitchen and stock information stays connected.</p>
           </div>
 
-          <h3 class="text-xl text-black group-hover:text-green-900 transition duration-300">
-            Stock
-          </h3>
-
-          <p class="mt-4 text-gray-600 leading-relaxed">
-            Monitor ingredients, products, purchases, usage and
-            items that are running low.
-          </p>
-
-          <p class="mt-8 text-sm text-green-900">
-            Open dashboard →
-          </p>
-
-        </a>
-
-
-        <!-- ADMIN -->
-        <a
-          href="admin.html"
-          class="group bg-white border border-gray-200 p-8 hover:border-green-900 hover:-translate-y-2 hover:shadow-lg transition duration-300 cursor-pointer"
-        >
-
-          <div class="text-green-900 text-sm mb-8">
-            06
+          <div class="relative">
+            <div class="w-12 h-12 rounded-2xl bg-green-50 text-green-900 border border-green-100 grid place-items-center text-sm relative z-10">04</div>
+            <h3 class="mt-6 text-base text-gray-950">Record</h3>
+            <p class="mt-2 text-sm text-gray-600 leading-6">Daily business activity becomes visible to admin.</p>
           </div>
 
-          <h3 class="text-xl text-black group-hover:text-green-900 transition duration-300">
-            Admin
-          </h3>
-
-          <p class="mt-4 text-gray-600 leading-relaxed">
-            View sales, expenses, workers, payments, wastage and
-            overall daily business performance.
-          </p>
-
-          <p class="mt-8 text-sm text-green-900">
-            Open dashboard →
-          </p>
-
-        </a>
-
-
+        </div>
       </div>
-
-    </div>
-
-  </section>
+    </section>
 
 
-  <!-- HOW IT WORKS -->
-  <section class="py-24 bg-white">
+    <!-- CTA -->
+    <section class="py-20 md:py-24 bg-green-950">
+      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+        <div class="rounded-3xl border border-white/10 bg-white/5 p-8 sm:p-12 lg:p-16 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10">
 
-    <div class="max-w-7xl mx-auto px-6">
+          <div class="max-w-2xl">
+            <div class="text-xs uppercase tracking-[.18em] text-green-300">Serene Eatery</div>
+            <h2 class="mt-5 text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">
+              One organized system for the whole eatery.
+            </h2>
+            <p class="mt-5 text-white/65 leading-7">
+              Keep orders, payments, stock and daily operations moving together.
+            </p>
+          </div>
 
-      <p class="text-sm tracking-[0.2em] text-green-900 mb-5">
-        HOW IT WORKS
-      </p>
+          <a href="contact.html" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white text-green-950 text-sm hover:bg-green-50 transition shrink-0">
+            Contact Serene Eatery
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </a>
 
-      <h2 class="text-3xl md:text-5xl text-black mb-14">
-        From order to business report.
-      </h2>
+        </div>
+      </div>
+    </section>
 
 
-      <div class="grid md:grid-cols-4 gap-8">
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-200">
+      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-10">
 
-        <div>
-          <p class="text-green-900 mb-5">01</p>
-          <h3 class="text-black text-lg">Order</h3>
-          <p class="text-gray-600 mt-3 leading-relaxed">
-            A waiter creates a customer order.
-          </p>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-7">
+
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-green-900 text-white grid place-items-center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M7 3v7a3 3 0 0 0 6 0V3M10 3v18M17 3v18"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-gray-900">Serene Eatery</p>
+              <p class="text-xs text-gray-500 mt-1">Restaurant Management System</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-x-6 gap-y-3 text-xs text-gray-500">
+            <a href="waiter.html" class="hover:text-green-900 transition">Waiter</a>
+            <a href="cashier.html" class="hover:text-green-900 transition">Cashier</a>
+            <a href="kitchen.html" class="hover:text-green-900 transition">Kitchen</a>
+            <a href="receipt.html" class="hover:text-green-900 transition">Receipts</a>
+            <a href="stock.html" class="hover:text-green-900 transition">Stock</a>
+            <a href="admin.html" class="hover:text-green-900 transition">Admin</a>
+            <a href="contact.html" class="hover:text-green-900 transition">Contact</a>
+          </div>
+
         </div>
 
-        <div>
-          <p class="text-green-900 mb-5">02</p>
-          <h3 class="text-black text-lg">Payment</h3>
-          <p class="text-gray-600 mt-3 leading-relaxed">
-            The cashier confirms cash or Pochi payment.
-          </p>
-        </div>
-
-        <div>
-          <p class="text-green-900 mb-5">03</p>
-          <h3 class="text-black text-lg">Stock</h3>
-          <p class="text-gray-600 mt-3 leading-relaxed">
-            Product and kitchen information is updated.
-          </p>
-        </div>
-
-        <div>
-          <p class="text-green-900 mb-5">04</p>
-          <h3 class="text-black text-lg">Report</h3>
-          <p class="text-gray-600 mt-3 leading-relaxed">
-            Business performance becomes visible to the admin.
-          </p>
+        <div class="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row justify-between gap-3 text-xs text-gray-400">
+          <p>© 2026 Serene Eatery. All rights reserved.</p>
+          <p>Simple operations. Clear records.</p>
         </div>
 
       </div>
-
-    </div>
-
-  </section>
+    </footer>
+  </main>
 
 
-  <!-- CTA -->
-  <section class="bg-gray-100 py-24">
+  <script>
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
 
-    <div class="max-w-7xl mx-auto px-6">
+    menuBtn.addEventListener("click", () => {
+      mobileMenu.classList.toggle("open");
+    });
 
-      <div class="max-w-2xl">
-
-        <h2 class="text-3xl md:text-5xl text-black">
-          Better organization starts with one system.
-        </h2>
-
-        <p class="mt-6 text-gray-600 leading-relaxed">
-          Serene Eatery keeps daily restaurant operations organized
-          from the waiter to the administrator.
-        </p>
-
-        <a
-          href="contact.html"
-          class="inline-block mt-8 bg-green-900 text-white px-7 py-3.5 text-sm hover:bg-green-700 hover:-translate-y-1 transition duration-300 cursor-pointer"
-        >
-          Contact Serene Eatery
-        </a>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- FOOTER -->
-  <footer class="bg-white border-t border-gray-200">
-
-    <div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between gap-4 text-sm text-gray-500">
-
-      <p>
-        © 2026 Serene Eatery. All rights reserved.
-      </p>
-
-      <div class="flex flex-wrap gap-6">
-
-        <a href="waiter.html" class="hover:text-green-900 transition cursor-pointer">
-          Waiter
-        </a>
-
-        <a href="cashier.html" class="hover:text-green-900 transition cursor-pointer">
-          Cashier
-        </a>
-
-        <a href="admin.html" class="hover:text-green-900 transition cursor-pointer">
-          Admin
-        </a>
-
-        <a href="contact.html" class="hover:text-green-900 transition cursor-pointer">
-          Contact
-        </a>
-
-      </div>
-
-    </div>
-
-  </footer>
+    document.querySelectorAll("#mobileMenu a").forEach(link => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.remove("open");
+      });
+    });
+  </script>
 
 </body>
 </html>

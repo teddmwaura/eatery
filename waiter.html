@@ -1,8 +1,7 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -16,15 +15,44 @@
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore-compat.js"></script>
 
     <style>
+        :root {
+            --green-950: #0b2e22;
+            --green-900: #104735;
+            --green-800: #166044;
+            --green-700: #1d7653;
+            --green-100: #e8f3ee;
+            --green-50: #f3f9f6;
+            --ink: #17211c;
+            --muted: #68756f;
+            --line: #e4e9e6;
+            --surface: #ffffff;
+            --page: #f5f7f6;
+            --shadow: 0 12px 35px rgba(16,71,53,.08);
+            --shadow-sm: 0 5px 18px rgba(16,71,53,.06);
+        }
 
         * {
-            font-family: Arial, Helvetica, sans-serif;
+            box-sizing: border-box;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+                BlinkMacSystemFont, "Segoe UI", Arial, Helvetica, sans-serif;
             font-weight: 400 !important;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background: #f3f4f6;
-            color: #222;
+            margin: 0;
+            background:
+                radial-gradient(
+                    circle at 85% 0%,
+                    rgba(29,118,83,.07),
+                    transparent 28%
+                ),
+                var(--page);
+            color: var(--ink);
+            min-height: 100vh;
         }
 
         button,
@@ -36,89 +64,634 @@
             cursor: text;
         }
 
+        button,
+        input,
+        select {
+            transition: all .2s ease;
+        }
+
+        a {
+            transition:
+                color .2s ease,
+                background .2s ease,
+                border-color .2s ease,
+                transform .2s ease,
+                box-shadow .2s ease;
+        }
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        header {
+            background: rgba(255,255,255,.92) !important;
+            border-bottom: 1px solid rgba(228,233,230,.9) !important;
+            box-shadow: 0 4px 24px rgba(15,42,31,.04);
+            backdrop-filter: blur(16px);
+        }
+
+        header nav {
+            min-height: 72px;
+        }
+
+        header a[href="index.html"] {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 19px !important;
+            font-weight: 500 !important;
+            letter-spacing: -.02em;
+            color: var(--green-950) !important;
+        }
+
+        header a[href="index.html"]::before {
+            content: "S";
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: var(--green-900);
+            color: #fff;
+            font-size: 14px;
+            box-shadow: 0 7px 16px rgba(16,71,53,.18);
+        }
+
+        header nav > div {
+            align-items: center;
+            gap: 6px !important;
+            padding: 4px;
+            background: #f7f9f8;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+        }
+
+        header nav > div a {
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: #66736d !important;
+        }
+
+        header nav > div a:hover {
+            color: var(--green-900) !important;
+            background: #fff;
+        }
+
+        header nav > div a[href="waiter.html"] {
+            color: var(--green-900) !important;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(16,71,53,.07);
+        }
+
+        header a[href="cashier.html"].md\:hidden {
+            top: 17px !important;
+            right: 20px !important;
+            padding: 8px 11px;
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            background: #fff;
+            color: var(--green-900) !important;
+        }
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        main {
+            max-width: 1180px !important;
+            padding-top: 112px !important;
+        }
+
+        main > div:first-child {
+            position: relative;
+            padding: 28px 30px;
+            margin-bottom: 24px !important;
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(232,243,238,.9),
+                    rgba(255,255,255,.96) 55%
+                );
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        main > div:first-child::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            right: -65px;
+            top: -85px;
+            background: rgba(29,118,83,.08);
+        }
+
+        main > div:first-child p:first-child {
+            color: var(--green-700) !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            letter-spacing: .18em;
+        }
+
+        main > div:first-child h1 {
+            position: relative;
+            z-index: 1;
+            margin-top: 7px !important;
+            font-size: 34px !important;
+            line-height: 1.15;
+            letter-spacing: -.035em;
+            color: var(--green-950);
+        }
+
+        main > div:first-child p:not(:first-child) {
+            position: relative;
+            z-index: 1;
+        }
+
+        main > div:first-child p.text-gray-500 {
+            max-width: 650px;
+            color: var(--muted) !important;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        main > div:first-child #todayDate {
+            display: inline-flex;
+            padding: 6px 10px;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid var(--line);
+            color: #738078 !important;
+        }
+
+        /* =====================================================
+           SECTIONS
+        ===================================================== */
+
+        main section {
+            border: 1px solid var(--line) !important;
+            border-radius: 18px;
+            background: var(--surface);
+            box-shadow: var(--shadow-sm);
+            padding: 26px !important;
+            margin-bottom: 22px !important;
+        }
+
+        main section:hover {
+            box-shadow: var(--shadow);
+        }
+
+        main section h2 {
+            color: var(--green-950);
+            font-size: 18px !important;
+            font-weight: 500 !important;
+            letter-spacing: -.015em;
+        }
+
+        main section h2 + p,
+        main section p.text-sm.text-gray-400 {
+            color: #7a8780 !important;
+            line-height: 1.55;
+        }
+
+        main section > div:first-child {
+            gap: 18px;
+        }
+
+        /* =====================================================
+           LABELS
+        ===================================================== */
+
+        label {
+            display: block;
+            color: #718078 !important;
+            font-size: 10px !important;
+            font-weight: 600 !important;
+            letter-spacing: .1em;
+        }
+
+        /* =====================================================
+           FORM CONTROLS
+        ===================================================== */
+
+        select,
+        input[type="number"] {
+            width: 100%;
+            min-height: 48px;
+            border: 1px solid #dce3df !important;
+            border-radius: 10px;
+            background: #fbfcfb !important;
+            color: var(--ink);
+            outline: none;
+            box-shadow: none;
+        }
+
+        select {
+            padding: 0 42px 0 14px !important;
+        }
+
+        input[type="number"] {
+            padding: 0 14px !important;
+        }
+
+        select:hover,
+        input[type="number"]:hover {
+            border-color: #b9c9c0 !important;
+            background: #fff !important;
+        }
+
+        select:focus,
+        input[type="number"]:focus {
+            border-color: var(--green-700) !important;
+            box-shadow: 0 0 0 3px rgba(29,118,83,.10) !important;
+            background: #fff !important;
+        }
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        button {
+            border-radius: 10px !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+        }
+
+        main section button {
+            min-height: 44px;
+        }
+
+        button.bg-black,
+        button.bg-green-900 {
+            background: var(--green-900) !important;
+            color: #fff !important;
+            border: 1px solid var(--green-900) !important;
+            box-shadow: 0 7px 16px rgba(16,71,53,.13);
+        }
+
+        button.bg-black:hover,
+        button.bg-green-900:hover {
+            background: var(--green-800) !important;
+            border-color: var(--green-800) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(16,71,53,.18);
+        }
+
+        button.border {
+            border-color: #d9e1dd !important;
+            color: #516058 !important;
+            background: #fff !important;
+        }
+
+        button.border:hover {
+            border-color: #b8c9bf !important;
+            background: #f6f9f7 !important;
+            color: var(--green-900) !important;
+        }
+
+        /* =====================================================
+           INFO PANELS
+        ===================================================== */
+
+        #productionInfo,
+        #productInfo {
+            border: 1px solid #dfe8e3 !important;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f7fbf9, #fff);
+        }
+
+        #productionInfo p.text-xl,
+        #productInfo p.mt-2 {
+            color: var(--green-900);
+        }
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        #productionEmpty,
+        #cartContainer > div.text-center {
+            color: #7b8781;
+        }
+
+        #productionEmpty {
+            padding: 22px !important;
+            border: 1px dashed #dce5e0;
+            border-radius: 12px;
+            background: #fafcfb;
+        }
+
+        /* =====================================================
+           CART
+        ===================================================== */
+
+        #cartContainer {
+            overflow: hidden;
+            border: 1px solid #edf0ee;
+            border-radius: 12px;
+        }
+
+        #cartContainer .item-row {
+            padding: 16px 18px !important;
+            background: #fff;
+        }
+
+        #cartContainer .item-row:hover {
+            background: #f8fbf9;
+        }
+
+        #cartContainer .item-row:last-child {
+            border-bottom: 0 !important;
+        }
+
+        #cartContainer .item-row > div {
+            align-items: center;
+        }
+
+        #cartContainer .item-row p.text-xs,
+        #orderPreview p.text-xs {
+            color: #88948e !important;
+            font-size: 9px !important;
+            font-weight: 600 !important;
+            letter-spacing: .08em;
+        }
+
+        #cartContainer .item-row p.mt-1 {
+            color: #25322b;
+            font-size: 13px;
+        }
+
+        #cartContainer input {
+            min-height: 38px;
+            width: 76px !important;
+            border-radius: 8px;
+            background: #fff !important;
+        }
+
+        #cartContainer button {
+            min-height: 36px;
+            padding: 0 10px;
+            border: 1px solid #e0e6e2;
+            color: #68746e !important;
+            background: #fff;
+        }
+
+        #cartContainer button:hover {
+            color: #a43d3d !important;
+            border-color: #efd3d3;
+            background: #fff8f8;
+        }
+
+        #cartFooter {
+            border-color: #edf0ee !important;
+        }
+
+        #cartTotal {
+            color: var(--green-950);
+            font-weight: 600 !important;
+        }
+
+        #cartCount {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 10px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #f8faf9;
+            color: #69766f !important;
+        }
+
+        /* =====================================================
+           POPUP
+        ===================================================== */
+
         .popup {
-            transform: translateY(-20px);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
+            top: 90px !important;
+            right: 22px !important;
+            display: none;
         }
 
         .popup.show {
-            transform: translateY(0);
-            opacity: 1;
-            pointer-events: auto;
+            display: block;
         }
+
+        .popup > div {
+            width: min(360px, calc(100vw - 32px)) !important;
+            padding: 15px 17px !important;
+            border: 1px solid var(--line) !important;
+            border-radius: 14px;
+            box-shadow: 0 18px 45px rgba(15,42,31,.14) !important;
+            background: rgba(255,255,255,.97) !important;
+            backdrop-filter: blur(12px);
+        }
+
+        #popupIcon {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: var(--green-100);
+            color: var(--green-900) !important;
+            font-size: 15px !important;
+        }
+
+        #popupTitle {
+            color: var(--green-950);
+            font-weight: 500 !important;
+        }
+
+        /* =====================================================
+           ORDER MODAL
+           
+           THIS IS THE IMPORTANT FIX
+        ===================================================== */
 
         .modal {
             display: none;
+            background: rgba(8,25,18,.52) !important;
+            backdrop-filter: blur(5px);
         }
 
         .modal.show {
             display: flex;
         }
 
-        .item-row {
-            transition: background 0.2s ease;
+        .modal > div {
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: 0 25px 70px rgba(0,0,0,.18);
+            padding: 26px !important;
         }
 
-        .item-row:hover {
-            background: #fafafa;
+        #orderModal h2 {
+            font-size: 20px !important;
+            color: var(--green-950);
         }
 
+        #orderModal .border-t {
+            border-color: #edf0ee !important;
+        }
+
+        #orderPreview {
+            background: #f8faf9;
+            border-radius: 12px;
+        }
+
+        #orderPreview > div {
+            border-color: #e8eeea !important;
+        }
+
+        #orderPreview .border {
+            border-color: #e0e8e3 !important;
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 767px) {
+
+            header nav {
+                min-height: 64px;
+                padding-left: 16px !important;
+                padding-right: 16px !important;
+            }
+
+            header a[href="index.html"] {
+                font-size: 17px !important;
+            }
+
+            header a[href="index.html"]::before {
+                width: 31px;
+                height: 31px;
+                border-radius: 9px;
+            }
+
+            main {
+                padding-left: 14px !important;
+                padding-right: 14px !important;
+                padding-top: 88px !important;
+                padding-bottom: 34px !important;
+            }
+
+            main > div:first-child {
+                padding: 22px 19px;
+                border-radius: 16px;
+            }
+
+            main > div:first-child h1 {
+                font-size: 28px !important;
+            }
+
+            main > div:first-child p.text-gray-500 {
+                font-size: 13px;
+            }
+
+            main section {
+                padding: 19px !important;
+                border-radius: 15px;
+            }
+
+            main section > div:first-child {
+                align-items: flex-start !important;
+                flex-direction: column;
+            }
+
+            main section > div:first-child button {
+                width: 100%;
+            }
+
+            #cartContainer {
+                border-radius: 10px;
+            }
+
+            #cartContainer .item-row {
+                padding: 15px !important;
+            }
+
+            #cartContainer .item-row > div {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+            }
+
+            #cartContainer .item-row > div > div:last-child {
+                text-align: left !important;
+            }
+
+            #cartContainer input {
+                width: 100% !important;
+            }
+
+            #orderModal {
+                padding: 12px !important;
+            }
+
+            .modal > div {
+                padding: 18px !important;
+                border-radius: 15px;
+            }
+
+            #orderPreview {
+                max-height: 55vh;
+                overflow: auto;
+            }
+
+            #orderModal > div > div:last-child {
+                flex-direction: column-reverse;
+            }
+
+            #orderModal > div > div:last-child button {
+                width: 100%;
+            }
+
+            .popup {
+                right: 14px !important;
+                left: 14px !important;
+                top: 76px !important;
+            }
+
+            .popup > div {
+                width: 100% !important;
+            }
+        }
+
+        @media (min-width: 768px) {
+            main section > div:first-child button {
+                white-space: nowrap;
+            }
+        }
     </style>
-
 </head>
-
 
 <body>
 
-
-<!-- ================= HEADER ================= -->
-
-<header class="fixed top-0 left-0 w-full bg-white border-b border-gray-200 z-50">
+<header class="fixed top-0 left-0 w-full z-50">
 
     <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-        <a href="index.html"
-           class="text-xl text-green-900">
+        <a href="index.html">
             Serene Eatery
         </a>
 
-
-        <div class="hidden md:flex gap-6 text-sm">
-
-            <a href="waiter.html"
-               class="text-green-900">
-                Waiter
-            </a>
-
-            <a href="cashier.html"
-               class="hover:text-green-900 transition">
-                Cashier
-            </a>
-
-            <a href="stock.html"
-               class="hover:text-green-900 transition">
-                Stock
-            </a>
-
-            <a href="receipts.html"
-               class="hover:text-green-900 transition">
-                Receipts
-            </a>
-
-            <a href="admin.html"
-               class="hover:text-green-900 transition">
-                Admin
-            </a>
-
+        <div class="hidden md:flex text-sm">
+            <a href="waiter.html">Waiter</a>
+            <a href="cashier.html">Cashier</a>
+            <a href="stock.html">Stock</a>
+            <a href="receipts.html">Receipts</a>
+            <a href="admin.html">Admin</a>
         </div>
 
-
-        <!-- Cashier link on small screens -->
-
-        <a href="cashier.html"
-           class="md:hidden fixed top-4 right-6 z-[60] text-sm text-green-900">
+        <a
+            href="cashier.html"
+            class="md:hidden fixed top-4 right-6 z-[60] text-sm"
+        >
             Cashier
         </a>
 
@@ -126,31 +699,28 @@
 
 </header>
 
+<!-- POPUP -->
 
-<!-- ================= POPUP ================= -->
+<div id="popup" class="popup fixed z-[100]">
 
-<div id="popup"
-     class="popup fixed top-24 right-5 z-[100]">
+    <div>
 
-    <div class="bg-white border border-gray-300 shadow-xl p-5 w-[330px]">
+        <div class="flex gap-3 items-start">
 
-        <div class="flex gap-3">
-
-            <div id="popupIcon"
-                 class="text-green-900 text-xl">
+            <div id="popupIcon">
                 ✓
             </div>
 
             <div>
 
-                <p id="popupTitle"
-                   class="text-sm">
+                <p id="popupTitle" class="text-sm">
                     Notice
                 </p>
 
-                <p id="popupMessage"
-                   class="text-xs text-gray-500 mt-1">
-                </p>
+                <p
+                    id="popupMessage"
+                    class="text-xs text-gray-500 mt-1"
+                ></p>
 
             </div>
 
@@ -160,42 +730,63 @@
 
 </div>
 
+<!-- ORDER CONFIRMATION MODAL -->
 
-<!-- ================= CONFIRM ORDER MODAL ================= -->
+<div
+    id="orderModal"
+    class="modal fixed inset-0 z-[90] items-center justify-center p-4"
+    onclick="if(event.target === this) closeOrderModal()"
+>
 
-<div id="orderModal"
-     class="modal fixed inset-0 bg-black/40 z-[90] items-center justify-center p-5">
-
-    <div class="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6">
+    <div class="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto">
 
         <div class="flex justify-between items-center">
 
-            <h2 class="text-xl">
-                Confirm Order
-            </h2>
+            <div>
 
-            <button onclick="closeOrderModal()"
-                    class="text-2xl text-gray-500 hover:text-black">
+                <p class="text-xs tracking-widest text-green-700 mb-1">
+                    ORDER REVIEW
+                </p>
+
+                <h2>
+                    Confirm Order
+                </h2>
+
+            </div>
+
+            <button
+                type="button"
+                onclick="closeOrderModal()"
+                aria-label="Close"
+                class="text-2xl text-gray-500 hover:text-black"
+            >
                 ×
             </button>
 
         </div>
 
+        <div
+            id="orderPreview"
+            class="mt-6"
+        ></div>
 
-        <div id="orderPreview"
-             class="mt-6">
-        </div>
+        <div class="border-t mt-6 pt-5 flex justify-end gap-3">
 
-
-        <div class="border-t border-gray-200 mt-6 pt-5 flex justify-end gap-3">
-
-            <button onclick="closeOrderModal()"
-                    class="border border-gray-300 px-5 py-3 hover:bg-gray-100">
+            <!-- CANCEL BUTTON -->
+            <button
+                type="button"
+                onclick="closeOrderModal()"
+                class="border px-5 py-3"
+            >
                 Cancel
             </button>
 
-            <button onclick="placeOrder()"
-                    class="bg-black text-white px-5 py-3 hover:bg-gray-800">
+            <!-- PLACE ORDER BUTTON -->
+            <button
+                type="button"
+                onclick="placeOrder()"
+                class="bg-green-900 text-white px-5 py-3"
+            >
                 Place Order
             </button>
 
@@ -205,78 +796,72 @@
 
 </div>
 
+<!-- MAIN -->
 
-<!-- ================= MAIN ================= -->
+<main class="max-w-7xl mx-auto px-6 pb-16">
 
-<main class="max-w-7xl mx-auto px-6 pt-28 pb-16">
+    <!-- HEADER -->
 
+    <div>
 
-    <!-- ================= PAGE TITLE ================= -->
-
-    <div class="mb-8">
-
-        <p class="text-xs tracking-widest text-green-900">
+        <p class="text-xs tracking-widest">
             SERENE EATERY
         </p>
 
-        <h1 class="text-3xl mt-2">
+        <h1>
             Waiter Dashboard
         </h1>
 
         <p class="text-gray-500 mt-2">
-            Place customer orders using currently available kitchen production from Firebase.
+            Create customer orders using the latest kitchen production available in the system.
         </p>
 
-        <p id="todayDate"
-           class="text-xs text-gray-400 mt-2">
-        </p>
+        <p
+            id="todayDate"
+            class="text-xs text-gray-400 mt-2"
+        ></p>
 
     </div>
 
+    <!-- AVAILABLE PRODUCTION -->
 
-    <!-- ==================================================
-         AVAILABLE KITCHEN PRODUCTION
-    ================================================== -->
-
-    <section class="bg-white border border-gray-200 p-6 mb-8">
+    <section>
 
         <div class="flex justify-between items-center mb-6">
 
             <div>
 
-                <h2 class="text-xl">
+                <h2>
                     Available Kitchen Production
                 </h2>
 
                 <p class="text-sm text-gray-400 mt-1">
-                    Select a product to see its current available quantity.
+                    Check what is currently available before adding products.
                 </p>
 
             </div>
 
-
-            <button onclick="refreshWaiterStock()"
-                    class="border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100 transition">
-
+            <button
+                type="button"
+                onclick="refreshWaiterStock()"
+                class="border px-4 py-2 text-sm"
+            >
                 Refresh Stock
-
             </button>
 
         </div>
 
-
-        <!-- ================= PRODUCT DROPDOWN ================= -->
-
         <div>
 
-            <label class="text-xs text-gray-500">
+            <label>
                 AVAILABLE PRODUCTS
             </label>
 
-
-            <select id="productionSelect"
-                    onchange="showSelectedProduction()"
-                    class="w-full border border-gray-300 p-3 mt-2 bg-white">
+            <select
+                id="productionSelect"
+                onchange="showSelectedProduction()"
+                class="w-full mt-2"
+            >
 
                 <option value="">
                     Select available kitchen product
@@ -286,21 +871,17 @@
 
         </div>
 
+        <div
+            id="productionInfo"
+            class="hidden mt-5 p-5"
+        ></div>
 
-        <!-- ================= SELECTED PRODUCT INFO ================= -->
+        <div
+            id="productionEmpty"
+            class="hidden text-center"
+        >
 
-        <div id="productionInfo"
-             class="hidden border border-gray-200 mt-5 p-5">
-
-        </div>
-
-
-        <!-- ================= EMPTY MESSAGE ================= -->
-
-        <div id="productionEmpty"
-             class="hidden text-center py-8">
-
-            <p class="text-gray-400">
+            <p>
                 No kitchen production is currently available.
             </p>
 
@@ -308,53 +889,47 @@
 
     </section>
 
+    <!-- ADD PRODUCT -->
 
-    <!-- ==================================================
-         ADD PRODUCT
-    ================================================== -->
-
-    <section class="bg-white border border-gray-200 p-6 mb-8">
-
+    <section>
 
         <div class="flex justify-between items-center mb-6">
 
             <div>
 
-                <h2 class="text-xl">
+                <h2>
                     Add Product
                 </h2>
 
                 <p class="text-sm text-gray-400 mt-1">
-                    Only products currently available from the kitchen appear.
+                    Select a category, product and quantity to build the order.
                 </p>
 
             </div>
 
-
-            <button onclick="refreshWaiterStock()"
-                    class="border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100 transition">
-
+            <button
+                type="button"
+                onclick="refreshWaiterStock()"
+                class="border px-4 py-2 text-sm"
+            >
                 Refresh Stock
-
             </button>
 
         </div>
 
-
         <div class="grid md:grid-cols-3 gap-5">
-
-
-            <!-- CATEGORY -->
 
             <div>
 
-                <label class="text-xs text-gray-500">
+                <label>
                     CATEGORY
                 </label>
 
-                <select id="categorySelect"
-                        onchange="loadProducts()"
-                        class="w-full border border-gray-300 p-3 mt-2 bg-white">
+                <select
+                    id="categorySelect"
+                    onchange="loadProducts()"
+                    class="w-full mt-2"
+                >
 
                     <option value="">
                         Select category
@@ -380,18 +955,17 @@
 
             </div>
 
-
-            <!-- PRODUCT -->
-
             <div>
 
-                <label class="text-xs text-gray-500">
+                <label>
                     PRODUCT
                 </label>
 
-                <select id="productSelect"
-                        onchange="updateProductInfo()"
-                        class="w-full border border-gray-300 p-3 mt-2 bg-white">
+                <select
+                    id="productSelect"
+                    onchange="updateProductInfo()"
+                    class="w-full mt-2"
+                >
 
                     <option value="">
                         Select category first
@@ -401,82 +975,73 @@
 
             </div>
 
-
-            <!-- QUANTITY -->
-
             <div>
 
-                <label class="text-xs text-gray-500">
+                <label>
                     QUANTITY
                 </label>
 
-                <input id="quantity"
-                       type="number"
-                       min="1"
-                       placeholder="Quantity"
-                       oninput="updateProductInfo()"
-                       class="w-full border border-gray-300 p-3 mt-2">
+                <input
+                    id="quantity"
+                    type="number"
+                    min="1"
+                    placeholder="Enter quantity"
+                    oninput="updateProductInfo()"
+                    class="w-full mt-2"
+                >
 
             </div>
 
         </div>
 
+        <div
+            id="productInfo"
+            class="hidden mt-6 p-5"
+        ></div>
 
-        <!-- PRODUCT INFO -->
-
-        <div id="productInfo"
-             class="hidden border border-gray-200 mt-6 p-5">
-
-        </div>
-
-
-        <button onclick="addToCart()"
-                class="w-full bg-black text-white p-3 mt-6 hover:bg-gray-800 transition">
-
+        <button
+            type="button"
+            onclick="addToCart()"
+            class="w-full bg-green-900 text-white p-3 mt-6"
+        >
             Add To Order
-
         </button>
 
     </section>
 
+    <!-- CURRENT ORDER -->
 
-    <!-- ==================================================
-         CURRENT ORDER
-    ================================================== -->
-
-    <section class="bg-white border border-gray-200 p-6 mb-8">
-
+    <section>
 
         <div class="flex justify-between items-center mb-6">
 
             <div>
 
-                <h2 class="text-xl">
+                <h2>
                     Current Order
                 </h2>
 
                 <p class="text-sm text-gray-400 mt-1">
-                    You can update or remove products before placing the order.
+                    Review quantities and remove anything before sending the order.
                 </p>
 
             </div>
 
-
-            <p id="cartCount"
-               class="text-sm text-gray-400">
+            <p
+                id="cartCount"
+                class="text-sm text-gray-400"
+            >
                 0 items
             </p>
 
         </div>
 
+        <div id="cartContainer"></div>
 
-        <div id="cartContainer">
-        </div>
-
-
-        <div id="cartFooter"
-             class="hidden border-t border-gray-200 mt-6 pt-6">
-
+        <div
+            id="cartFooter"
+            class="hidden border-t mt-6 pt-6"
+        >
 
             <div class="flex justify-between items-center mb-5">
 
@@ -484,407 +1049,319 @@
                     Order Total
                 </p>
 
-                <p id="cartTotal"
-                   class="text-2xl">
+                <p
+                    id="cartTotal"
+                    class="text-2xl"
+                >
                     Ksh 0
                 </p>
 
             </div>
 
-
-            <button onclick="openOrderConfirmation()"
-                    class="w-full bg-green-900 text-white p-4 hover:bg-green-800">
-
+            <button
+                type="button"
+                onclick="openOrderConfirmation()"
+                class="w-full bg-green-900 text-white p-4"
+            >
                 Review & Place Order
-
             </button>
 
         </div>
 
     </section>
 
-
 </main>
-
 
 <script>
 
-/* ========================================================
-   FIREBASE
-======================================================== */
+    /* ========================================================
+       FIREBASE
+    ======================================================== */
 
-const firebaseConfig = {
+    const firebaseConfig = {
+        apiKey: "AIzaSyAZn1AMnp1jr2VdztRpqRg-nrle2lflt8s",
+        authDomain: "serene-eatery.firebaseapp.com",
+        projectId: "serene-eatery",
+        storageBucket: "serene-eatery.firebasestorage.app",
+        messagingSenderId: "743500466630",
+        appId: "1:743500466630:web:85e2fdebd776e47d9ccac7",
+        measurementId: "G-T94HN3RMZX"
+    };
 
-    apiKey: "AIzaSyAZn1AMnp1jr2VdztRpqRg-nrle2lflt8s",
-
-    authDomain: "serene-eatery.firebaseapp.com",
-
-    projectId: "serene-eatery",
-
-    storageBucket: "serene-eatery.firebasestorage.app",
-
-    messagingSenderId: "743500466630",
-
-    appId: "1:743500466630:web:85e2fdebd776e47d9ccac7",
-
-    measurementId: "G-T94HN3RMZX"
-
-};
-
-
-if (!firebase.apps.length) {
-
-    firebase.initializeApp(firebaseConfig);
-
-}
-
-
-const db =
-    firebase.firestore();
-
-
-const auth =
-    firebase.auth();
-
-
-const PRODUCTION_KEY =
-    "serene_production";
-
-
-const ORDER_KEY =
-    "serene_orders";
-
-
-let productionCache = [];
-
-let ordersCache = [];
-
-let cart = [];
-
-let firebaseStarted = false;
-
-
-/* ========================================================
-   MENU
-======================================================== */
-
-const MENU = {
-
-    Snacks: {
-
-        "Mandazi": 10,
-        "Pancakes": 30,
-        "Samosa Waru": 10,
-        "Samosa Beef": 50,
-        "Chapati": 30,
-        "chapati brown": 40,
-        "Smokie": 40,
-        "Sausage": 60,
-        "Bhajia": 50,
-        "rolex": 90,
-        "Smotcha": 70,
-        "Shawarma": 100,
-        "Chips": 120,
-        "Chips Masala": 150,
-        "eggs": 30,
-        "ommeletes": 80,
-        "cassava": 50,
-        "mayai": 100,
-        "boiled eggs": 30
-
-    },
-
-
-    Beverages: {
-
-        "Tea": 20,
-        "milk tea": 40,
-        "Black Coffee": 40,
-        "White Cofee": 60,
-        "Black Chocolate": 60,
-        "White Chocolate": 80,
-        "Milk": 60,
-        "Soup": 50,
-        "chocolate": 40,
-        "special tea": 30,
-        "lemon tea": 60
-
-    },
-
-
-    Food: {
-
-        "Kamande": 70,
-        "Minji": 70,
-        "Njahi": 70,
-        "Beans": 50,
-        "beef": 190,
-        "beef plain": 200,
-        "greens": 50,
-        "rice": 60,
-        "matumbo": 80,
-        "ugali": 50,
-        "ndengu": 50,
-        "chicken": 60,
-        "cabbage": 30,
-        "chicken @ 70 ": 70,
-        "mukimo": 100,
-        "githeri": 100
-
-    },
-
-
-    Drinks: {
-
-        "Water Small": 30,
-        "Water Big": 60,
-        "Fanta Orange 350ml": 60,
-        "Black Current 350ml": 60,
-        "Stoney 350ml": 60,
-        "Nuvida 350ml": 50,
-        "Passion 350ml": 50,
-        "Coke 350ml": 50,
-        "Sprite 350ml": 50,
-        "krest 350ml": 50,
-
-        "Fanta Orange 300ml": 50,
-        "Black Current 300ml": 50,
-        "Stoney 300ml": 50,
-        "Nuvida 300ml": 50,
-        "passion 300ml": 50,
-        "Coke 300ml": 50,
-        "Sprite 300ml": 50,
-        "krest 300ml": 50,
-
-        "Fanta Orange 500ml": 80,
-        "black current 500ml": 80,
-        "Stoney 500ml": 80,
-        "Nuvida 500ml": 80,
-        "Passion 500ml": 80,
-        "Coke 500ml": 80,
-        "Sprite 500ml": 80,
-        "krest 500ml": 80,
-
-        "Fanta Orange 500ml Plastic": 90,
-        "Black Current 500ml Plastic": 90,
-        "Stoney 500ml Plastic": 90,
-        "Nuvida 500ml Plastic": 90,
-        "Passion 500ml Plastic": 90,
-        "Coke 500ml Plastic": 90,
-        "Sprite 500ml Plastic": 90,
-        "krest 500ml Plastic": 90,
-
-        "Afia Small": 70,
-        "Afia Big": 100,
-        "Greens": 50,
-        "sugarcane": 70,
-        "passion": 70,
-        "mango": 70,
-        "mango big": 100,
-        "passion big": 100,
-        "nuvida": 60,
-        "krest 500ml": 80,
-        "cocktail": 100,
-        "pineaple": 70
-
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
     }
 
-};
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
+    const PRODUCTION_KEY = "serene_production";
+    const ORDER_KEY = "serene_orders";
 
-/* ========================================================
-   LOCAL STORAGE
-======================================================== */
+    let productionCache = [];
+    let ordersCache = [];
+    let cart = [];
+    let firebaseStarted = false;
 
-function getLocalData(key) {
+    /* ========================================================
+       MENU
+    ======================================================== */
 
-    try {
+    const MENU = {
 
-        const data =
-            localStorage.getItem(key);
+        Snacks: {
+            "Mandazi": 10,
+            "Pancakes": 30,
+            "Samosa Waru": 10,
+            "Samosa Beef": 50,
+            "Chapati": 30,
+            "chapati brown": 40,
+            "Smokie": 40,
+            "Sausage": 60,
+            "Bhajia": 50,
+            "rolex": 90,
+            "Smotcha": 70,
+            "Shawarma": 130,
+            "Chips": 150,
+            "Chips Masala": 180,
+            "eggs": 30,
+            "ommeletes": 80,
+            "cassava": 50,
+            "mayai": 100,
+            "boiled eggs": 30
+        },
 
-        if (!data) return [];
+        Beverages: {
+            "Tea": 20,
+            "milk tea": 40,
+            "Black Coffee": 40,
+            "White Cofee": 60,
+            "Black Chocolate": 60,
+            "White Chocolate": 80,
+            "Milk": 60,
+            "Soup": 50,
+            "chocolate": 40,
+            "special tea": 30,
+            "lemon tea": 60
+        },
 
-        return JSON.parse(data);
+        Food: {
+            "Kamande": 70,
+            "Minji": 70,
+            "Njahi": 70,
+            "Beans": 50,
+            "beef": 190,
+            "beef plain": 200,
+            "greens": 50,
+            "rice": 60,
+            "matumbo": 80,
+            "ugali": 50,
+            "ndengu": 50,
+            "chicken": 60,
+            "cabbage": 30,
+            "chicken @ 70 ": 70,
+            "mukimo": 100,
+            "githeri": 100
+        },
 
-    } catch (error) {
+        Drinks: {
+            "Water Small": 30,
+            "Water Big": 60,
+            "Fanta Orange 350ml": 60,
+            "Black Current 350ml": 60,
+            "Stoney 350ml": 60,
+            "Nuvida 350ml": 60,
+            "Passion 350ml": 60,
+            "Coke 350ml": 60,
+            "Sprite 350ml": 60,
+            "krest 350ml": 60,
 
-        console.error(
-            "Local data error:",
-            error
-        );
+            "Fanta Orange 300ml": 50,
+            "Black Current 300ml": 50,
+            "Stoney 300ml": 50,
+            "Nuvida 300ml": 50,
+            "passion 300ml": 50,
+            "Coke 300ml": 50,
+            "Sprite 300ml": 50,
+            "krest 300ml": 50,
 
-        return [];
+            "Fanta Orange 500ml": 80,
+            "black current 500ml": 80,
+            "Stoney 500ml": 80,
+            "Nuvida 500ml": 80,
+            "Passion 500ml": 80,
+            "Coke 500ml": 80,
+            "Sprite 500ml": 80,
+            "krest 500ml": 80,
 
+            "Fanta Orange 500ml Plastic": 90,
+            "Black Current 500ml Plastic": 90,
+            "Stoney 500ml Plastic": 90,
+            "Nuvida 500ml Plastic": 90,
+            "Passion 500ml Plastic": 90,
+            "Coke 500ml Plastic": 90,
+            "Sprite 500ml Plastic": 90,
+            "krest 500ml Plastic": 90,
+
+            "Afia Small": 90,
+            "Afia Big": 100,
+            "Greens": 50,
+            "sugarcane": 70,
+            "passion": 70,
+            "mango": 70,
+            "mango big": 100,
+            "passion big": 100,
+            "nuvida": 60,
+            "krest 500ml": 80,
+            "cocktail": 100,
+            "pineaple": 70
+        }
+    };
+
+    /* ========================================================
+       LOCAL STORAGE
+    ======================================================== */
+
+    function getLocalData(key) {
+
+        try {
+
+            const data = localStorage.getItem(key);
+
+            if (!data) return [];
+
+            return JSON.parse(data);
+
+        } catch (error) {
+
+            console.error("Local data error:", error);
+
+            return [];
+        }
     }
 
-}
+    function saveLocalData(key, data) {
 
+        try {
 
-function saveLocalData(key, data) {
+            localStorage.setItem(
+                key,
+                JSON.stringify(data)
+            );
 
-    try {
+        } catch (error) {
 
-        localStorage.setItem(
-            key,
-            JSON.stringify(data)
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Local save error:",
-            error
-        );
-
+            console.error("Local save error:", error);
+        }
     }
 
-}
+    function getData(key) {
 
+        if (key === PRODUCTION_KEY) {
+            return productionCache;
+        }
 
-function getData(key) {
+        if (key === ORDER_KEY) {
+            return ordersCache;
+        }
 
-    if (key === PRODUCTION_KEY) {
-
-        return productionCache;
-
+        return getLocalData(key);
     }
 
+    /* ========================================================
+       HELPERS
+    ======================================================== */
 
-    if (key === ORDER_KEY) {
+    function money(amount) {
 
-        return ordersCache;
-
+        return "Ksh " +
+            Number(amount || 0).toLocaleString();
     }
 
+    function generateID() {
 
-    return getLocalData(key);
+        return Date.now() +
+            "-" +
+            Math.random()
+                .toString(36)
+                .substring(2, 9);
+    }
 
-}
+    function nowDate() {
 
+        return new Date().toLocaleDateString();
+    }
 
-/* ========================================================
-   HELPERS
-======================================================== */
+    function nowTime() {
 
-function money(amount) {
-
-    return "Ksh " +
-        Number(amount || 0)
-            .toLocaleString();
-
-}
-
-
-function generateID() {
-
-    return Date.now() +
-        "-" +
-        Math.random()
-            .toString(36)
-            .substring(2, 9);
-
-}
-
-
-function nowDate() {
-
-    return new Date()
-        .toLocaleDateString();
-
-}
-
-
-function nowTime() {
-
-    return new Date()
-        .toLocaleTimeString(
+        return new Date().toLocaleTimeString(
             [],
             {
                 hour: "2-digit",
                 minute: "2-digit"
             }
         );
-
-}
-
-
-function escapeHTML(value) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent =
-        value ?? "";
-
-    return div.innerHTML;
-
-}
-
-
-/* ========================================================
-   FIREBASE ORDER SAVE
-======================================================== */
-
-async function saveOrderToFirebase(order) {
-
-    try {
-
-        if (!order || !order.id) {
-
-            throw new Error(
-                "Invalid order."
-            );
-
-        }
-
-
-        await db
-            .collection("orders")
-            .doc(String(order.id))
-            .set(order);
-
-
-        console.log(
-            "Order saved:",
-            order.orderNumber
-        );
-
-
-        return true;
-
-    } catch (error) {
-
-        console.error(
-            "Order Firebase save error:",
-            error
-        );
-
-
-        showPopup(
-            "Firebase error",
-            error.code === "permission-denied"
-                ? "You are not authorized to create orders. Please sign in again."
-                : "Order could not be saved to Firebase.",
-            true
-        );
-
-
-        return false;
-
     }
 
-}
+    function escapeHTML(value) {
 
+        const div = document.createElement("div");
 
-/* ========================================================
-   AUTHENTICATION
-======================================================== */
+        div.textContent = value ?? "";
 
-function startFirebaseAuth() {
+        return div.innerHTML;
+    }
 
-    auth.onAuthStateChanged(
-        function(user) {
+    /* ========================================================
+       FIREBASE ORDER SAVE
+    ======================================================== */
+
+    async function saveOrderToFirebase(order) {
+
+        try {
+
+            if (!order || !order.id) {
+                throw new Error("Invalid order.");
+            }
+
+            await db
+                .collection("orders")
+                .doc(String(order.id))
+                .set(order);
+
+            console.log(
+                "Order saved:",
+                order.orderNumber
+            );
+
+            return true;
+
+        } catch (error) {
+
+            console.error(
+                "Order Firebase save error:",
+                error
+            );
+
+            showPopup(
+                "Firebase error",
+                error.code === "permission-denied"
+                    ? "You are not authorized to create orders. Please sign in again."
+                    : "Order could not be saved to Firebase.",
+                true
+            );
+
+            return false;
+        }
+    }
+
+    /* ========================================================
+       AUTHENTICATION
+    ======================================================== */
+
+    function startFirebaseAuth() {
+
+        auth.onAuthStateChanged(function(user) {
 
             if (!user) {
 
@@ -892,293 +1369,218 @@ function startFirebaseAuth() {
                     "No authenticated Firebase user."
                 );
 
-
                 showPopup(
                     "Login required",
                     "Please sign in before using the waiter dashboard.",
                     true
                 );
 
-
                 return;
-
             }
-
 
             console.log(
                 "Signed in:",
                 user.email
             );
 
-
             startFirebaseListeners();
 
-        }
-    );
+        });
+    }
 
-}
+    /* ========================================================
+       FIREBASE LISTENERS
+    ======================================================== */
 
+    function startFirebaseListeners() {
 
-/* ========================================================
-   FIREBASE LISTENERS
-======================================================== */
+        if (firebaseStarted) return;
 
-function startFirebaseListeners() {
+        firebaseStarted = true;
 
-    if (firebaseStarted) return;
+        /* ================= PRODUCTION ================= */
 
-    firebaseStarted = true;
+        db.collection("production")
+            .onSnapshot(
 
+                function(snapshot) {
 
-    /* ================= PRODUCTION ================= */
-
-    db.collection("production")
-        .onSnapshot(
-
-            function(snapshot) {
-
-                productionCache =
-                    snapshot.docs.map(
-                        function(doc) {
+                    productionCache =
+                        snapshot.docs.map(function(doc) {
 
                             return {
-
                                 ...doc.data(),
-
                                 id: doc.id
-
                             };
 
-                        }
+                        });
+
+                    saveLocalData(
+                        PRODUCTION_KEY,
+                        productionCache
                     );
 
+                    renderProductionDropdown();
 
-                saveLocalData(
-                    PRODUCTION_KEY,
-                    productionCache
-                );
+                    const category =
+                        document.getElementById(
+                            "categorySelect"
+                        ).value;
 
+                    if (category) {
 
-                renderProductionDropdown();
+                        loadProducts();
+                        updateProductInfo();
+                    }
 
+                },
 
-                const category =
-                    document.getElementById(
-                        "categorySelect"
-                    ).value;
+                function(error) {
 
+                    console.error(
+                        "Production listener error:",
+                        error
+                    );
 
-                if (category) {
+                    productionCache =
+                        getLocalData(
+                            PRODUCTION_KEY
+                        );
 
-                    loadProducts();
-
-                    updateProductInfo();
-
+                    renderProductionDropdown();
                 }
+            );
 
-            },
+        /* ================= ORDERS ================= */
 
+        db.collection("orders")
+            .onSnapshot(
 
-            function(error) {
+                function(snapshot) {
 
-                console.error(
-                    "Production listener error:",
-                    error
-                );
-
-
-                productionCache =
-                    getLocalData(
-                        PRODUCTION_KEY
-                    );
-
-
-                renderProductionDropdown();
-
-            }
-
-        );
-
-
-    /* ================= ORDERS ================= */
-
-    db.collection("orders")
-        .onSnapshot(
-
-            function(snapshot) {
-
-                ordersCache =
-                    snapshot.docs.map(
-                        function(doc) {
+                    ordersCache =
+                        snapshot.docs.map(function(doc) {
 
                             return {
-
                                 ...doc.data(),
-
                                 id: doc.id
-
                             };
 
-                        }
+                        });
+
+                    saveLocalData(
+                        ORDER_KEY,
+                        ordersCache
                     );
 
+                    renderProductionDropdown();
 
-                saveLocalData(
-                    ORDER_KEY,
-                    ordersCache
-                );
+                    const category =
+                        document.getElementById(
+                            "categorySelect"
+                        ).value;
 
+                    if (category) {
 
-                renderProductionDropdown();
+                        loadProducts();
+                        updateProductInfo();
+                    }
 
+                },
 
-                const category =
-                    document.getElementById(
-                        "categorySelect"
-                    ).value;
+                function(error) {
 
+                    console.error(
+                        "Orders listener error:",
+                        error
+                    );
 
-                if (category) {
+                    ordersCache =
+                        getLocalData(
+                            ORDER_KEY
+                        );
 
-                    loadProducts();
-
-                    updateProductInfo();
-
+                    renderProductionDropdown();
                 }
+            );
+    }
 
-            },
+    /* ========================================================
+       POPUP
+    ======================================================== */
 
+    let popupTimer;
 
-            function(error) {
+    function showPopup(
+        title,
+        message,
+        error = false
+    ) {
 
-                console.error(
-                    "Orders listener error:",
-                    error
-                );
+        const popup =
+            document.getElementById("popup");
 
-
-                ordersCache =
-                    getLocalData(
-                        ORDER_KEY
-                    );
-
-
-                renderProductionDropdown();
-
-            }
-
-        );
-
-}
-
-
-/* ========================================================
-   POPUP
-======================================================== */
-
-let popupTimer;
-
-
-function showPopup(
-    title,
-    message,
-    error = false
-) {
-
-    const popup =
         document.getElementById(
-            "popup"
-        );
+            "popupTitle"
+        ).textContent = title;
 
+        document.getElementById(
+            "popupMessage"
+        ).textContent = message;
 
-    document.getElementById(
-        "popupTitle"
-    ).textContent =
-        title;
+        document.getElementById(
+            "popupIcon"
+        ).textContent = error ? "×" : "✓";
 
+        popup.classList.add("show");
 
-    document.getElementById(
-        "popupMessage"
-    ).textContent =
-        message;
+        clearTimeout(popupTimer);
 
-
-    document.getElementById(
-        "popupIcon"
-    ).textContent =
-        error ? "×" : "✓";
-
-
-    popup.classList.add("show");
-
-
-    clearTimeout(
-        popupTimer
-    );
-
-
-    popupTimer =
-        setTimeout(
+        popupTimer = setTimeout(
             function() {
 
-                popup.classList.remove(
-                    "show"
-                );
+                popup.classList.remove("show");
 
             },
             3500
         );
+    }
 
-}
+    /* ========================================================
+       PRODUCTION
+    ======================================================== */
 
+    function getProduction() {
 
-/* ========================================================
-   PRODUCTION
-======================================================== */
+        return getData(
+            PRODUCTION_KEY
+        );
+    }
 
-function getProduction() {
+    /* ========================================================
+       PRODUCTION BALANCES
+    ======================================================== */
 
-    return getData(
-        PRODUCTION_KEY
-    );
+    function getProductionBalances() {
 
-}
+        const production =
+            getProduction();
 
+        const balances = {};
 
-/* ========================================================
-   PRODUCTION BALANCES
-======================================================== */
-
-function getProductionBalances() {
-
-    const production =
-        getProduction();
-
-
-    const balances = {};
-
-
-    /*
-       ADD PRODUCTION
-    */
-
-    production.forEach(
-        function(record) {
+        production.forEach(function(record) {
 
             const product =
                 record.product ||
                 record.name ||
                 record.item;
 
-
             if (!product) return;
-
 
             const key =
                 String(product)
                     .trim()
                     .toLowerCase();
-
 
             const quantity =
                 Number(
@@ -1189,41 +1591,22 @@ function getProductionBalances() {
                     0
                 );
 
-
             if (!balances[key]) {
 
                 balances[key] = {
-
-                    product:
-                        product,
-
-                    quantity:
-                        0
-
+                    product: product,
+                    quantity: 0
                 };
-
             }
 
+            balances[key].quantity += quantity;
 
-            balances[key].quantity +=
-                quantity;
+        });
 
-        }
-    );
+        const orders =
+            getData(ORDER_KEY);
 
-
-    /*
-       SUBTRACT PENDING ORDERS
-    */
-
-    const orders =
-        getData(
-            ORDER_KEY
-        );
-
-
-    orders.forEach(
-        function(order) {
+        orders.forEach(function(order) {
 
             const status =
                 String(
@@ -1232,71 +1615,50 @@ function getProductionBalances() {
                     ""
                 ).toLowerCase();
 
-
             if (
                 status !== "pending" &&
                 status !== "placed"
             ) {
-
                 return;
-
             }
-
 
             const products =
                 order.products ||
                 order.items ||
                 [];
 
+            products.forEach(function(item) {
 
-            products.forEach(
-                function(item) {
+                const product =
+                    item.product ||
+                    item.name ||
+                    item.item;
 
-                    const product =
-                        item.product ||
-                        item.name ||
-                        item.item;
+                if (!product) return;
 
+                const key =
+                    String(product)
+                        .trim()
+                        .toLowerCase();
 
-                    if (!product) return;
+                const quantity =
+                    Number(
+                        item.quantity ??
+                        item.qty ??
+                        0
+                    );
 
+                if (balances[key]) {
 
-                    const key =
-                        String(product)
-                            .trim()
-                            .toLowerCase();
-
-
-                    const quantity =
-                        Number(
-                            item.quantity ??
-                            item.qty ??
-                            0
-                        );
-
-
-                    if (balances[key]) {
-
-                        balances[key].quantity -=
-                            quantity;
-
-                    }
-
+                    balances[key].quantity -=
+                        quantity;
                 }
-            );
 
-        }
-    );
+            });
 
+        });
 
-    /*
-       NEVER SHOW NEGATIVE STOCK
-    */
-
-    Object.keys(
-        balances
-    ).forEach(
-        function(key) {
+        Object.keys(balances).forEach(function(key) {
 
             balances[key].quantity =
                 Math.max(
@@ -1304,791 +1666,573 @@ function getProductionBalances() {
                     balances[key].quantity
                 );
 
+        });
+
+        return balances;
+    }
+
+    /* ========================================================
+       PRODUCT STOCK
+    ======================================================== */
+
+    function getProductStock(product) {
+
+        const balances =
+            getProductionBalances();
+
+        const key =
+            String(product)
+                .trim()
+                .toLowerCase();
+
+        if (!balances[key]) {
+            return 0;
         }
-    );
 
-
-    return balances;
-
-}
-
-
-/* ========================================================
-   PRODUCT STOCK
-======================================================== */
-
-function getProductStock(product) {
-
-    const balances =
-        getProductionBalances();
-
-
-    const key =
-        String(product)
-            .trim()
-            .toLowerCase();
-
-
-    if (!balances[key]) {
-
-        return 0;
-
+        return Number(
+            balances[key].quantity
+        );
     }
 
+    /* ========================================================
+       AVAILABLE KITCHEN PRODUCTS
+    ======================================================== */
 
-    return Number(
-        balances[key].quantity
-    );
+    function renderProductionDropdown() {
 
-}
+        const select =
+            document.getElementById(
+                "productionSelect"
+            );
 
+        const info =
+            document.getElementById(
+                "productionInfo"
+            );
 
-/* ========================================================
-   NEW:
-   AVAILABLE KITCHEN PRODUCTS DROPDOWN
-======================================================== */
+        const empty =
+            document.getElementById(
+                "productionEmpty"
+            );
 
-function renderProductionDropdown() {
+        if (!select) return;
 
-    const select =
-        document.getElementById(
-            "productionSelect"
-        );
+        const balances =
+            getProductionBalances();
 
+        const products =
+            Object.values(balances)
+                .filter(function(item) {
 
-    const info =
-        document.getElementById(
-            "productionInfo"
-        );
+                    return Number(
+                        item.quantity
+                    ) > 0;
 
+                })
+                .sort(function(a, b) {
 
-    const empty =
-        document.getElementById(
-            "productionEmpty"
-        );
+                    return a.product.localeCompare(
+                        b.product
+                    );
 
+                });
 
-    if (!select) return;
+        select.innerHTML =
+            `<option value="">
+                Select available kitchen product
+            </option>`;
 
+        info.classList.add("hidden");
+        info.innerHTML = "";
 
-    const balances =
-        getProductionBalances();
+        if (!products.length) {
 
+            empty.classList.remove("hidden");
 
-    /*
-       Only show products with stock above zero.
-    */
+            select.disabled = true;
 
-    const products =
-        Object.values(
-            balances
-        )
-        .filter(
-            function(item) {
+            return;
+        }
 
-                return Number(
-                    item.quantity
-                ) > 0;
+        empty.classList.add("hidden");
 
-            }
-        )
-        .sort(
-            function(a, b) {
+        select.disabled = false;
 
-                return a.product.localeCompare(
-                    b.product
-                );
-
-            }
-        );
-
-
-    /*
-       Reset dropdown.
-    */
-
-    select.innerHTML =
-        `<option value="">
-            Select available kitchen product
-        </option>`;
-
-
-    info.classList.add(
-        "hidden"
-    );
-
-
-    info.innerHTML = "";
-
-
-    /*
-       No available products.
-    */
-
-    if (!products.length) {
-
-        empty.classList.remove(
-            "hidden"
-        );
-
-        select.disabled = true;
-
-        return;
-
-    }
-
-
-    empty.classList.add(
-        "hidden"
-    );
-
-
-    select.disabled = false;
-
-
-    /*
-       Add available products.
-    */
-
-    products.forEach(
-        function(item) {
+        products.forEach(function(item) {
 
             const option =
-                document.createElement(
-                    "option"
-                );
-
+                document.createElement("option");
 
             option.value =
                 item.product;
-
 
             option.textContent =
                 `${item.product} — ${item.quantity} available`;
 
+            select.appendChild(option);
 
-            select.appendChild(
-                option
-            );
-
-        }
-    );
-
-}
-
-
-/* ========================================================
-   SHOW SELECTED PRODUCTION
-======================================================== */
-
-function showSelectedProduction() {
-
-    const select =
-        document.getElementById(
-            "productionSelect"
-        );
-
-
-    const info =
-        document.getElementById(
-            "productionInfo"
-        );
-
-
-    const product =
-        select.value;
-
-
-    if (!product) {
-
-        info.classList.add(
-            "hidden"
-        );
-
-        info.innerHTML = "";
-
-        return;
-
+        });
     }
 
+    /* ========================================================
+       SHOW SELECTED PRODUCTION
+    ======================================================== */
 
-    const stock =
-        getProductStock(
-            product
-        );
+    function showSelectedProduction() {
 
-
-    let status =
-        "Available";
-
-
-    if (stock < 3) {
-
-        status =
-            "Running out";
-
-    }
-
-
-    info.classList.remove(
-        "hidden"
-    );
-
-
-    info.innerHTML = `
-
-        <div class="grid md:grid-cols-3 gap-5">
-
-
-            <div>
-
-                <p class="text-xs text-gray-400">
-                    PRODUCT
-                </p>
-
-                <p class="mt-2">
-                    ${escapeHTML(product)}
-                </p>
-
-            </div>
-
-
-            <div>
-
-                <p class="text-xs text-gray-400">
-                    AVAILABLE QUANTITY
-                </p>
-
-                <p class="mt-2 text-xl">
-                    ${stock}
-                </p>
-
-            </div>
-
-
-            <div>
-
-                <p class="text-xs text-gray-400">
-                    STATUS
-                </p>
-
-                <p class="mt-2">
-                    ${status}
-                </p>
-
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-
-/* ========================================================
-   AVAILABLE MENU PRODUCTS
-======================================================== */
-
-function getAvailableProducts(category) {
-
-    const menu =
-        MENU[category] || {};
-
-
-    const products = [];
-
-
-    Object.keys(menu)
-        .forEach(
-            function(product) {
-
-                const stock =
-                    getProductStock(
-                        product
-                    );
-
-
-                if (stock > 0) {
-
-                    products.push({
-
-                        product:
-                            product,
-
-                        price:
-                            menu[product],
-
-                        stock:
-                            stock
-
-                    });
-
-                }
-
-            }
-        );
-
-
-    return products;
-
-}
-
-
-/* ========================================================
-   LOAD PRODUCTS
-======================================================== */
-
-function loadProducts() {
-
-    const category =
-        document.getElementById(
-            "categorySelect"
-        ).value;
-
-
-    const select =
-        document.getElementById(
-            "productSelect"
-        );
-
-
-    select.innerHTML =
-        `<option value="">
-            Select product
-        </option>`;
-
-
-    document.getElementById(
-        "productInfo"
-    ).classList.add(
-        "hidden"
-    );
-
-
-    if (!category) return;
-
-
-    const products =
-        getAvailableProducts(
-            category
-        );
-
-
-    if (!products.length) {
-
-        select.innerHTML =
-            `<option value="">
-                No products currently available
-            </option>`;
-
-        return;
-
-    }
-
-
-    products.forEach(
-        function(item) {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-
-            option.value =
-                item.product;
-
-
-            option.textContent =
-                `${item.product} | ${money(item.price)} | ${item.stock} left`;
-
-
-            select.appendChild(
-                option
-            );
-
-        }
-    );
-
-}
-
-
-/* ========================================================
-   PRODUCT INFO
-======================================================== */
-
-function updateProductInfo() {
-
-    const category =
-        document.getElementById(
-            "categorySelect"
-        ).value;
-
-
-    const product =
-        document.getElementById(
-            "productSelect"
-        ).value;
-
-
-    const quantity =
-        Number(
+        const select =
             document.getElementById(
-                "quantity"
-            ).value || 0
-        );
-
-
-    const info =
-        document.getElementById(
-            "productInfo"
-        );
-
-
-    if (!category || !product) {
-
-        info.classList.add(
-            "hidden"
-        );
-
-        return;
-
-    }
-
-
-    const price =
-        MENU[category][product];
-
-
-    const stock =
-        getProductStock(
-            product
-        );
-
-
-    const remaining =
-        Math.max(
-            0,
-            stock - quantity
-        );
-
-
-    info.classList.remove(
-        "hidden"
-    );
-
-
-    info.innerHTML = `
-
-        <div class="grid md:grid-cols-4 gap-5">
-
-
-            <div>
-
-                <p class="text-xs text-gray-400">
-                    PRICE
-                </p>
-
-                <p class="mt-2">
-                    ${money(price)}
-                </p>
-
-            </div>
-
-
-            <div>
-
-                <p class="text-xs text-gray-400">
-                    AVAILABLE BEFORE ORDER
-                </p>
-
-                <p class="mt-2">
-                    ${stock}
-                </p>
-
-            </div>
-
-
-            <div>
-
-                <p class="text-xs text-gray-400">
-                    REQUESTED
-                </p>
-
-                <p class="mt-2">
-                    ${quantity}
-                </p>
-
-            </div>
-
-
-            <div>
-
-                <p class="text-xs text-gray-400">
-                    REMAINING AFTER ORDER
-                </p>
-
-                <p class="mt-2">
-                    ${remaining}
-                </p>
-
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-
-/* ========================================================
-   ADD TO CART
-======================================================== */
-
-function addToCart() {
-
-    const category =
-        document.getElementById(
-            "categorySelect"
-        ).value;
-
-
-    const product =
-        document.getElementById(
-            "productSelect"
-        ).value;
-
-
-    const quantity =
-        Number(
-            document.getElementById(
-                "quantity"
-            ).value
-        );
-
-
-    if (!category) {
-
-        showPopup(
-            "Category missing",
-            "Please select a category.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    if (!product) {
-
-        showPopup(
-            "Product missing",
-            "Please select a product.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    if (
-        !Number.isInteger(quantity) ||
-        quantity <= 0
-    ) {
-
-        showPopup(
-            "Quantity missing",
-            "Please enter a valid quantity.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    const stock =
-        getProductStock(
-            product
-        );
-
-
-    const alreadyInCart =
-        cart
-            .filter(
-                function(item) {
-
-                    return item.product === product;
-
-                }
-            )
-            .reduce(
-                function(total, item) {
-
-                    return total +
-                        item.quantity;
-
-                },
-                0
+                "productionSelect"
             );
 
+        const info =
+            document.getElementById(
+                "productionInfo"
+            );
 
-    if (
-        quantity +
-        alreadyInCart >
-        stock
-    ) {
+        const product =
+            select.value;
 
-        showPopup(
-            "Not enough stock",
-            `Only ${Math.max(
-                0,
-                stock - alreadyInCart
-            )} ${product} remain available for this order.`,
-            true
-        );
+        if (!product) {
 
-        return;
+            info.classList.add("hidden");
+            info.innerHTML = "";
 
-    }
+            return;
+        }
 
+        const stock =
+            getProductStock(product);
 
-    const price =
-        MENU[category][product];
+        let status =
+            "Available";
 
+        if (stock < 3) {
+            status = "Running out";
+        }
 
-    cart.push({
+        info.classList.remove("hidden");
 
-        id:
-            generateID(),
+        info.innerHTML = `
 
-        category:
-            category,
+            <div class="grid md:grid-cols-3 gap-5">
 
-        product:
-            product,
+                <div>
+                    <p class="text-xs text-gray-400">
+                        PRODUCT
+                    </p>
 
-        quantity:
-            quantity,
+                    <p class="mt-2">
+                        ${escapeHTML(product)}
+                    </p>
+                </div>
 
-        price:
-            price,
+                <div>
+                    <p class="text-xs text-gray-400">
+                        AVAILABLE QUANTITY
+                    </p>
 
-        total:
-            quantity * price,
+                    <p class="mt-2 text-xl">
+                        ${stock}
+                    </p>
+                </div>
 
-        stockBeforeOrder:
-            stock
+                <div>
+                    <p class="text-xs text-gray-400">
+                        STATUS
+                    </p>
 
-    });
-
-
-    renderCart();
-
-
-    document.getElementById(
-        "productSelect"
-    ).value = "";
-
-
-    document.getElementById(
-        "quantity"
-    ).value = "";
-
-
-    document.getElementById(
-        "productInfo"
-    ).classList.add(
-        "hidden"
-    );
-
-
-    showPopup(
-        "Added to order",
-        `${quantity} ${product} added.`
-    );
-
-}
-
-
-/* ========================================================
-   CART
-======================================================== */
-
-function renderCart() {
-
-    const container =
-        document.getElementById(
-            "cartContainer"
-        );
-
-
-    const footer =
-        document.getElementById(
-            "cartFooter"
-        );
-
-
-    container.innerHTML = "";
-
-
-    document.getElementById(
-        "cartCount"
-    ).textContent =
-        `${cart.length} ${
-            cart.length === 1
-                ? "item"
-                : "items"
-        }`;
-
-
-    if (!cart.length) {
-
-        footer.classList.add(
-            "hidden"
-        );
-
-
-        container.innerHTML = `
-
-            <div class="text-center py-10">
-
-                <p class="text-gray-400">
-                    No products added to this order.
-                </p>
+                    <p class="mt-2">
+                        ${status}
+                    </p>
+                </div>
 
             </div>
 
         `;
-
-
-        return;
-
     }
 
+    /* ========================================================
+       AVAILABLE MENU PRODUCTS
+    ======================================================== */
 
-    footer.classList.remove(
-        "hidden"
-    );
+    function getAvailableProducts(category) {
 
+        const menu =
+            MENU[category] || {};
 
-    let total = 0;
+        const products = [];
 
+        Object.keys(menu).forEach(function(product) {
 
-    cart.forEach(
-        function(item, index) {
+            const stock =
+                getProductStock(product);
+
+            if (stock > 0) {
+
+                products.push({
+
+                    product: product,
+
+                    price: menu[product],
+
+                    stock: stock
+
+                });
+            }
+
+        });
+
+        return products;
+    }
+
+    /* ========================================================
+       LOAD PRODUCTS
+    ======================================================== */
+
+    function loadProducts() {
+
+        const category =
+            document.getElementById(
+                "categorySelect"
+            ).value;
+
+        const select =
+            document.getElementById(
+                "productSelect"
+            );
+
+        select.innerHTML =
+            `<option value="">
+                Select product
+            </option>`;
+
+        document.getElementById(
+            "productInfo"
+        ).classList.add("hidden");
+
+        if (!category) return;
+
+        const products =
+            getAvailableProducts(category);
+
+        if (!products.length) {
+
+            select.innerHTML =
+                `<option value="">
+                    No products currently available
+                </option>`;
+
+            return;
+        }
+
+        products.forEach(function(item) {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                item.product;
+
+            option.textContent =
+                `${item.product} | ${money(item.price)} | ${item.stock} left`;
+
+            select.appendChild(option);
+
+        });
+    }
+
+    /* ========================================================
+       PRODUCT INFO
+    ======================================================== */
+
+    function updateProductInfo() {
+
+        const category =
+            document.getElementById(
+                "categorySelect"
+            ).value;
+
+        const product =
+            document.getElementById(
+                "productSelect"
+            ).value;
+
+        const quantity =
+            Number(
+                document.getElementById(
+                    "quantity"
+                ).value || 0
+            );
+
+        const info =
+            document.getElementById(
+                "productInfo"
+            );
+
+        if (!category || !product) {
+
+            info.classList.add("hidden");
+
+            return;
+        }
+
+        const price =
+            MENU[category][product];
+
+        const stock =
+            getProductStock(product);
+
+        const remaining =
+            Math.max(
+                0,
+                stock - quantity
+            );
+
+        info.classList.remove("hidden");
+
+        info.innerHTML = `
+
+            <div class="grid md:grid-cols-4 gap-5">
+
+                <div>
+                    <p class="text-xs text-gray-400">
+                        PRICE
+                    </p>
+
+                    <p class="mt-2">
+                        ${money(price)}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-xs text-gray-400">
+                        AVAILABLE BEFORE ORDER
+                    </p>
+
+                    <p class="mt-2">
+                        ${stock}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-xs text-gray-400">
+                        REQUESTED
+                    </p>
+
+                    <p class="mt-2">
+                        ${quantity}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-xs text-gray-400">
+                        REMAINING AFTER ORDER
+                    </p>
+
+                    <p class="mt-2">
+                        ${remaining}
+                    </p>
+                </div>
+
+            </div>
+
+        `;
+    }
+
+    /* ========================================================
+       ADD TO CART
+    ======================================================== */
+
+    function addToCart() {
+
+        const category =
+            document.getElementById(
+                "categorySelect"
+            ).value;
+
+        const product =
+            document.getElementById(
+                "productSelect"
+            ).value;
+
+        const quantity =
+            Number(
+                document.getElementById(
+                    "quantity"
+                ).value
+            );
+
+        if (!category) {
+
+            showPopup(
+                "Category missing",
+                "Please select a category.",
+                true
+            );
+
+            return;
+        }
+
+        if (!product) {
+
+            showPopup(
+                "Product missing",
+                "Please select a product.",
+                true
+            );
+
+            return;
+        }
+
+        if (
+            !Number.isInteger(quantity) ||
+            quantity <= 0
+        ) {
+
+            showPopup(
+                "Quantity missing",
+                "Please enter a valid quantity.",
+                true
+            );
+
+            return;
+        }
+
+        const stock =
+            getProductStock(product);
+
+        const alreadyInCart =
+            cart
+                .filter(function(item) {
+
+                    return item.product === product;
+
+                })
+                .reduce(function(total, item) {
+
+                    return total + item.quantity;
+
+                }, 0);
+
+        if (
+            quantity +
+            alreadyInCart >
+            stock
+        ) {
+
+            showPopup(
+                "Not enough stock",
+                `Only ${Math.max(
+                    0,
+                    stock - alreadyInCart
+                )} ${product} remain available for this order.`,
+                true
+            );
+
+            return;
+        }
+
+        const price =
+            MENU[category][product];
+
+        cart.push({
+
+            id: generateID(),
+
+            category: category,
+
+            product: product,
+
+            quantity: quantity,
+
+            price: price,
+
+            total: quantity * price,
+
+            stockBeforeOrder: stock
+
+        });
+
+        renderCart();
+
+        document.getElementById(
+            "productSelect"
+        ).value = "";
+
+        document.getElementById(
+            "quantity"
+        ).value = "";
+
+        document.getElementById(
+            "productInfo"
+        ).classList.add("hidden");
+
+        showPopup(
+            "Added to order",
+            `${quantity} ${product} added.`
+        );
+    }
+
+    /* ========================================================
+       CART
+    ======================================================== */
+
+    function renderCart() {
+
+        const container =
+            document.getElementById(
+                "cartContainer"
+            );
+
+        const footer =
+            document.getElementById(
+                "cartFooter"
+            );
+
+        container.innerHTML = "";
+
+        document.getElementById(
+            "cartCount"
+        ).textContent =
+            `${cart.length} ${
+                cart.length === 1
+                    ? "item"
+                    : "items"
+            }`;
+
+        if (!cart.length) {
+
+            footer.classList.add("hidden");
+
+            container.innerHTML = `
+
+                <div class="text-center py-10">
+
+                    <p class="text-gray-400">
+                        No products added to this order.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+        footer.classList.remove("hidden");
+
+        let total = 0;
+
+        cart.forEach(function(item, index) {
 
             total += item.total;
-
 
             container.innerHTML += `
 
                 <div class="item-row border-b border-gray-200 py-5">
 
                     <div class="grid md:grid-cols-6 gap-4 items-center">
-
 
                         <div>
 
@@ -2102,7 +2246,6 @@ function renderCart() {
 
                         </div>
 
-
                         <div>
 
                             <p class="text-xs text-gray-400">
@@ -2114,7 +2257,6 @@ function renderCart() {
                             </p>
 
                         </div>
-
 
                         <div>
 
@@ -2132,7 +2274,6 @@ function renderCart() {
 
                         </div>
 
-
                         <div>
 
                             <p class="text-xs text-gray-400">
@@ -2144,7 +2285,6 @@ function renderCart() {
                             </p>
 
                         </div>
-
 
                         <div>
 
@@ -2158,316 +2298,246 @@ function renderCart() {
 
                         </div>
 
-
                         <div class="text-right">
 
                             <button
+                                type="button"
                                 onclick="removeFromCart(${index})"
-                                class="text-sm text-gray-500 hover:text-black">
+                                class="text-sm text-gray-500 hover:text-black"
+                            >
                                 Remove
                             </button>
 
                         </div>
-
 
                     </div>
 
                 </div>
 
             `;
+        });
 
-        }
-    );
-
-
-    document.getElementById(
-        "cartTotal"
-    ).textContent =
-        money(total);
-
-}
-
-
-/* ========================================================
-   UPDATE CART QUANTITY
-======================================================== */
-
-function updateCartQuantity(
-    index,
-    value
-) {
-
-    const quantity =
-        Number(value);
-
-
-    const item =
-        cart[index];
-
-
-    if (!item) return;
-
-
-    if (
-        !Number.isInteger(quantity) ||
-        quantity <= 0
-    ) {
-
-        showPopup(
-            "Invalid quantity",
-            "Quantity must be at least 1.",
-            true
-        );
-
-
-        renderCart();
-
-        return;
-
+        document.getElementById(
+            "cartTotal"
+        ).textContent =
+            money(total);
     }
 
+    /* ========================================================
+       UPDATE CART QUANTITY
+    ======================================================== */
 
-    const stock =
-        getProductStock(
-            item.product
-        );
+    function updateCartQuantity(index, value) {
 
+        const quantity =
+            Number(value);
 
-    const otherQuantity =
-        cart
-            .filter(
-                function(cartItem, i) {
+        const item =
+            cart[index];
+
+        if (!item) return;
+
+        if (
+            !Number.isInteger(quantity) ||
+            quantity <= 0
+        ) {
+
+            showPopup(
+                "Invalid quantity",
+                "Quantity must be at least 1.",
+                true
+            );
+
+            renderCart();
+
+            return;
+        }
+
+        const stock =
+            getProductStock(
+                item.product
+            );
+
+        const otherQuantity =
+            cart
+                .filter(function(cartItem, i) {
 
                     return (
                         i !== index &&
-                        cartItem.product ===
-                        item.product
+                        cartItem.product === item.product
                     );
 
-                }
-            )
-            .reduce(
-                function(total, cartItem) {
+                })
+                .reduce(function(total, cartItem) {
 
                     return total +
                         cartItem.quantity;
+
+                }, 0);
+
+        if (
+            quantity +
+            otherQuantity >
+            stock
+        ) {
+
+            showPopup(
+                "Not enough stock",
+                `Only ${Math.max(
+                    0,
+                    stock - otherQuantity
+                )} more ${item.product} can be ordered.`,
+                true
+            );
+
+            renderCart();
+
+            return;
+        }
+
+        item.quantity =
+            quantity;
+
+        item.total =
+            quantity *
+            item.price;
+
+        renderCart();
+    }
+
+    /* ========================================================
+       REMOVE CART ITEM
+    ======================================================== */
+
+    function removeFromCart(index) {
+
+        if (!cart[index]) return;
+
+        const product =
+            cart[index].product;
+
+        cart.splice(index, 1);
+
+        renderCart();
+
+        showPopup(
+            "Removed",
+            `${product} removed from the order.`
+        );
+    }
+
+    /* ========================================================
+       VALIDATE ORDER
+    ======================================================== */
+
+    function validateOrder() {
+
+        if (!cart.length) {
+
+            showPopup(
+                "Order empty",
+                "Add at least one product.",
+                true
+            );
+
+            return false;
+        }
+
+        const grouped = {};
+
+        cart.forEach(function(item) {
+
+            if (!grouped[item.product]) {
+                grouped[item.product] = 0;
+            }
+
+            grouped[item.product] +=
+                item.quantity;
+        });
+
+        for (const product in grouped) {
+
+            const stock =
+                getProductStock(product);
+
+            if (
+                grouped[product] >
+                stock
+            ) {
+
+                showPopup(
+                    "Stock changed",
+                    `Only ${stock} ${product} remain.`,
+                    true
+                );
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /* ========================================================
+       ORDER CONFIRMATION
+    ======================================================== */
+
+    function openOrderConfirmation() {
+
+        if (!validateOrder()) return;
+
+        const total =
+            cart.reduce(
+                function(sum, item) {
+
+                    return sum +
+                        item.total;
 
                 },
                 0
             );
 
+        let html = `
 
-    if (
-        quantity +
-        otherQuantity >
-        stock
-    ) {
+            <div class="border border-gray-200 p-5">
 
-        showPopup(
-            "Not enough stock",
-            `Only ${Math.max(
-                0,
-                stock - otherQuantity
-            )} more ${item.product} can be ordered.`,
-            true
-        );
+                <div class="grid md:grid-cols-2 gap-5 mb-6">
 
+                    <div>
 
-        renderCart();
+                        <p class="text-xs text-gray-400">
+                            DATE
+                        </p>
 
-        return;
+                        <p class="mt-2">
+                            ${nowDate()}
+                        </p>
 
-    }
+                    </div>
 
+                    <div>
 
-    item.quantity =
-        quantity;
+                        <p class="text-xs text-gray-400">
+                            TIME
+                        </p>
 
+                        <p class="mt-2">
+                            ${nowTime()}
+                        </p>
 
-    item.total =
-        quantity *
-        item.price;
-
-
-    renderCart();
-
-}
-
-
-/* ========================================================
-   REMOVE CART ITEM
-======================================================== */
-
-function removeFromCart(index) {
-
-    if (!cart[index]) return;
-
-
-    const product =
-        cart[index].product;
-
-
-    cart.splice(
-        index,
-        1
-    );
-
-
-    renderCart();
-
-
-    showPopup(
-        "Removed",
-        `${product} removed from the order.`
-    );
-
-}
-
-
-/* ========================================================
-   VALIDATE ORDER
-======================================================== */
-
-function validateOrder() {
-
-    if (!cart.length) {
-
-        showPopup(
-            "Order empty",
-            "Add at least one product.",
-            true
-        );
-
-
-        return false;
-
-    }
-
-
-    const grouped = {};
-
-
-    cart.forEach(
-        function(item) {
-
-            if (!grouped[item.product]) {
-
-                grouped[item.product] = 0;
-
-            }
-
-
-            grouped[item.product] +=
-                item.quantity;
-
-        }
-    );
-
-
-    for (
-        const product in grouped
-    ) {
-
-        const stock =
-            getProductStock(
-                product
-            );
-
-
-        if (
-            grouped[product] >
-            stock
-        ) {
-
-            showPopup(
-                "Stock changed",
-                `Only ${stock} ${product} remain.`,
-                true
-            );
-
-
-            return false;
-
-        }
-
-    }
-
-
-    return true;
-
-}
-
-
-/* ========================================================
-   ORDER CONFIRMATION
-======================================================== */
-
-function openOrderConfirmation() {
-
-    if (!validateOrder()) return;
-
-
-    const total =
-        cart.reduce(
-            function(sum, item) {
-
-                return sum +
-                    item.total;
-
-            },
-            0
-        );
-
-
-    let html = `
-
-        <div class="border border-gray-200 p-5">
-
-            <div class="grid md:grid-cols-2 gap-5 mb-6">
-
-
-                <div>
-
-                    <p class="text-xs text-gray-400">
-                        DATE
-                    </p>
-
-                    <p class="mt-2">
-                        ${nowDate()}
-                    </p>
+                    </div>
 
                 </div>
 
+                <div class="border-t border-gray-200">
+        `;
 
-                <div>
-
-                    <p class="text-xs text-gray-400">
-                        TIME
-                    </p>
-
-                    <p class="mt-2">
-                        ${nowTime()}
-                    </p>
-
-                </div>
-
-
-            </div>
-
-
-            <div class="border-t border-gray-200">
-
-    `;
-
-
-    cart.forEach(
-        function(item) {
+        cart.forEach(function(item) {
 
             const currentStock =
                 getProductStock(
                     item.product
                 );
-
 
             const afterOrder =
                 Math.max(
@@ -2476,11 +2546,9 @@ function openOrderConfirmation() {
                     item.quantity
                 );
 
-
             html += `
 
                 <div class="grid md:grid-cols-6 gap-4 py-4 border-b border-gray-100">
-
 
                     <div>
 
@@ -2494,7 +2562,6 @@ function openOrderConfirmation() {
 
                     </div>
 
-
                     <div>
 
                         <p class="text-xs text-gray-400">
@@ -2506,7 +2573,6 @@ function openOrderConfirmation() {
                         </p>
 
                     </div>
-
 
                     <div>
 
@@ -2520,7 +2586,6 @@ function openOrderConfirmation() {
 
                     </div>
 
-
                     <div>
 
                         <p class="text-xs text-gray-400">
@@ -2532,7 +2597,6 @@ function openOrderConfirmation() {
                         </p>
 
                     </div>
-
 
                     <div>
 
@@ -2546,7 +2610,6 @@ function openOrderConfirmation() {
 
                     </div>
 
-
                     <div>
 
                         <p class="text-xs text-gray-400">
@@ -2559,121 +2622,103 @@ function openOrderConfirmation() {
 
                     </div>
 
-
                 </div>
 
             `;
+        });
 
+        html += `
+
+                </div>
+
+                <div class="flex justify-between mt-6">
+
+                    <p class="text-lg">
+                        TOTAL
+                    </p>
+
+                    <p class="text-2xl">
+                        ${money(total)}
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
+
+        document.getElementById(
+            "orderPreview"
+        ).innerHTML = html;
+
+        document.getElementById(
+            "orderModal"
+        ).classList.add("show");
+    }
+
+    /* ========================================================
+       CLOSE MODAL
+       
+       IMPORTANT:
+       This only closes the modal.
+       It DOES NOT clear the cart.
+    ======================================================== */
+
+    function closeOrderModal() {
+
+        const modal =
+            document.getElementById(
+                "orderModal"
+            );
+
+        modal.classList.remove("show");
+    }
+
+    /* ========================================================
+       PLACE ORDER
+    ======================================================== */
+
+    async function placeOrder() {
+
+        if (!validateOrder()) {
+
+            closeOrderModal();
+
+            return;
         }
-    );
 
+        const user =
+            auth.currentUser;
 
-    html += `
+        if (!user) {
 
-            </div>
+            showPopup(
+                "Login required",
+                "You must be signed in before placing an order.",
+                true
+            );
 
+            return;
+        }
 
-            <div class="flex justify-between mt-6">
+        const total =
+            cart.reduce(
+                function(sum, item) {
 
-                <p class="text-lg">
-                    TOTAL
-                </p>
+                    return sum +
+                        item.total;
 
-                <p class="text-2xl">
-                    ${money(total)}
-                </p>
+                },
+                0
+            );
 
-            </div>
-
-        </div>
-
-    `;
-
-
-    document.getElementById(
-        "orderPreview"
-    ).innerHTML =
-        html;
-
-
-    document.getElementById(
-        "orderModal"
-    ).classList.add(
-        "show"
-    );
-
-}
-
-
-/* ========================================================
-   CLOSE MODAL
-======================================================== */
-
-function closeOrderModal() {
-
-    document.getElementById(
-        "orderModal"
-    ).classList.remove(
-        "show"
-    );
-
-}
-
-
-/* ========================================================
-   PLACE ORDER
-======================================================== */
-
-async function placeOrder() {
-
-    if (!validateOrder()) {
-
-        closeOrderModal();
-
-        return;
-
-    }
-
-
-    const user =
-        auth.currentUser;
-
-
-    if (!user) {
-
-        showPopup(
-            "Login required",
-            "You must be signed in before placing an order.",
-            true
-        );
-
-
-        return;
-
-    }
-
-
-    const total =
-        cart.reduce(
-            function(sum, item) {
-
-                return sum +
-                    item.total;
-
-            },
-            0
-        );
-
-
-    const products =
-        cart.map(
-            function(item) {
+        const products =
+            cart.map(function(item) {
 
                 const before =
                     getProductStock(
                         item.product
                     );
-
 
                 return {
 
@@ -2701,256 +2746,199 @@ async function placeOrder() {
                             before -
                             item.quantity
                         )
-
                 };
 
-            }
+            });
+
+        const orderId =
+            generateID();
+
+        const order = {
+
+            id:
+                orderId,
+
+            orderNumber:
+                "ORD-" +
+                Date.now(),
+
+            products:
+                products,
+
+            total:
+                total,
+
+            status:
+                "pending",
+
+            paymentStatus:
+                "pending",
+
+            paymentMethod:
+                null,
+
+            date:
+                nowDate(),
+
+            time:
+                nowTime(),
+
+            createdAt:
+                new Date().toISOString(),
+
+            createdBy:
+                user.email || null,
+
+            createdByUid:
+                user.uid || null
+        };
+
+        const saved =
+            await saveOrderToFirebase(
+                order
+            );
+
+        if (!saved) {
+            return;
+        }
+
+        ordersCache.push(order);
+
+        saveLocalData(
+            ORDER_KEY,
+            ordersCache
         );
 
+        cart = [];
 
-    const orderId =
-        generateID();
+        renderCart();
 
-
-    const order = {
-
-        id:
-            orderId,
-
-        orderNumber:
-            "ORD-" +
-            Date.now(),
-
-        products:
-            products,
-
-        total:
-            total,
-
-        status:
-            "pending",
-
-        paymentStatus:
-            "pending",
-
-        paymentMethod:
-            null,
-
-        date:
-            nowDate(),
-
-        time:
-            nowTime(),
-
-        createdAt:
-            new Date().toISOString(),
-
-        createdBy:
-            user.email || null,
-
-        createdByUid:
-            user.uid || null
-
-    };
-
-
-    /*
-       IMPORTANT:
-
-       ONLY CREATE THE NEW DOCUMENT.
-
-       This is compatible with:
-
-       allow create: if signedIn();
-
-    */
-
-    const saved =
-        await saveOrderToFirebase(
-            order
-        );
-
-
-    if (!saved) {
-
-        return;
-
-    }
-
-
-    ordersCache.push(
-        order
-    );
-
-
-    saveLocalData(
-        ORDER_KEY,
-        ordersCache
-    );
-
-
-    cart = [];
-
-
-    renderCart();
-
-
-    document.getElementById(
-        "categorySelect"
-    ).value = "";
-
-
-    document.getElementById(
-        "productSelect"
-    ).innerHTML =
-        `<option value="">
-            Select category first
-        </option>`;
-
-
-    document.getElementById(
-        "quantity"
-    ).value = "";
-
-
-    document.getElementById(
-        "productInfo"
-    ).classList.add(
-        "hidden"
-    );
-
-
-    closeOrderModal();
-
-
-    renderProductionDropdown();
-
-
-    showPopup(
-        "Order placed",
-        `${order.orderNumber} has been sent to the cashier and saved to Firebase.`
-    );
-
-}
-
-
-/* ========================================================
-   REFRESH STOCK
-======================================================== */
-
-function refreshWaiterStock() {
-
-    renderProductionDropdown();
-
-
-    const category =
         document.getElementById(
             "categorySelect"
-        ).value;
+        ).value = "";
 
+        document.getElementById(
+            "productSelect"
+        ).innerHTML =
+            `<option value="">
+                Select category first
+            </option>`;
 
-    if (category) {
+        document.getElementById(
+            "quantity"
+        ).value = "";
 
-        loadProducts();
+        document.getElementById(
+            "productInfo"
+        ).classList.add("hidden");
 
-        updateProductInfo();
-
-    }
-
-
-    showPopup(
-        "Stock updated",
-        "The latest available kitchen production has been loaded."
-    );
-
-}
-
-
-/* ========================================================
-   DATE
-======================================================== */
-
-document.getElementById(
-    "todayDate"
-).textContent =
-    new Date().toLocaleDateString(
-        undefined,
-        {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-        }
-    );
-
-
-/* ========================================================
-   CROSS TAB REFRESH
-======================================================== */
-
-window.addEventListener(
-    "storage",
-    function() {
-
-        productionCache =
-            getLocalData(
-                PRODUCTION_KEY
-            );
-
-
-        ordersCache =
-            getLocalData(
-                ORDER_KEY
-            );
-
+        closeOrderModal();
 
         renderProductionDropdown();
 
+        showPopup(
+            "Order placed",
+            `${order.orderNumber} has been sent to the cashier and saved to Firebase.`
+        );
+    }
+
+    /* ========================================================
+       REFRESH STOCK
+    ======================================================== */
+
+    function refreshWaiterStock() {
+
+        renderProductionDropdown();
 
         const category =
             document.getElementById(
                 "categorySelect"
             ).value;
 
-
         if (category) {
 
             loadProducts();
-
             updateProductInfo();
-
         }
 
+        showPopup(
+            "Stock updated",
+            "The latest available kitchen production has been loaded."
+        );
     }
-);
 
+    /* ========================================================
+       DATE
+    ======================================================== */
 
-/* ========================================================
-   INITIAL LOAD
-======================================================== */
+    document.getElementById(
+        "todayDate"
+    ).textContent =
+        new Date().toLocaleDateString(
+            undefined,
+            {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            }
+        );
 
-productionCache =
-    getLocalData(
-        PRODUCTION_KEY
+    /* ========================================================
+       CROSS TAB REFRESH
+    ======================================================== */
+
+    window.addEventListener(
+        "storage",
+        function() {
+
+            productionCache =
+                getLocalData(
+                    PRODUCTION_KEY
+                );
+
+            ordersCache =
+                getLocalData(
+                    ORDER_KEY
+                );
+
+            renderProductionDropdown();
+
+            const category =
+                document.getElementById(
+                    "categorySelect"
+                ).value;
+
+            if (category) {
+
+                loadProducts();
+                updateProductInfo();
+            }
+        }
     );
 
+    /* ========================================================
+       INITIAL LOAD
+    ======================================================== */
 
-ordersCache =
-    getLocalData(
-        ORDER_KEY
-    );
+    productionCache =
+        getLocalData(
+            PRODUCTION_KEY
+        );
 
+    ordersCache =
+        getLocalData(
+            ORDER_KEY
+        );
 
-renderCart();
+    renderCart();
 
+    renderProductionDropdown();
 
-renderProductionDropdown();
-
-
-startFirebaseAuth();
+    startFirebaseAuth();
 
 </script>
 
 </body>
-
 </html>
+```
