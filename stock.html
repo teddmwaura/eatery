@@ -2633,136 +2633,94 @@ function startFirebaseListeners() {
 
 async function addStock() {
 
-    if (
-        !firebaseReady ||
-        !isOwner()
-    ) {
-
-        showToast(
-            "Please sign in as owner."
-        );
-
+    if (!firebaseReady || !isOwner()) {
+        showToast("Please sign in as owner.");
         return;
-
     }
 
+    const itemInput = document.getElementById("stockItem");
+    const quantityInput = document.getElementById("stockQuantity");
+    const unitInput = document.getElementById("stockUnit");
+    const dateInput = document.getElementById("stockDate");
+    const submitButton = document.querySelector('#stockForm button[type="submit"]');
 
-    const item =
-        document
-        .getElementById("stockItem")
-        .value
-        .trim();
+    const item = itemInput.value.trim().replace(/\s+/g, " ");
+    const quantity = Number(quantityInput.value);
+    const unit = unitInput.value.trim().replace(/\s+/g, " ");
+    const date = dateInput.value;
 
-
-    const quantity =
-        Number(
-            document
-            .getElementById("stockQuantity")
-            .value
-        );
-
-
-    const unit =
-        document
-        .getElementById("stockUnit")
-        .value
-        .trim();
-
-
-    const date =
-        document
-        .getElementById("stockDate")
-        .value;
-
-
-    if (
-        !item ||
-        quantity <= 0 ||
-        !unit ||
-        !date
-    ) {
-
-        showToast(
-            "Please complete all stock fields."
-        );
-
+    if (!item || !Number.isFinite(quantity) || quantity <= 0 || !unit || !date) {
+        showToast("Please complete all stock fields correctly.");
         return;
-
     }
 
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "Saving...";
+    }
 
     const record = {
-
-        id:
-            createID(),
-
-        type:
-            "stock-in",
-
-        item:
-            item,
-
-        quantity:
-            roundNumber(quantity),
-
-        unit:
-            unit,
-
-        date:
-            date,
-
-        createdAt:
-            new Date().toISOString(),
-
-        createdBy:
-            auth.currentUser.email
-
+        id: createID(),
+        type: "stock-in",
+        item: item,
+        itemKey: normalizeKey(item),
+        quantity: roundNumber(quantity),
+        unit: unit,
+        date: date,
+        dateKey: date,
+        createdAt: new Date().toISOString(),
+        createdBy: auth.currentUser.email
     };
 
-
     try {
-
-        await db
-            .collection(
-                STOCK_COLLECTION
-            )
+        // Save the stock movement first. This is the source of truth.
+        await db.collection(STOCK_COLLECTION)
             .doc(record.id)
             .set(record);
 
+        // If this item was previously hidden with Remove, adding stock again
+        // should automatically make it visible again.
+        const removedRef = db.collection(SETTINGS_COLLECTION)
+            .doc("removed_" + normalizeKey(item));
 
-        document
-            .getElementById("stockForm")
-            .reset();
+        try {
+            await removedRef.delete();
+        } catch (settingsError) {
+            // Do not fail the stock entry just because an old hide-setting
+            // cannot be removed. The stock record has already been saved.
+            console.warn("Could not clear old removed-item setting:", settingsError);
+        }
 
+        // Update the local cache immediately so the item appears even before
+        // Firestore's snapshot callback arrives.
+        stockCache.push(record);
+        removedItems.delete(normalizeKey(item));
 
-        document
-            .getElementById("stockDate")
-            .value =
-            getDate();
+        document.getElementById("stockForm").reset();
+        dateInput.value = getDate();
 
-
-        showToast(
-            "Stock added successfully."
-        );
-
+        refreshStockUseSelects();
+        render();
+        showToast(`${item} added successfully.`);
 
     } catch (error) {
+        console.error("Add stock error:", error);
 
-        console.error(
-            "Add stock error:",
-            error
-        );
+        if (error && error.code === "permission-denied") {
+            showToast("Stock was blocked by Firebase permissions.");
+        } else if (error && error.code === "unavailable") {
+            showToast("Firebase is temporarily unavailable. Try again.");
+        } else {
+            showToast("Could not save stock. Check your connection.");
+        }
 
-
-        showToast(
-            "Could not save stock."
-        );
-
+    } finally {
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = "Add Stock";
+        }
     }
-
 }
-
-
 
 /* =========================================================
    INCREASE STOCK
@@ -3858,12 +3816,13 @@ function calculateCurrentBalances() {
             }
 
 
-            map[
-                normalizeKey(
-                    record.item
-                )
-            ] =
-                record.item;
+            const itemName = String(record.item).trim();
+
+            if (!itemName) {
+                return;
+            }
+
+            map[normalizeKey(itemName)] = itemName;
 
         }
     );
@@ -5957,6 +5916,12 @@ function startNewStockRecordingDay() {
 
                 await deleteCollectionDocuments(
                     PRODUCTION_COLLECTION
+                );
+
+                // Clear stock-display settings as well. A product removed
+                // on an old stock day should not stay hidden on the new day.
+                await deleteCollectionDocuments(
+                    SETTINGS_COLLECTION
                 );
 
                 /*
