@@ -70,10 +70,6 @@
             color: white;
         }
 
-        /* =====================================================
-           SCROLLBAR
-        ===================================================== */
-
         ::-webkit-scrollbar {
             width: 7px;
         }
@@ -91,9 +87,7 @@
             background: #87988c;
         }
 
-        /* =====================================================
-           HEADER
-        ===================================================== */
+        /* HEADER */
 
         .main-header {
             height: 70px;
@@ -139,9 +133,7 @@
             border-radius: 10px;
         }
 
-        /* =====================================================
-           AUTH BAR
-        ===================================================== */
+        /* AUTH */
 
         .auth-bar {
             background: #ffffff;
@@ -166,9 +158,7 @@
             background: #22c55e;
         }
 
-        /* =====================================================
-           BUTTONS
-        ===================================================== */
+        /* BUTTONS */
 
         .primary-btn {
             background: #166534;
@@ -210,9 +200,7 @@
             background: #fff5f4;
         }
 
-        /* =====================================================
-           DASHBOARD CARDS
-        ===================================================== */
+        /* CARDS */
 
         .dashboard-card {
             background: white;
@@ -264,9 +252,7 @@
             color: #8a958d;
         }
 
-        /* =====================================================
-           INPUTS
-        ===================================================== */
+        /* INPUTS */
 
         .modern-input {
             width: 100%;
@@ -298,9 +284,7 @@
             margin-bottom: 7px;
         }
 
-        /* =====================================================
-           SECTION HEADERS
-        ===================================================== */
+        /* SECTION */
 
         .section-heading {
             display: flex;
@@ -320,9 +304,7 @@
             margin-top: 5px;
         }
 
-        /* =====================================================
-           ORDER CARDS
-        ===================================================== */
+        /* ORDERS */
 
         .order-card {
             background: white;
@@ -386,9 +368,7 @@
             border-bottom: none;
         }
 
-        /* =====================================================
-           MINI LISTS
-        ===================================================== */
+        /* RECORDS */
 
         .record-row {
             display: flex;
@@ -419,9 +399,31 @@
             font-size: 11px;
         }
 
-        /* =====================================================
-           POPUP
-        ===================================================== */
+        /* GOODS IN */
+
+        .goods-date-box {
+            background: #f7faf8;
+            border: 1px solid #e1e9e3;
+            border-radius: 13px;
+            padding: 15px;
+        }
+
+        .goods-date-label {
+            font-size: 10px;
+            letter-spacing: .08em;
+            color: #7c887f;
+            margin-bottom: 7px;
+        }
+
+        .goods-record {
+            border: 1px solid #e5ebe7;
+            border-radius: 12px;
+            padding: 15px;
+            background: #fff;
+            margin-top: 10px;
+        }
+
+        /* POPUP */
 
         .popup {
             transform: translateY(-20px);
@@ -441,9 +443,7 @@
             box-shadow: 0 18px 45px rgba(0,0,0,.12);
         }
 
-        /* =====================================================
-           MODALS
-        ===================================================== */
+        /* MODALS */
 
         .modal {
             display: none;
@@ -478,9 +478,7 @@
             color: #166534;
         }
 
-        /* =====================================================
-           MOBILE COLLAPSIBLE SECTIONS
-        ===================================================== */
+        /* MOBILE */
 
         .mobile-section-toggle {
             display: none;
@@ -607,6 +605,7 @@
             .record-row > div:last-child {
                 width: 100%;
                 justify-content: space-between;
+                flex-wrap: wrap;
             }
 
             .modal-panel {
@@ -618,12 +617,9 @@
     </style>
 </head>
 
-
 <body>
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
+<!-- HEADER -->
 
 <header class="main-header fixed top-0 left-0 w-full z-50">
 
@@ -647,7 +643,6 @@
 
         </a>
 
-
         <div class="desktop-nav flex items-center gap-6 text-sm">
 
             <a href="stock.html" class="nav-link">
@@ -669,9 +664,7 @@
 </header>
 
 
-<!-- =====================================================
-     AUTH BAR
-===================================================== -->
+<!-- AUTH BAR -->
 
 <div id="authBar"
      class="auth-bar fixed top-[70px] left-0 w-full z-40">
@@ -696,7 +689,6 @@
 
         </div>
 
-
         <div class="flex gap-2">
 
             <button id="googleSignInButton"
@@ -706,7 +698,6 @@
                 Sign in with Google
 
             </button>
-
 
             <button id="googleSignOutButton"
                     onclick="signOutUser()"
@@ -723,9 +714,7 @@
 </div>
 
 
-<!-- =====================================================
-     POPUP
-===================================================== -->
+<!-- POPUP -->
 
 <div id="popup"
      class="popup fixed top-28 right-5 z-[100]">
@@ -759,9 +748,7 @@
 </div>
 
 
-<!-- =====================================================
-     PAYMENT MODAL
-===================================================== -->
+<!-- PAYMENT MODAL -->
 
 <div id="paymentModal"
      class="modal fixed inset-0 bg-black/45 z-[90] items-center justify-center p-4">
@@ -791,11 +778,9 @@
 
         </div>
 
-
         <div id="paymentPreview"
              class="mt-6">
         </div>
-
 
         <div class="mt-6">
 
@@ -819,7 +804,6 @@
 
                 </button>
 
-
                 <button id="pochiButton"
                         onclick="selectPayment('Pochi')"
                         class="payment-method">
@@ -837,7 +821,6 @@
             </div>
 
         </div>
-
 
         <div class="border-t border-gray-200 mt-6 pt-5 flex flex-col sm:flex-row justify-end gap-3">
 
@@ -863,9 +846,7 @@
 </div>
 
 
-<!-- =====================================================
-     REMOVE ORDER MODAL
-===================================================== -->
+<!-- REMOVE ORDER MODAL -->
 
 <div id="removeModal"
      class="modal fixed inset-0 bg-black/45 z-[90] items-center justify-center p-4">
@@ -887,7 +868,6 @@
         <p class="text-sm text-gray-500 mt-2 leading-relaxed">
             The order will be removed and all product quantities will be returned to production stock.
         </p>
-
 
         <div class="flex flex-col sm:flex-row justify-end gap-3 mt-8">
 
@@ -913,12 +893,9 @@
 </div>
 
 
-<!-- =====================================================
-     MAIN
-===================================================== -->
+<!-- MAIN -->
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-36 pb-16">
-
 
     <!-- PAGE TITLE -->
 
@@ -941,11 +918,10 @@
                 </h1>
 
                 <p class="text-sm text-gray-500 mt-2">
-                    Manage payments, daily finances and customer records.
+                    Manage payments, daily finances, goods received and customer records.
                 </p>
 
             </div>
-
 
             <div class="bg-white border border-gray-200 rounded-xl px-4 py-3">
 
@@ -964,9 +940,7 @@
     </section>
 
 
-    <!-- =================================================
-         FINANCIAL SUMMARY
-    ================================================== -->
+    <!-- FINANCIAL SUMMARY -->
 
     <section class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-7 mobile-collapsible"
              data-mobile-title="Financial Summary">
@@ -988,7 +962,6 @@
 
         </div>
 
-
         <div class="stat-card">
 
             <div class="stat-icon">
@@ -1006,7 +979,6 @@
 
         </div>
 
-
         <div class="stat-card">
 
             <div class="stat-icon">
@@ -1023,7 +995,6 @@
             </p>
 
         </div>
-
 
         <div class="stat-card">
 
@@ -1045,9 +1016,7 @@
     </section>
 
 
-    <!-- =================================================
-         DAILY CASH BALANCE
-    ================================================== -->
+    <!-- DAILY CASH BALANCE -->
 
     <section class="dashboard-card p-5 md:p-6 mb-7 mobile-collapsible"
              data-mobile-title="Daily Cash Balance">
@@ -1072,7 +1041,6 @@
 
         </div>
 
-
         <div class="grid md:grid-cols-3 gap-4 mt-6">
 
             <div>
@@ -1089,7 +1057,6 @@
 
             </div>
 
-
             <div class="bg-gray-50 rounded-xl p-4">
 
                 <p class="text-[11px] tracking-wider text-gray-400">
@@ -1102,7 +1069,6 @@
                 </p>
 
             </div>
-
 
             <div class="bg-gray-50 rounded-xl p-4">
 
@@ -1119,7 +1085,6 @@
 
         </div>
 
-
         <button data-owner-only
                 onclick="saveOpeningBalance()"
                 class="primary-btn mt-5">
@@ -1127,7 +1092,6 @@
             Save Opening Balance
 
         </button>
-
 
         <div class="grid md:grid-cols-2 gap-4 mt-7 pt-6 border-t border-gray-200">
 
@@ -1143,7 +1107,6 @@
                 </p>
 
             </div>
-
 
             <div class="bg-gray-50 rounded-xl p-5">
 
@@ -1163,9 +1126,161 @@
     </section>
 
 
-    <!-- =================================================
-         PENDING ORDERS
-    ================================================== -->
+    <!-- GOODS IN -->
+
+    <section class="dashboard-card p-5 md:p-6 mb-7 mobile-collapsible"
+             data-mobile-title="Goods In">
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="text-[11px] tracking-wider text-green-700">
+                    STOCK RECEIVED
+                </p>
+
+                <h2 class="section-title mt-1">
+                    Goods In
+                </h2>
+
+                <p class="section-description">
+                    Record goods received and use the calendar to view records from any date.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="grid md:grid-cols-3 gap-4 mt-6">
+
+            <div>
+
+                <label class="field-label">
+                    DATE
+                </label>
+
+                <input id="goodsInDate"
+                       type="date"
+                       class="modern-input">
+
+            </div>
+
+
+            <div>
+
+                <label class="field-label">
+                    PRODUCT / ITEM
+                </label>
+
+                <input id="goodsInProduct"
+                       type="text"
+                       placeholder="Example: Potatoes"
+                       class="modern-input">
+
+            </div>
+
+
+            <div>
+
+                <label class="field-label">
+                    QUANTITY
+                </label>
+
+                <input id="goodsInQuantity"
+                       type="number"
+                       min="0.01"
+                       step="any"
+                       placeholder="Example: 20"
+                       class="modern-input">
+
+            </div>
+
+        </div>
+
+
+        <div class="grid md:grid-cols-3 gap-4 mt-4">
+
+            <div>
+
+                <label class="field-label">
+                    UNIT
+                </label>
+
+                <input id="goodsInUnit"
+                       type="text"
+                       placeholder="Kg, packets, crates..."
+                       class="modern-input">
+
+            </div>
+
+
+            <div>
+
+                <label class="field-label">
+                    NOTES
+                </label>
+
+                <input id="goodsInNotes"
+                       type="text"
+                       placeholder="Optional note"
+                       class="modern-input">
+
+            </div>
+
+
+            <div class="flex items-end">
+
+                <button data-owner-only
+                        onclick="addGoodsIn()"
+                        class="primary-btn w-full">
+
+                    + Record Goods In
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="goods-date-box mt-7">
+
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
+                <div>
+
+                    <p class="text-[10px] tracking-wider text-gray-400">
+                        VIEWING RECORDS FOR
+                    </p>
+
+                    <p id="goodsInSelectedDateLabel"
+                       class="text-sm text-gray-800 mt-1">
+                    </p>
+
+                </div>
+
+
+                <button onclick="setGoodsInToday()"
+                        class="secondary-btn text-xs">
+
+                    Go to Today
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div id="goodsInContainer"
+             class="mt-5">
+        </div>
+
+    </section>
+
+
+    <!-- PENDING ORDERS -->
 
     <section class="dashboard-card p-5 md:p-6 mb-7 mobile-collapsible"
              data-mobile-title="Orders Awaiting Payment">
@@ -1194,7 +1309,6 @@
 
             </div>
 
-
             <button onclick="renderAll()"
                     class="secondary-btn text-sm">
 
@@ -1204,7 +1318,6 @@
 
         </div>
 
-
         <div id="pendingOrders"
              class="mt-6">
         </div>
@@ -1212,9 +1325,7 @@
     </section>
 
 
-    <!-- =================================================
-         EXPENSES
-    ================================================== -->
+    <!-- EXPENSES -->
 
     <section class="dashboard-card p-5 md:p-6 mb-7 mobile-collapsible"
              data-mobile-title="Expenses">
@@ -1230,7 +1341,7 @@
             </h2>
 
             <p class="section-description">
-                Keep today's operating expenses together with the sales record.
+                Record expenses and track whether each one has been paid.
             </p>
 
         </div>
@@ -1289,9 +1400,7 @@
     </section>
 
 
-    <!-- =================================================
-         WORKERS
-    ================================================== -->
+    <!-- WORKERS -->
 
     <section class="dashboard-card p-5 md:p-6 mb-7 mobile-collapsible"
              data-mobile-title="Workers">
@@ -1366,9 +1475,7 @@
     </section>
 
 
-    <!-- =================================================
-         DEBTS
-    ================================================== -->
+    <!-- DEBTS -->
 
     <section class="dashboard-card p-5 md:p-6 mobile-collapsible"
              data-mobile-title="Debts & Credit">
@@ -1457,12 +1564,15 @@ const WORKER_KEY = "serene_workers";
 const DEBT_KEY = "serene_debts";
 const BALANCE_KEY = "serene_daily_balances";
 const PRODUCTION_KEY = "serene_production";
+const GOODS_IN_KEY = "serene_goods_in";
 
 
 let selectedOrderId = null;
 let selectedPaymentMethod = null;
 let orderToRemove = null;
 let popupTimer;
+
+let selectedGoodsInDate = "";
 
 
 /* =====================================================
@@ -1474,8 +1584,10 @@ let firebaseStarted = false;
 
 
 function isOwner() {
+
     return !!currentUser &&
         String(currentUser.email || "").toLowerCase() === OWNER_EMAIL.toLowerCase();
+
 }
 
 
@@ -1492,6 +1604,7 @@ function requireOwner(action) {
     );
 
     return false;
+
 }
 
 
@@ -1525,6 +1638,7 @@ function updateAuthUI() {
 
     signIn.classList.add("hidden");
     signOut.classList.remove("hidden");
+
 }
 
 
@@ -1545,7 +1659,9 @@ async function signInWithGoogle() {
             "Google sign-in could not be completed. Please try again.",
             true
         );
+
     }
+
 }
 
 
@@ -1564,7 +1680,9 @@ async function signOutUser() {
             "Please try again.",
             true
         );
+
     }
+
 }
 
 
@@ -1577,7 +1695,12 @@ function protectOwnerControls() {
         "workerName",
         "workerWage",
         "debtName",
-        "debtAmount"
+        "debtAmount",
+        "goodsInDate",
+        "goodsInProduct",
+        "goodsInQuantity",
+        "goodsInUnit",
+        "goodsInNotes"
     ];
 
     ids.forEach(function(id) {
@@ -1612,6 +1735,7 @@ function protectOwnerControls() {
             );
 
         });
+
 }
 
 
@@ -1624,12 +1748,14 @@ let productionCache = [];
 let expensesCache = [];
 let workersCache = [];
 let debtsCache = [];
+let goodsInCache = [];
 
 let ordersMigrationStarted = false;
 let productionMigrationStarted = false;
 let expensesMigrationStarted = false;
 let workersMigrationStarted = false;
 let debtsMigrationStarted = false;
+let goodsInMigrationStarted = false;
 
 
 function getLocalData(key) {
@@ -1645,6 +1771,7 @@ function getLocalData(key) {
         return [];
 
     }
+
 }
 
 
@@ -1654,6 +1781,7 @@ function saveLocalData(key, data) {
         key,
         JSON.stringify(data)
     );
+
 }
 
 
@@ -1674,7 +1802,11 @@ function getData(key) {
     if (key === DEBT_KEY)
         return debtsCache;
 
+    if (key === GOODS_IN_KEY)
+        return goodsInCache;
+
     return getLocalData(key);
+
 }
 
 
@@ -1693,6 +1825,7 @@ function saveData(key, data) {
         saveOrdersToFirebase();
 
         return;
+
     }
 
 
@@ -1709,6 +1842,7 @@ function saveData(key, data) {
         saveProductionToFirebase();
 
         return;
+
     }
 
 
@@ -1728,6 +1862,7 @@ function saveData(key, data) {
         );
 
         return;
+
     }
 
 
@@ -1747,6 +1882,7 @@ function saveData(key, data) {
         );
 
         return;
+
     }
 
 
@@ -1766,6 +1902,27 @@ function saveData(key, data) {
         );
 
         return;
+
+    }
+
+
+    if (key === GOODS_IN_KEY) {
+
+        goodsInCache =
+            Array.isArray(data) ? data : [];
+
+        saveLocalData(
+            key,
+            goodsInCache
+        );
+
+        saveRecordsToFirebase(
+            "goodsIn",
+            goodsInCache
+        );
+
+        return;
+
     }
 
 
@@ -1773,6 +1930,7 @@ function saveData(key, data) {
         key,
         data
     );
+
 }
 
 
@@ -1786,6 +1944,7 @@ function normalizeSnapshot(snapshot) {
         };
 
     });
+
 }
 
 
@@ -1828,7 +1987,9 @@ async function writeCollection(
             batch = db.batch();
 
             operations = 0;
+
         }
+
     }
 
 
@@ -1874,13 +2035,12 @@ async function writeCollection(
         batches.push(batch);
 
 
-    for (
-        const currentBatch of batches
-    ) {
+    for (const currentBatch of batches) {
 
         await currentBatch.commit();
 
     }
+
 }
 
 
@@ -1939,9 +2099,7 @@ async function saveRecordsToFirebase(
             batches.push(batch);
 
 
-        for (
-            const currentBatch of batches
-        ) {
+        for (const currentBatch of batches) {
 
             await currentBatch.commit();
 
@@ -1962,7 +2120,9 @@ async function saveRecordsToFirebase(
             " record could not be saved to Firebase.",
             true
         );
+
     }
+
 }
 
 
@@ -1987,7 +2147,9 @@ async function saveOrdersToFirebase() {
             "The order could not be saved to Firebase.",
             true
         );
+
     }
+
 }
 
 
@@ -2012,7 +2174,9 @@ async function saveProductionToFirebase() {
             "Production stock could not be updated in Firebase.",
             true
         );
+
     }
+
 }
 
 
@@ -2068,8 +2232,13 @@ async function migrateLocalCollectionIfEmpty(
         );
 
     }
+
 }
 
+
+/* =====================================================
+   FIREBASE LISTENERS
+===================================================== */
 
 function startFirebaseListeners() {
 
@@ -2102,6 +2271,7 @@ function startFirebaseListeners() {
             renderAll();
 
         }
+
     );
 
 
@@ -2134,6 +2304,7 @@ function startFirebaseListeners() {
             renderAll();
 
         }
+
     );
 
 
@@ -2166,6 +2337,7 @@ function startFirebaseListeners() {
             renderAll();
 
         }
+
     );
 
 
@@ -2198,6 +2370,7 @@ function startFirebaseListeners() {
             renderAll();
 
         }
+
     );
 
 
@@ -2230,6 +2403,48 @@ function startFirebaseListeners() {
             renderAll();
 
         }
+
+    );
+
+
+    /* GOODS IN LISTENER */
+
+    db.collection("goodsIn").onSnapshot(
+
+        function(snapshot) {
+
+            goodsInCache =
+                normalizeSnapshot(snapshot);
+
+            saveLocalData(
+                GOODS_IN_KEY,
+                goodsInCache
+            );
+
+            renderGoodsIn();
+
+        },
+
+        function(error) {
+
+            console.error(
+                "Goods In Firebase listener error:",
+                error
+            );
+
+            goodsInCache =
+                getLocalData(GOODS_IN_KEY);
+
+            renderGoodsIn();
+
+            showPopup(
+                "Goods In Firebase error",
+                "Goods In could not be loaded from Firebase. Check the Firestore rules.",
+                true
+            );
+
+        }
+
     );
 
 
@@ -2242,6 +2457,7 @@ function startFirebaseListeners() {
             ORDER_KEY,
             "Orders"
         );
+
     }
 
 
@@ -2254,6 +2470,7 @@ function startFirebaseListeners() {
             PRODUCTION_KEY,
             "Production"
         );
+
     }
 
 
@@ -2266,6 +2483,7 @@ function startFirebaseListeners() {
             EXPENSE_KEY,
             "Expenses"
         );
+
     }
 
 
@@ -2278,6 +2496,7 @@ function startFirebaseListeners() {
             WORKER_KEY,
             "Workers"
         );
+
     }
 
 
@@ -2290,7 +2509,22 @@ function startFirebaseListeners() {
             DEBT_KEY,
             "Debts"
         );
+
     }
+
+
+    if (!goodsInMigrationStarted) {
+
+        goodsInMigrationStarted = true;
+
+        migrateLocalCollectionIfEmpty(
+            "goodsIn",
+            GOODS_IN_KEY,
+            "Goods In"
+        );
+
+    }
+
 }
 
 
@@ -2345,6 +2579,60 @@ function getTodayKey() {
 function isToday(item) {
 
     return item.date === nowDate();
+
+}
+
+
+function formatDateKey(dateKey) {
+
+    if (!dateKey)
+        return "-";
+
+    const parts =
+        dateKey.split("-");
+
+    if (parts.length !== 3)
+        return dateKey;
+
+    const date =
+        new Date(
+            Number(parts[0]),
+            Number(parts[1]) - 1,
+            Number(parts[2])
+        );
+
+    return date.toLocaleDateString(
+        undefined,
+        {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        }
+    );
+
+}
+
+
+function dateKeyToLocaleDate(dateKey) {
+
+    if (!dateKey)
+        return nowDate();
+
+    const parts =
+        dateKey.split("-");
+
+    if (parts.length !== 3)
+        return dateKey;
+
+    const date =
+        new Date(
+            Number(parts[0]),
+            Number(parts[1]) - 1,
+            Number(parts[2])
+        );
+
+    return date.toLocaleDateString();
 
 }
 
@@ -2434,6 +2722,490 @@ function showPopup(
             },
             3500
         );
+
+}
+
+
+/* =====================================================
+   GOODS IN
+===================================================== */
+
+function addGoodsIn() {
+
+    if (!requireOwner("record goods received"))
+        return;
+
+
+    const dateKey =
+        document.getElementById(
+            "goodsInDate"
+        ).value;
+
+
+    const product =
+        document.getElementById(
+            "goodsInProduct"
+        ).value.trim();
+
+
+    const quantity =
+        Number(
+            document.getElementById(
+                "goodsInQuantity"
+            ).value
+        );
+
+
+    const unit =
+        document.getElementById(
+            "goodsInUnit"
+        ).value.trim();
+
+
+    const notes =
+        document.getElementById(
+            "goodsInNotes"
+        ).value.trim();
+
+
+    if (!dateKey) {
+
+        showPopup(
+            "Date required",
+            "Please select the date when the goods came in.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    if (!product) {
+
+        showPopup(
+            "Product missing",
+            "Please enter the product or item received.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    if (
+        isNaN(quantity) ||
+        quantity <= 0
+    ) {
+
+        showPopup(
+            "Invalid quantity",
+            "Please enter a valid quantity.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    const goods =
+        getData(GOODS_IN_KEY);
+
+
+    const record = {
+
+        id:
+            generateID(),
+
+        product:
+            product,
+
+        quantity:
+            quantity,
+
+        unit:
+            unit,
+
+        notes:
+            notes,
+
+        dateKey:
+            dateKey,
+
+        date:
+            dateKeyToLocaleDate(dateKey),
+
+        time:
+            nowTime(),
+
+        createdAt:
+            new Date()
+                .toISOString()
+
+    };
+
+
+    goods.push(record);
+
+
+    saveData(
+        GOODS_IN_KEY,
+        goods
+    );
+
+
+    selectedGoodsInDate =
+        dateKey;
+
+
+    document.getElementById(
+        "goodsInProduct"
+    ).value = "";
+
+    document.getElementById(
+        "goodsInQuantity"
+    ).value = "";
+
+    document.getElementById(
+        "goodsInUnit"
+    ).value = "";
+
+    document.getElementById(
+        "goodsInNotes"
+    ).value = "";
+
+
+    renderGoodsIn();
+
+
+    showPopup(
+        "Goods In recorded",
+        `${product} was recorded for ${formatDateKey(dateKey)}.`
+    );
+
+}
+
+
+async function removeGoodsIn(id) {
+
+    if (!requireOwner("remove Goods In records"))
+        return;
+
+
+    const goods =
+        getData(GOODS_IN_KEY);
+
+
+    const record =
+        goods.find(
+            item =>
+                item.id === id
+        );
+
+
+    if (!record)
+        return;
+
+
+    try {
+
+        await db
+            .collection("goodsIn")
+            .doc(String(id))
+            .delete();
+
+    } catch (error) {
+
+        console.error(
+            "Goods In delete error:",
+            error
+        );
+
+        showPopup(
+            "Firebase error",
+            "The Goods In record could not be removed.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    goodsInCache =
+        goods.filter(
+            item =>
+                item.id !== id
+        );
+
+
+    saveLocalData(
+        GOODS_IN_KEY,
+        goodsInCache
+    );
+
+
+    renderGoodsIn();
+
+
+    showPopup(
+        "Goods In removed",
+        `${record.product} was removed from the Goods In record.`
+    );
+
+}
+
+
+function renderGoodsIn() {
+
+    const container =
+        document.getElementById(
+            "goodsInContainer"
+        );
+
+
+    if (!container)
+        return;
+
+
+    const dateInput =
+        document.getElementById(
+            "goodsInDate"
+        );
+
+
+    if (
+        dateInput &&
+        !dateInput.value
+    ) {
+
+        dateInput.value =
+            selectedGoodsInDate ||
+            getTodayKey();
+
+    }
+
+
+    selectedGoodsInDate =
+        dateInput
+            ? dateInput.value
+            : selectedGoodsInDate || getTodayKey();
+
+
+    const selectedDate =
+        selectedGoodsInDate;
+
+
+    const label =
+        document.getElementById(
+            "goodsInSelectedDateLabel"
+        );
+
+
+    if (label) {
+
+        label.textContent =
+            formatDateKey(selectedDate);
+
+    }
+
+
+    const records =
+        getData(GOODS_IN_KEY)
+            .filter(function(item) {
+
+                return (
+                    item.dateKey === selectedDate
+                    ||
+                    (
+                        !item.dateKey &&
+                        item.date === dateKeyToLocaleDate(selectedDate)
+                    )
+                );
+
+            })
+            .slice()
+            .sort(function(a, b) {
+
+                return String(
+                    b.createdAt || ""
+                ).localeCompare(
+                    String(
+                        a.createdAt || ""
+                    )
+                );
+
+            });
+
+
+    container.innerHTML = "";
+
+
+    if (!records.length) {
+
+        container.innerHTML = `
+
+            <div class="bg-gray-50 rounded-xl text-center py-10 px-5">
+
+                <div class="w-11 h-11 mx-auto rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400">
+                    +
+                </div>
+
+                <p class="text-sm text-gray-500 mt-4">
+                    No Goods In records for this date.
+                </p>
+
+                <p class="text-xs text-gray-400 mt-1">
+                    Select another date or record goods received above.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    records.forEach(function(record) {
+
+        container.innerHTML += `
+
+            <div class="goods-record">
+
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+                    <div>
+
+                        <p class="text-sm text-gray-800">
+
+                            ${escapeHTML(
+                                record.product
+                            )}
+
+                        </p>
+
+                        <p class="text-xs text-gray-400 mt-1">
+
+                            ${escapeHTML(
+                                record.date ||
+                                dateKeyToLocaleDate(
+                                    record.dateKey
+                                )
+                            )}
+
+                            ·
+
+                            ${escapeHTML(
+                                record.time || ""
+                            )}
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="text-right">
+
+                            <p class="text-sm text-gray-900">
+
+                                ${Number(
+                                    record.quantity || 0
+                                ).toLocaleString()}
+
+                                ${record.unit
+                                    ? escapeHTML(record.unit)
+                                    : ""
+                                }
+
+                            </p>
+
+                            ${
+                                record.notes
+                                    ? `
+                                        <p class="text-xs text-gray-400 mt-1">
+                                            ${escapeHTML(record.notes)}
+                                        </p>
+                                      `
+                                    : ""
+                            }
+
+                        </div>
+
+
+                        <button
+                            data-owner-only
+                            onclick="removeGoodsIn('${record.id}')"
+                            class="danger-btn text-xs">
+
+                            Remove
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+
+    protectOwnerControls();
+
+}
+
+
+function setGoodsInToday() {
+
+    const input =
+        document.getElementById(
+            "goodsInDate"
+        );
+
+
+    if (!input)
+        return;
+
+
+    input.value =
+        getTodayKey();
+
+
+    selectedGoodsInDate =
+        input.value;
+
+
+    renderGoodsIn();
+
+}
+
+
+function handleGoodsInDateChange() {
+
+    const input =
+        document.getElementById(
+            "goodsInDate"
+        );
+
+
+    if (!input)
+        return;
+
+
+    selectedGoodsInDate =
+        input.value ||
+        getTodayKey();
+
+
+    renderGoodsIn();
 
 }
 
@@ -3023,6 +3795,7 @@ async function confirmPayment() {
         );
 
         return;
+
     }
 
 
@@ -3038,6 +3811,9 @@ async function confirmPayment() {
     const amount =
         orders[index].total;
 
+    const method =
+        selectedPaymentMethod;
+
 
     closePaymentModal();
 
@@ -3046,7 +3822,7 @@ async function confirmPayment() {
 
     showPopup(
         "Payment confirmed",
-        `${money(amount)} received through ${selectedPaymentMethod}.`
+        `${money(amount)} received through ${method}.`
     );
 
 }
@@ -3331,6 +4107,7 @@ async function confirmRemoveOrder() {
         );
 
         return;
+
     }
 
 
@@ -3542,6 +4319,9 @@ function addExpense() {
         amount:
             amount,
 
+        status:
+            "pending",
+
         date:
             nowDate(),
 
@@ -3576,7 +4356,162 @@ function addExpense() {
 
     showPopup(
         "Expense added",
-        `${money(amount)} was recorded.`
+        `${money(amount)} was recorded as pending.`
+    );
+
+}
+
+
+async function toggleExpensePayment(id) {
+
+    if (!requireOwner("change expense payment status"))
+        return;
+
+
+    const expenses =
+        getData(EXPENSE_KEY);
+
+
+    const index =
+        expenses.findIndex(
+            expense =>
+                expense.id === id
+        );
+
+
+    if (index === -1)
+        return;
+
+
+    const newStatus =
+        expenses[index].status === "paid"
+            ? "pending"
+            : "paid";
+
+
+    expenses[index].status =
+        newStatus;
+
+
+    expenses[index].paidAt =
+        newStatus === "paid"
+            ? new Date().toISOString()
+            : null;
+
+
+    try {
+
+        await db
+            .collection("expenses")
+            .doc(String(id))
+            .set(
+                expenses[index],
+                { merge: true }
+            );
+
+    } catch (error) {
+
+        console.error(
+            "Expense status update error:",
+            error
+        );
+
+        showPopup(
+            "Firebase error",
+            "The expense payment status could not be saved.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    expensesCache =
+        expenses;
+
+    saveLocalData(
+        EXPENSE_KEY,
+        expensesCache
+    );
+
+
+    renderAll();
+
+
+    showPopup(
+        "Expense updated",
+        `Expense is now ${newStatus}.`
+    );
+
+}
+
+
+async function removeExpense(id) {
+
+    if (!requireOwner("remove expenses"))
+        return;
+
+
+    const expenses =
+        getData(EXPENSE_KEY);
+
+
+    const expense =
+        expenses.find(
+            item =>
+                item.id === id
+        );
+
+
+    if (!expense)
+        return;
+
+
+    try {
+
+        await db
+            .collection("expenses")
+            .doc(String(id))
+            .delete();
+
+    } catch (error) {
+
+        console.error(
+            "Expense delete error:",
+            error
+        );
+
+        showPopup(
+            "Firebase error",
+            "The expense could not be removed.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    expensesCache =
+        expenses.filter(
+            item =>
+                item.id !== id
+        );
+
+
+    saveLocalData(
+        EXPENSE_KEY,
+        expensesCache
+    );
+
+
+    renderAll();
+
+
+    showPopup(
+        "Expense removed",
+        `${expense.description} was removed from today's expenses.`
     );
 
 }
@@ -3622,6 +4557,10 @@ function renderExpenses() {
         .reverse()
         .forEach(function(expense) {
 
+            const paid =
+                expense.status === "paid";
+
+
             container.innerHTML += `
 
                 <div class="record-row">
@@ -3647,19 +4586,62 @@ function renderExpenses() {
                     </div>
 
 
-                    <p class="text-sm text-gray-900">
+                    <div class="flex items-center gap-3">
 
-                        ${money(
-                            expense.amount
-                        )}
+                        <p class="text-sm text-gray-900">
 
-                    </p>
+                            ${money(
+                                expense.amount
+                            )}
+
+                        </p>
+
+
+                        <span class="${paid
+                            ? "status-paid"
+                            : "status-pending"
+                        }">
+
+                            ${paid
+                                ? "Paid"
+                                : "Pending"
+                            }
+
+                        </span>
+
+
+                        <button
+                            data-owner-only
+                            onclick="toggleExpensePayment('${expense.id}')"
+                            class="secondary-btn text-xs">
+
+                            ${paid
+                                ? "Mark Pending"
+                                : "Mark Paid"
+                            }
+
+                        </button>
+
+
+                        <button
+                            data-owner-only
+                            onclick="removeExpense('${expense.id}')"
+                            class="danger-btn text-xs">
+
+                            Remove
+
+                        </button>
+
+                    </div>
 
                 </div>
 
             `;
 
         });
+
+
+    protectOwnerControls();
 
 }
 
@@ -4269,6 +5251,15 @@ function renderFinancialSummary() {
             );
 
 
+    /*
+       Total expenses includes both paid and pending
+       expenses because they are business costs.
+
+       Cash calculations below only subtract paid
+       expenses because pending expenses have not
+       actually left the cash yet.
+    */
+
     const totalExpenses =
         expenses.reduce(
             (total, expense) =>
@@ -4278,6 +5269,23 @@ function renderFinancialSummary() {
                 ),
             0
         );
+
+
+    const paidExpenses =
+        expenses
+            .filter(function(expense) {
+
+                return expense.status === "paid";
+
+            })
+            .reduce(
+                (total, expense) =>
+                    total +
+                    Number(
+                        expense.amount || 0
+                    ),
+                0
+            );
 
 
     const profit =
@@ -4301,13 +5309,13 @@ function renderFinancialSummary() {
     const expectedCash =
         openingBalance +
         cashSales -
-        totalExpenses;
+        paidExpenses;
 
 
     const closingBalance =
         openingBalance +
         totalSales -
-        totalExpenses;
+        paidExpenses;
 
 
     document.getElementById(
@@ -4372,6 +5380,8 @@ function renderAll() {
 
     renderPendingOrders();
 
+    renderGoodsIn();
+
     renderExpenses();
 
     renderWorkers();
@@ -4382,7 +5392,7 @@ function renderAll() {
 
 
 /* =====================================================
-   AUTO REFRESH BETWEEN TABS
+   STORAGE EVENT
 ===================================================== */
 
 window.addEventListener(
@@ -4399,6 +5409,8 @@ window.addEventListener(
             event.key === WORKER_KEY
             ||
             event.key === DEBT_KEY
+            ||
+            event.key === GOODS_IN_KEY
         ) {
 
             renderAll();
@@ -4428,6 +5440,24 @@ document.getElementById(
         );
 
 
+selectedGoodsInDate =
+    getTodayKey();
+
+
+document.getElementById(
+    "goodsInDate"
+).value =
+    selectedGoodsInDate;
+
+
+document.getElementById(
+    "goodsInDate"
+).addEventListener(
+    "change",
+    handleGoodsInDateChange
+);
+
+
 document.getElementById(
     "openingBalance"
 ).value =
@@ -4439,6 +5469,18 @@ ordersCache =
 
 productionCache =
     getLocalData(PRODUCTION_KEY);
+
+expensesCache =
+    getLocalData(EXPENSE_KEY);
+
+workersCache =
+    getLocalData(WORKER_KEY);
+
+debtsCache =
+    getLocalData(DEBT_KEY);
+
+goodsInCache =
+    getLocalData(GOODS_IN_KEY);
 
 
 renderAll();
@@ -4627,7 +5669,7 @@ document.getElementById(
 
 
 /* =====================================================
-   ESCAPE KEY CLOSES MODALS
+   ESCAPE KEY
 ===================================================== */
 
 document.addEventListener(

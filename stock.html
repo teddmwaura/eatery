@@ -15,7 +15,6 @@
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore-compat.js"></script>
 
-```html
 <style>
 
     * {
@@ -188,8 +187,661 @@
 
     }
 
+
+/* =========================================================
+   SERENE EATERY — STOCK DASHBOARD UI REFRESH
+   UI-only layer: existing IDs, forms, Firebase and handlers
+   are intentionally preserved.
+========================================================= */
+
+:root{
+    --se-green:#176b45;
+    --se-green-dark:#0f5133;
+    --se-green-soft:#edf7f1;
+    --se-green-border:#cfe6d8;
+    --se-ink:#202522;
+    --se-muted:#6f7773;
+    --se-bg:#f5f7f6;
+    --se-card:#ffffff;
+    --se-border:#e4e9e6;
+    --se-shadow:0 8px 24px rgba(24,43,34,.055);
+    --se-shadow-hover:0 12px 30px rgba(24,43,34,.09);
+    --se-radius:14px;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+    background:var(--se-bg) !important;
+    color:var(--se-ink) !important;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+    letter-spacing:-.01em;
+}
+
+button,a,input,select,textarea{
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        box-shadow .18s ease,
+        transform .18s ease,
+        opacity .18s ease;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible{
+    outline:3px solid rgba(23,107,69,.18);
+    outline-offset:2px;
+}
+
+/* ---------- HEADER ---------- */
+header.fixed{
+    background:rgba(255,255,255,.96) !important;
+    border-bottom:1px solid var(--se-border) !important;
+    box-shadow:0 2px 14px rgba(20,40,30,.04);
+    backdrop-filter:blur(12px);
+}
+
+header.fixed > div{
+    max-width:1320px;
+}
+
+header.fixed .h-16{
+    height:70px;
+}
+
+header.fixed a[href="index.html"]{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    color:var(--se-green-dark) !important;
+    font-weight:650 !important;
+    letter-spacing:-.02em;
+}
+
+header.fixed a[href="index.html"]::before{
+    content:"";
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--se-green);
+    box-shadow:0 0 0 5px var(--se-green-soft);
+}
+
+header.fixed nav{
+    gap:4px !important;
+}
+
+header.fixed nav a{
+    color:#5e6762 !important;
+    padding:9px 12px;
+    border-radius:9px;
+}
+
+header.fixed nav a:hover{
+    color:var(--se-green-dark) !important;
+    background:var(--se-green-soft);
+}
+
+header.fixed nav a.text-green-900{
+    color:var(--se-green-dark) !important;
+    background:var(--se-green-soft);
+    font-weight:600 !important;
+}
+
+#mobileMenuButton{
+    width:42px;
+    height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--se-border);
+    border-radius:10px;
+    background:#fff;
+    font-size:19px;
+}
+
+#mobileMenuButton:hover{
+    background:var(--se-green-soft);
+    border-color:var(--se-green-border);
+}
+
+#mobileMenu{
+    background:#fff;
+    border-color:var(--se-border) !important;
+    padding:12px 0 18px !important;
+}
+
+#mobileMenu a{
+    padding:11px 12px;
+    border-radius:9px;
+    color:#58615c;
+}
+
+#mobileMenu a:hover,
+#mobileMenu a.text-green-900{
+    background:var(--se-green-soft);
+    color:var(--se-green-dark) !important;
+}
+
+/* ---------- MAIN / PAGE HEADER ---------- */
+main{
+    background:transparent;
+}
+
+main > div{
+    max-width:1320px;
+}
+
+main .tracking-widest{
+    color:var(--se-green) !important;
+    font-size:10px;
+    font-weight:700 !important;
+    letter-spacing:.16em;
+}
+
+main h1{
+    color:var(--se-ink);
+    font-size:clamp(1.8rem,3vw,2.35rem) !important;
+    font-weight:650 !important;
+    letter-spacing:-.035em;
+}
+
+#currentDate{
+    color:var(--se-muted) !important;
+}
+
+#firebaseStatus{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:7px 11px;
+    border:1px solid var(--se-border);
+    border-radius:999px;
+    background:#fff;
+    color:#59635e;
+    font-size:12px;
+    box-shadow:0 2px 8px rgba(20,40,30,.03);
+}
+
+#firebaseStatus::before{
+    content:"";
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#e3a321;
+    flex:none;
+}
+
+#newStockDayButton{
+    border-color:#e5bcbc !important;
+    color:#a13e3e !important;
+    background:#fff !important;
+    border-radius:9px;
+    font-weight:550 !important;
+}
+
+#newStockDayButton:hover:not(:disabled){
+    background:#fff5f5 !important;
+    border-color:#d99b9b !important;
+    transform:translateY(-1px);
+}
+
+/* ---------- SUMMARY CARDS ---------- */
+section.grid.grid-cols-2.md\:grid-cols-4{
+    gap:14px !important;
+}
+
+section.grid.grid-cols-2.md\:grid-cols-4 > div{
+    position:relative;
+    overflow:hidden;
+    background:var(--se-card) !important;
+    border:1px solid var(--se-border) !important;
+    border-radius:var(--se-radius);
+    padding:20px !important;
+    box-shadow:var(--se-shadow);
+}
+
+section.grid.grid-cols-2.md\:grid-cols-4 > div::after{
+    content:"";
+    position:absolute;
+    right:-18px;
+    bottom:-22px;
+    width:68px;
+    height:68px;
+    border-radius:50%;
+    background:var(--se-green-soft);
+}
+
+section.grid.grid-cols-2.md\:grid-cols-4 > div:hover{
+    transform:translateY(-2px);
+    box-shadow:var(--se-shadow-hover);
+}
+
+section.grid.grid-cols-2.md\:grid-cols-4 > div p:first-child{
+    color:#7b847f !important;
+    font-size:10px !important;
+    font-weight:650 !important;
+    letter-spacing:.09em;
+}
+
+section.grid.grid-cols-2.md\:grid-cols-4 > div p:last-child{
+    color:var(--se-ink);
+    font-size:27px !important;
+    font-weight:650 !important;
+    line-height:1;
+    position:relative;
+    z-index:1;
+}
+
+/* ---------- ALL DASHBOARD SECTIONS ---------- */
+main section:not(.grid){
+    background:var(--se-card) !important;
+    border:1px solid var(--se-border) !important;
+    border-radius:var(--se-radius);
+    box-shadow:var(--se-shadow);
+    overflow:hidden;
+}
+
+main section:not(.grid) > button{
+    min-height:66px;
+    padding:17px 20px !important;
+    color:var(--se-ink);
+    background:#fff;
+}
+
+main section:not(.grid) > button:hover{
+    background:#fbfcfb;
+}
+
+main section:not(.grid) > button > span:first-child{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    font-size:15px !important;
+    font-weight:620 !important;
+    color:#28302c;
+}
+
+main section:not(.grid) > button > span:first-child::before{
+    content:"";
+    width:9px;
+    height:9px;
+    border-radius:3px;
+    background:var(--se-green);
+    box-shadow:0 0 0 5px var(--se-green-soft);
+    flex:none;
+}
+
+main section:not(.grid) > button > span:last-child{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:30px;
+    height:30px;
+    border:1px solid var(--se-border);
+    border-radius:8px;
+    color:#707975;
+    font-size:12px;
+    background:#fff;
+}
+
+.section-content{
+    border-top:1px solid #eef1ef;
+    padding:20px !important;
+}
+
+/* ---------- FORMS ---------- */
+label{
+    color:#68716c !important;
+    font-size:12px !important;
+    font-weight:550 !important;
+}
+
+input,
+select,
+textarea{
+    min-height:45px;
+    border:1px solid #dce2de !important;
+    border-radius:9px !important;
+    background:#fff !important;
+    color:var(--se-ink) !important;
+    padding:11px 13px !important;
+    box-shadow:0 1px 2px rgba(20,40,30,.02);
+}
+
+input::placeholder{
+    color:#a1a9a5;
+}
+
+input:hover,
+select:hover,
+textarea:hover{
+    border-color:#c6d1cb !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:var(--se-green) !important;
+    box-shadow:0 0 0 3px rgba(23,107,69,.09) !important;
+}
+
+form button[type="submit"]{
+    background:var(--se-green) !important;
+    color:#fff !important;
+    border:1px solid var(--se-green) !important;
+    border-radius:9px;
+    font-weight:600 !important;
+    box-shadow:0 4px 10px rgba(23,107,69,.12);
+}
+
+form button[type="submit"]:hover{
+    background:var(--se-green-dark) !important;
+    border-color:var(--se-green-dark) !important;
+    transform:translateY(-1px);
+    box-shadow:0 7px 16px rgba(23,107,69,.16);
+}
+
+/* ---------- STOCK USAGE ---------- */
+#stockUsageContainer > div{
+    padding:12px;
+    border:1px solid #e8ece9;
+    border-radius:10px;
+    background:#fafcfb;
+}
+
+#stockUsageContainer button{
+    border-color:#d9e0dc !important;
+    border-radius:8px;
+    background:#fff;
+    color:#626b66;
+}
+
+#stockUsageContainer button:hover{
+    background:#f5f8f6;
+}
+
+#stockUsageContainer .text-red-700{
+    color:#a04a4a !important;
+}
+
+/* ---------- GENERATED TABLES / RECORDS ---------- */
+.mobile-table{
+    border:1px solid var(--se-border);
+    border-radius:10px;
+    background:#fff;
+}
+
+.mobile-table table{
+    width:100%;
+}
+
+.mobile-table thead{
+    background:#f7f9f8;
+}
+
+.mobile-table th{
+    color:#7b847f !important;
+    font-size:10px !important;
+    font-weight:650 !important;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    white-space:nowrap;
+    border-bottom:1px solid var(--se-border);
+}
+
+.mobile-table td{
+    color:#38403b;
+    border-color:#eef1ef !important;
+    vertical-align:middle;
+}
+
+.mobile-table tbody tr{
+    transition:background .16s ease;
+}
+
+.mobile-table tbody tr:hover{
+    background:#fbfdfc;
+}
+
+/* Give rendered record groups a cleaner date header */
+main .border-b.border-gray-200{
+    border-color:#e8ece9 !important;
+}
+
+main .text-green-900{
+    color:var(--se-green-dark) !important;
+}
+
+/* ---------- ACTION BUTTONS GENERATED BY JS ---------- */
+main button.border.border-gray-300{
+    border-color:#d9e0dc !important;
+    border-radius:8px;
+    background:#fff;
+    color:#56605a;
+}
+
+main button.border.border-gray-300:hover{
+    border-color:#bfd0c5 !important;
+    background:#f5f9f6;
+    color:var(--se-green-dark);
+    transform:translateY(-1px);
+}
+
+main button.border.border-red-300{
+    border-radius:8px;
+}
+
+main button.text-red-700{
+    color:#a34b4b !important;
+}
+
+/* ---------- STATUS BADGES ----------
+   Works with status text rendered inside table cells.
+*/
+td:last-of-type{
+    white-space:nowrap;
+}
+
+/* ---------- EMPTY STATES ---------- */
+#availableStockContainer > p,
+#productionContainer > p,
+#finishedContainer > p,
+#warningsContainer > p,
+#historyContainer > p{
+    margin:0;
+    padding:24px 14px;
+    border:1px dashed #dce4df;
+    border-radius:10px;
+    background:#fafcfb;
+    color:#8a938e !important;
+    text-align:center;
+}
+
+/* ---------- LOGIN MODAL ---------- */
+#loginModal,
+#confirmModal{
+    background:rgba(19,27,23,.58) !important;
+    backdrop-filter:blur(5px);
+}
+
+#loginModal > div,
+#confirmModal > div{
+    border:1px solid var(--se-border);
+    border-radius:16px;
+    box-shadow:0 24px 70px rgba(0,0,0,.16);
+}
+
+#loginModal h2,
+#confirmModal h2{
+    font-weight:650 !important;
+    letter-spacing:-.025em;
+}
+
+#loginButton,
+#confirmYes{
+    background:var(--se-green) !important;
+    border-radius:9px;
+    font-weight:600 !important;
+}
+
+#loginButton:hover,
+#confirmYes:hover{
+    background:var(--se-green-dark) !important;
+}
+
+#confirmCancel{
+    border-color:#d9e0dc !important;
+    border-radius:9px;
+    background:#fff;
+}
+
+#confirmCancel:hover{
+    background:#f5f7f6;
+}
+
+#loginError{
+    background:#fff5f5;
+    border:1px solid #f0d5d5;
+    border-radius:8px;
+    padding:10px 12px;
+}
+
+/* ---------- TOAST ---------- */
+#toast{
+    background:#1f2823 !important;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:10px;
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+}
+
+/* ---------- DESKTOP SPACING ---------- */
+@media (min-width:768px){
+    main > div{
+        padding-left:24px !important;
+        padding-right:24px !important;
+    }
+
+    main section:not(.grid) .grid{
+        gap:16px;
+    }
+}
+
+/* ---------- TABLET ---------- */
+@media (max-width:900px){
+    header.fixed nav{
+        display:none;
+    }
+}
+
+/* ---------- PHONE ---------- */
+@media (max-width:640px){
+    main{
+        padding-top:92px !important;
+        padding-bottom:28px !important;
+    }
+
+    main > div{
+        padding-left:14px !important;
+        padding-right:14px !important;
+    }
+
+    main h1{
+        font-size:1.8rem !important;
+    }
+
+    main > div > div:first-child{
+        gap:14px !important;
+    }
+
+    #firebaseStatus{
+        width:100%;
+        justify-content:center;
+    }
+
+    #newStockDayButton{
+        width:100%;
+        min-height:44px;
+    }
+
+    section.grid.grid-cols-2.md\:grid-cols-4{
+        gap:10px !important;
+        margin-top:22px !important;
+    }
+
+    section.grid.grid-cols-2.md\:grid-cols-4 > div{
+        min-height:105px;
+        padding:15px !important;
+        border-radius:12px;
+    }
+
+    section.grid.grid-cols-2.md\:grid-cols-4 > div p:last-child{
+        font-size:23px !important;
+    }
+
+    main section:not(.grid){
+        margin-top:12px !important;
+        border-radius:12px;
+    }
+
+    main section:not(.grid) > button{
+        min-height:60px;
+        padding:14px 15px !important;
+    }
+
+    main section:not(.grid) > button > span:first-child{
+        font-size:14px !important;
+    }
+
+    .section-content{
+        padding:15px !important;
+    }
+
+    #stockForm,
+    #productionForm{
+        gap:12px !important;
+    }
+
+    form button[type="submit"]{
+        width:100%;
+        min-height:46px;
+    }
+
+    #stockUsageContainer > div{
+        padding:10px;
+    }
+
+    .mobile-table{
+        border-radius:9px;
+    }
+
+    .mobile-table table{
+        min-width:650px;
+    }
+
+    #loginModal > div,
+    #confirmModal > div{
+        border-radius:14px;
+        padding:20px !important;
+    }
+}
+
+/* ---------- REDUCE MOTION ---------- */
+@media (prefers-reduced-motion:reduce){
+    *,
+    *::before,
+    *::after{
+        scroll-behavior:auto !important;
+        transition:none !important;
+        animation:none !important;
+    }
+}
+
 </style>
-```
 
 
 </head>
