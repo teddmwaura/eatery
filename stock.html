@@ -19,7 +19,6 @@
 
     * {
         font-family: Arial, Helvetica, sans-serif;
-        font-weight: 400 !important;
         box-sizing: border-box;
     }
 
@@ -258,7 +257,6 @@ header.fixed a[href="index.html"]{
     align-items:center;
     gap:9px;
     color:var(--se-green-dark) !important;
-    font-weight:650 !important;
     letter-spacing:-.02em;
 }
 
@@ -289,7 +287,6 @@ header.fixed nav a:hover{
 header.fixed nav a.text-green-900{
     color:var(--se-green-dark) !important;
     background:var(--se-green-soft);
-    font-weight:600 !important;
 }
 
 #mobileMenuButton{
@@ -339,14 +336,12 @@ main > div{
 main .tracking-widest{
     color:var(--se-green) !important;
     font-size:10px;
-    font-weight:700 !important;
     letter-spacing:.16em;
 }
 
 main h1{
     color:var(--se-ink);
     font-size:clamp(1.8rem,3vw,2.35rem) !important;
-    font-weight:650 !important;
     letter-spacing:-.035em;
 }
 
@@ -381,7 +376,6 @@ main h1{
     color:#a13e3e !important;
     background:#fff !important;
     border-radius:9px;
-    font-weight:550 !important;
 }
 
 #newStockDayButton:hover:not(:disabled){
@@ -424,14 +418,12 @@ section.grid.grid-cols-2.md\:grid-cols-4 > div:hover{
 section.grid.grid-cols-2.md\:grid-cols-4 > div p:first-child{
     color:#7b847f !important;
     font-size:10px !important;
-    font-weight:650 !important;
     letter-spacing:.09em;
 }
 
 section.grid.grid-cols-2.md\:grid-cols-4 > div p:last-child{
     color:var(--se-ink);
     font-size:27px !important;
-    font-weight:650 !important;
     line-height:1;
     position:relative;
     z-index:1;
@@ -462,7 +454,6 @@ main section:not(.grid) > button > span:first-child{
     align-items:center;
     gap:11px;
     font-size:15px !important;
-    font-weight:620 !important;
     color:#28302c;
 }
 
@@ -498,7 +489,6 @@ main section:not(.grid) > button > span:last-child{
 label{
     color:#68716c !important;
     font-size:12px !important;
-    font-weight:550 !important;
 }
 
 input,
@@ -535,7 +525,6 @@ form button[type="submit"]{
     color:#fff !important;
     border:1px solid var(--se-green) !important;
     border-radius:9px;
-    font-weight:600 !important;
     box-shadow:0 4px 10px rgba(23,107,69,.12);
 }
 
@@ -587,7 +576,6 @@ form button[type="submit"]:hover{
 .mobile-table th{
     color:#7b847f !important;
     font-size:10px !important;
-    font-weight:650 !important;
     letter-spacing:.06em;
     text-transform:uppercase;
     white-space:nowrap;
@@ -678,7 +666,6 @@ td:last-of-type{
 
 #loginModal h2,
 #confirmModal h2{
-    font-weight:650 !important;
     letter-spacing:-.025em;
 }
 
@@ -686,7 +673,6 @@ td:last-of-type{
 #confirmYes{
     background:var(--se-green) !important;
     border-radius:9px;
-    font-weight:600 !important;
 }
 
 #loginButton:hover,
@@ -841,6 +827,23 @@ td:last-of-type{
     }
 }
 
+
+
+/* Normal font weight throughout the dashboard. */
+*,
+*::before,
+*::after {
+    font-weight: 400 !important;
+}
+
+</style>
+
+<style>
+/* Stock Dashboard typography: keep all text at normal weight. */
+*,
+*::before,
+*::after {
+}
 </style>
 
 
@@ -1166,9 +1169,9 @@ td:last-of-type{
         <button
             type="button"
             id="newStockDayButton"
-            onclick="startNewStockRecordingDay()"
+            onclick="resetAllStockData()"
             class="border border-red-300 text-red-700 px-4 py-2 text-sm hover:bg-red-50">
-            Start New Stock Day
+            Reset All Stock Data
         </button>
 
     </div>
@@ -1895,6 +1898,11 @@ let listenersStarted =
 let confirmAction =
     null;
 
+// Marks the first date of the current stock book.
+// Records before this date are ignored even if an old test document
+// somehow remains in Firestore. The reset button also physically deletes them.
+let stockResetDateKey = "";
+
 
 
 /* =========================================================
@@ -2177,10 +2185,7 @@ async function authenticateOwner() {
                 "cursor-not-allowed"
             );
         }
-await migrateLocalData();
-
-
-        render();
+render();
 
 
         showToast(
@@ -2374,25 +2379,37 @@ updateFirebaseStatus(
                 "cursor-not-allowed"
             );
         }
-try {
-
-            await migrateLocalData();
-
-        } catch (error) {
-
-            console.error(
-                "Migration error:",
-                error
-            );
-
-        }
-
-
-        render();
+render();
 
     }
 );
 
+
+
+/* =========================================================
+   CURRENT STOCK BOOK BOUNDARY
+========================================================= */
+
+function isRecordInCurrentStockBook(record) {
+
+    if (!stockResetDateKey) {
+        return true;
+    }
+
+    const recordDate = String(record.date || "");
+
+    return recordDate >= stockResetDateKey;
+}
+
+
+function isDateInCurrentStockBook(date) {
+
+    if (!stockResetDateKey) {
+        return true;
+    }
+
+    return String(date || "") >= stockResetDateKey;
+}
 
 
 /* =========================================================
@@ -2575,6 +2592,17 @@ function startFirebaseListeners() {
 
                     const data =
                         doc.data();
+
+
+                    if (
+                        doc.id === "stockResetState" &&
+                        data.type === "stockReset"
+                    ) {
+
+                        stockResetDateKey =
+                            String(data.resetDateKey || "");
+
+                    }
 
 
                     if (
@@ -2778,6 +2806,9 @@ async function increaseStock(item) {
         item:
             item,
 
+        itemKey:
+            normalizeKey(item),
+
         quantity:
             roundNumber(amount),
 
@@ -2887,6 +2918,9 @@ async function decreaseStock(item) {
 
         item:
             item,
+
+        itemKey:
+            normalizeKey(item),
 
         quantity:
             roundNumber(amount),
@@ -3096,6 +3130,10 @@ function getKnownStockItems() {
 
     stockCache.forEach(
         function (record) {
+
+            if (!isRecordInCurrentStockBook(record)) {
+                return;
+            }
 
             if (record.item) {
 
@@ -3457,6 +3495,7 @@ function getBalanceForItem(
             function (record) {
 
                 return (
+                    isRecordInCurrentStockBook(record) &&
                     normalizeKey(
                         record.item
                     ) === key
@@ -3551,6 +3590,7 @@ function getBalanceForItem(
             function (production) {
 
                 return (
+                    isRecordInCurrentStockBook(production) &&
                     String(
                         production.date || ""
                     ) < String(date)
@@ -3673,6 +3713,7 @@ function getBalanceForItem(
             function (production) {
 
                 return (
+                    isRecordInCurrentStockBook(production) &&
                     production.date === date
                 );
 
@@ -3809,6 +3850,10 @@ function calculateCurrentBalances() {
     stockCache.forEach(
         function (record) {
 
+            if (!isRecordInCurrentStockBook(record)) {
+                return;
+            }
+
             if (!record.item) {
 
                 return;
@@ -3830,6 +3875,10 @@ function calculateCurrentBalances() {
 
     productionCache.forEach(
         function (record) {
+
+            if (!isRecordInCurrentStockBook(record)) {
+                return;
+            }
 
             const uses =
                 Array.isArray(
@@ -4086,6 +4135,10 @@ function calculateProductionBook() {
     */
     productionCache.forEach(
         function (record) {
+
+            if (!isRecordInCurrentStockBook(record)) {
+                return;
+            }
 
             if (
                 !record.product ||
@@ -4724,6 +4777,10 @@ function getAllStockDates() {
     stockCache.forEach(
         function (record) {
 
+            if (!isRecordInCurrentStockBook(record)) {
+                return;
+            }
+
             if (record.date) {
 
                 dates.add(
@@ -4738,6 +4795,10 @@ function getAllStockDates() {
 
     productionCache.forEach(
         function (record) {
+
+            if (!isRecordInCurrentStockBook(record)) {
+                return;
+            }
 
             if (record.date) {
 
@@ -5853,14 +5914,11 @@ async function deleteCollectionDocuments(
             break;
         }
 
-        const batch =
-            db.batch();
+        const batch = db.batch();
 
-        snapshot.docs.forEach(
-            function (doc) {
-                batch.delete(doc.ref);
-            }
-        );
+        snapshot.docs.forEach(function (doc) {
+            batch.delete(doc.ref);
+        });
 
         await batch.commit();
 
@@ -5871,12 +5929,13 @@ async function deleteCollectionDocuments(
 }
 
 
-function startNewStockRecordingDay() {
+/* =========================================================
+   RESET ALL STOCK DATA
+========================================================= */
 
-    if (
-        !firebaseReady ||
-        !isOwner()
-    ) {
+async function resetAllStockData() {
+
+    if (!firebaseReady || !isOwner()) {
 
         showToast(
             "Please sign in as owner."
@@ -5887,9 +5946,9 @@ function startNewStockRecordingDay() {
 
     openConfirmModal(
 
-        "Start New Stock Day",
+        "Reset All Stock Data",
 
-        "This will permanently clear ALL stock and production records from Firebase and start a fresh stock book. Orders, expenses, workers, debts, receipts and other collections will NOT be deleted. Continue?",
+        "This will permanently delete ALL stock dashboard data, including available stock, finished production, stock history, stock settings, and old testing records from Firebase and this browser. Orders, expenses, workers, debts, receipts and other collections will NOT be deleted. Continue?",
 
         async function () {
 
@@ -5906,9 +5965,12 @@ function startNewStockRecordingDay() {
                 }
 
                 /*
-                   Only the stock and production collections
-                   are deleted. Orders and all other collections
-                   remain untouched.
+                   Delete every document from every collection
+                   used by the Stock Dashboard.
+
+                   Nothing is filtered by date. This is a true
+                   testing reset, so old records from any date
+                   are removed.
                 */
                 await deleteCollectionDocuments(
                     STOCK_COLLECTION
@@ -5918,15 +5980,31 @@ function startNewStockRecordingDay() {
                     PRODUCTION_COLLECTION
                 );
 
-                // Clear stock-display settings as well. A product removed
-                // on an old stock day should not stay hidden on the new day.
                 await deleteCollectionDocuments(
                     SETTINGS_COLLECTION
                 );
 
+                // Create a persistent boundary for the new stock book.
+                // This guarantees that old testing records can never be
+                // brought forward, even if a stale Firestore snapshot exists.
+                const resetDateKey = getDate();
+
+                await db
+                    .collection(SETTINGS_COLLECTION)
+                    .doc("stockResetState")
+                    .set({
+                        type: "stockReset",
+                        resetDateKey: resetDateKey,
+                        resetAt: new Date().toISOString(),
+                        resetBy: auth.currentUser.email
+                    });
+
+                stockResetDateKey = resetDateKey;
+
                 /*
-                   Prevent old browser data from being migrated
-                   back into Firebase after the reset.
+                   Remove every browser cache used by the
+                   Stock Dashboard. This prevents deleted test
+                   data from being restored after refresh.
                 */
                 localStorage.removeItem(
                     "serene_stock"
@@ -5936,17 +6014,18 @@ function startNewStockRecordingDay() {
                     "serene_production"
                 );
 
+                /* Clear the in-memory copies immediately. */
                 stockCache = [];
                 productionCache = [];
 
                 render();
 
                 updateFirebaseStatus(
-                    "New stock recording day started"
+                    "All stock data cleared"
                 );
 
                 showToast(
-                    "Stock and production have been reset. You can now record today's stock."
+                    "All stock testing data has been cleared. The new stock book starts today. Tomorrow's closing stock will be brought forward automatically."
                 );
 
             } catch (error) {
@@ -5957,14 +6036,14 @@ function startNewStockRecordingDay() {
                 );
 
                 showToast(
-                    "Could not reset stock. Check Firebase permissions."
+                    "Could not clear all stock data. Check Firebase permissions."
                 );
 
             } finally {
 
                 if (button) {
                     button.disabled = false;
-                    button.textContent = "Start New Stock Day";
+                    button.textContent = "Reset All Stock Data";
                 }
 
             }
@@ -6184,136 +6263,6 @@ function isWarningHidden(
 
 
 /* =========================================================
-   LOCAL STORAGE MIGRATION
-========================================================= */
-
-async function migrateLocalData() {
-
-    if (
-        !firebaseReady ||
-        !isOwner()
-    ) {
-        return;
-    }
-
-    try {
-
-        const localStock =
-            JSON.parse(
-                localStorage.getItem("serene_stock") ||
-                "[]"
-            );
-
-        const localProduction =
-            JSON.parse(
-                localStorage.getItem("serene_production") ||
-                "[]"
-            );
-
-        const stockSnapshot =
-            await db
-            .collection(STOCK_COLLECTION)
-            .limit(1)
-            .get();
-
-        if (
-            stockSnapshot.empty &&
-            Array.isArray(localStock) &&
-            localStock.length
-        ) {
-
-            const batch = db.batch();
-
-            localStock.forEach(
-                function (record) {
-
-                    const ref =
-                        db
-                        .collection(STOCK_COLLECTION)
-                        .doc(
-                            String(
-                                record.id ||
-                                createID()
-                            )
-                        );
-
-                    batch.set(
-                        ref,
-                        record,
-                        {
-                            merge: true
-                        }
-                    );
-
-                }
-            );
-
-            await batch.commit();
-        }
-
-        const productionSnapshot =
-            await db
-            .collection(PRODUCTION_COLLECTION)
-            .limit(1)
-            .get();
-
-        if (
-            productionSnapshot.empty &&
-            Array.isArray(localProduction) &&
-            localProduction.length
-        ) {
-
-            const batch = db.batch();
-
-            localProduction.forEach(
-                function (record) {
-
-                    const ref =
-                        db
-                        .collection(PRODUCTION_COLLECTION)
-                        .doc(
-                            String(
-                                record.id ||
-                                createID()
-                            )
-                        );
-
-                    batch.set(
-                        ref,
-                        record,
-                        {
-                            merge: true
-                        }
-                    );
-
-                }
-            );
-
-            await batch.commit();
-        }
-
-        /*
-           Firebase is now the source of truth.
-
-           Remove the old browser stock/production cache
-           after migration so deleting Firebase records
-           cannot make old products reappear.
-        */
-        localStorage.removeItem("serene_stock");
-        localStorage.removeItem("serene_production");
-
-    } catch (error) {
-
-        console.error(
-            "Migration error:",
-            error
-        );
-
-    }
-
-}
-
-/* =========================================================
    HELPERS
 ========================================================= */
 
@@ -6326,6 +6275,7 @@ function getLatestStockRecord(
             function (record) {
 
                 return (
+                    isRecordInCurrentStockBook(record) &&
                     normalizeKey(
                         record.item
                     ) ===
